@@ -38,7 +38,7 @@ public class LoginModel : PageModel
         var user = _users.SingleOrDefault(x => x.Username == Username);
         if (user == null)
         {
-            ErrorMessage = "Invalid username or password";
+            ErrorMessage = "Invalid username"; // NOTE: Potential security risk... not good to tell the username does not exist
             return Page();
         }
 
@@ -52,7 +52,7 @@ public class LoginModel : PageModel
         }
         else
         {
-            ErrorMessage = "Invalid username or password";
+            ErrorMessage = "Invalid password"; // NOTE: Potential security risk... not good to tell the password is incorrect
             return Page();
         }
     }
