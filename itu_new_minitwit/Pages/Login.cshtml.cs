@@ -20,13 +20,21 @@ public class LoginModel : PageModel
         new UserCredential { Username = "Testuser", Password = "sesam123" }
     };
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (is_authenticated)
+            return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
 
+        return Page();
     }
 
     public IActionResult OnPost()
     {
+        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (is_authenticated)
+            return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
+
         var user = _users.SingleOrDefault(x => x.Username == Username);
         if (user == null)
         {
