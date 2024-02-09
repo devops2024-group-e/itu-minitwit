@@ -1,0 +1,20 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Sign In</h2>
+@if (Model.ErrorMessage != null)
+{
+    <div class="error"><strong>Error:</strong> @Model.ErrorMessage</div>
+}
+<form action="" method="post">
+    <dl>
+        <dt>Username:</dt>
+        <dd><input type="text" asp-for="Username" size="30"></dd>
+        <dt>Password:</dt>
+        <dd><input type="password" asp-for="Password" size="30"></dd>
+    </dl>
+    <div class="actions"><input type="submit" value="Sign In"></div>
+</form>
