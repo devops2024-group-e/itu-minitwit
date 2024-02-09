@@ -22,6 +22,7 @@ public class LoginModel : PageModel
 
     public void OnGet()
     {
+
     }
 
     public IActionResult OnPost()
@@ -36,6 +37,9 @@ public class LoginModel : PageModel
 
         if (user.Password == Password)
         {
+            // TODO: Get user_id by username from database
+            HttpContext.Session.SetInt32("user_id", 1);
+
             return RedirectToPage("/Index");
         }
         else

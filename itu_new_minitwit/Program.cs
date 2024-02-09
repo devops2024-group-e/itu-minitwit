@@ -1,7 +1,18 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDistributedMemoryCache();
+
+// Add session settings
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(5);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Add services to the container.
-builder.Services.AddRazorPages(options => {
+builder.Services.AddRazorPages(options =>
+{
     options.Conventions.AddPageRoute("/Index", "/Index/Timeline");
     options.Conventions.AddPageRoute("/Index", "/Index/{username?}");
 });
@@ -22,6 +33,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapRazorPages();
 
