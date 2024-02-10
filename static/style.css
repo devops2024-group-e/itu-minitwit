@@ -2,18 +2,18 @@ body {
     background: #CAECE9;
     font-family: 'Trebuchet MS', sans-serif;
     font-size: 14px;
-}
-
-a {
+  }
+  
+  a {
     color: #26776F;
-}
-
-a:hover {
+  }
+  
+  a:hover {
     color: #333;
-}
-
-input[type="text"],
-input[type="password"] {
+  }
+  
+  input[type="text"],
+  input[type="password"] {
     background: white;
     border: 1px solid #BFE6E2;
     padding: 2px;
@@ -22,9 +22,9 @@ input[type="password"] {
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     color: #105751;
-}
-
-input[type="submit"] {
+  }
+  
+  input[type="submit"] {
     background: #105751;
     border: 1px solid #073B36;
     padding: 1px 3px;
@@ -34,16 +34,16 @@ input[type="submit"] {
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     color: white;
-}
-
-div.page {
+  }
+  
+  div.page {
     background: white;
     border: 1px solid #6ECCC4;
     width: 700px;
     margin: 30px auto;
-}
-
-div.page h1 {
+  }
+  
+  div.page h1 {
     background: #6ECCC4;
     margin: 0;
     padding: 10px 14px;
@@ -51,9 +51,9 @@ div.page h1 {
     letter-spacing: 1px;
     text-shadow: 0 0 3px #24776F;
     font-weight: normal;
-}
-
-div.page div.navigation {
+  }
+  
+  div.page div.navigation {
     background: #DEE9E8;
     padding: 4px 10px;
     border-top: 1px solid #ccc;
@@ -61,46 +61,46 @@ div.page div.navigation {
     color: #888;
     font-size: 12px;
     letter-spacing: 0.5px;
-}
-
-div.page div.navigation a {
+  }
+  
+  div.page div.navigation a {
     color: #444;
     font-weight: bold;
-}
-
-div.page h2 {
+  }
+  
+  div.page h2 {
     margin: 0 0 15px 0;
     color: #105751;
     text-shadow: 0 1px 2px #ccc;
-}
-
-div.page div.body {
+  }
+  
+  div.page div.body {
     padding: 10px;
-}
-
-div.page div.footer {
+  }
+  
+  div.page div.footer {
     background: #eee;
     color: #888;
     padding: 5px 10px;
     font-size: 12px;
-}
-
-div.page div.followstatus {
+  }
+  
+  div.page div.followstatus {
     border: 1px solid #ccc;
     background: #E3EBEA;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     padding: 3px;
     font-size: 13px;
-}
-
-div.page ul.messages {
+  }
+  
+  div.page ul.messages {
     list-style: none;
     margin: 0;
     padding: 0;
-}
-
-div.page ul.messages li {
+  }
+  
+  div.page ul.messages li {
     margin: 10px 0;
     padding: 5px;
     background: #F0FAF9;
@@ -108,66 +108,66 @@ div.page ul.messages li {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     min-height: 48px;
-}
-
-div.page ul.messages p {
+  }
+  
+  div.page ul.messages p {
     margin: 0;
-}
-
-div.page ul.messages li img {
+  }
+  
+  div.page ul.messages li img {
     float: left;
     padding: 0 10px 0 0;
-}
-
-div.page ul.messages li small {
+  }
+  
+  div.page ul.messages li small {
     font-size: 0.9em;
     color: #888;
-}
-
-div.page div.twitbox {
+  }
+  
+  div.page div.twitbox {
     margin: 10px 0;
     padding: 5px;
     background: #F0FAF9;
     border: 1px solid #94E2DA;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-}
-
-div.page div.twitbox h3 {
+  }
+  
+  div.page div.twitbox h3 {
     margin: 0;
     font-size: 1em;
     color: #2C7E76;
-}
-
-div.page div.twitbox p {
+  }
+  
+  div.page div.twitbox p {
     margin: 0;
-}
-
-div.page div.twitbox input[type="text"] {
+  }
+  
+  div.page div.twitbox input[type="text"] {
     width: 585px;
-}
-
-div.page div.twitbox input[type="submit"] {
+  }
+  
+  div.page div.twitbox input[type="submit"] {
     width: 70px;
     margin-left: 5px;
-}
-
-ul.flashes {
+  }
+  
+  ul.flashes {
     list-style: none;
     margin: 10px 10px 0 10px;
     padding: 0;
-}
-
-ul.flashes li {
+  }
+  
+  ul.flashes li {
     background: #B9F3ED;
     border: 1px solid #81CEC6;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     padding: 4px;
     font-size: 13px;
-}
-
-div.error {
+  }
+  
+  div.error {
     margin: 10px 0;
     background: #FAE4E4;
     border: 1px solid #DD6F6F;
@@ -175,4 +175,5 @@ div.error {
     -webkit-border-radius: 2px;
     padding: 4px;
     font-size: 13px;
-}
+  }
+  
