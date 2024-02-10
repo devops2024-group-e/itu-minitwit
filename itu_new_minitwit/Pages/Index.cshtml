@@ -1,0 +1,34 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h1>@Model.Timeline</h1>
+
+@* Display Tweets *@
+
+    <ul class=messages>
+    
+    @{ 
+        if(Model.Messages.Count != 0)
+        {
+            foreach(var message in Model.Messages)
+            {
+                <li>
+                    @* <img src="{{message.email|gravatar(size=48) }}"> *@
+                    <p>
+                    <strong><a href="#">@message.Username</a></strong>
+                        @message.Text
+                        <small>&mdash; @message.PublishedDate</small>
+                    </p>
+                </li>
+            }
+
+        }
+        else 
+        {
+            <li><em>There's no message so far.</em></li>    
+        }
+    }
+    </ul>
