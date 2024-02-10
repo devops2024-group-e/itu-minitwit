@@ -13,16 +13,16 @@ public class RegisterModel : PageModel
     };
 
     [BindProperty]
-    public string Username { get; set; } = default!;
+    public string Username { get; set; } = string.Empty;
 
     [BindProperty]
-    public string Email { get; set; } = default!;
+    public string Email { get; set; } = string.Empty;
 
     [BindProperty]
-    public string Password { get; set; } = default!;
+    public string Password { get; set; } = string.Empty;
 
     [BindProperty]
-    public string ConfirmPassword { get; set; } = default!;
+    public string ConfirmPassword { get; set; } = string.Empty;
 
     public string ErrorMessage { get; set; } = default!;
 
@@ -54,8 +54,10 @@ public class RegisterModel : PageModel
 
         if (string.IsNullOrEmpty(Username))
             ErrorMessage = "Username is required";
-        else if (Email.Contains("@"))
+        else if (string.IsNullOrEmpty(Email) || !Email.Contains("@"))
             ErrorMessage = "You have to enter a valid email address";
+        else if (string.IsNullOrEmpty(Password))
+            ErrorMessage = "Password is required";
         else if (Password != ConfirmPassword)
             ErrorMessage = "The two passwords do not match";
         else if (_users.Any(x => x.Username == Username))
