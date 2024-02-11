@@ -28,6 +28,14 @@ If it does not appear, you can in the Visual Studio Command pallet type in `Dev 
 > [!IMPORTANT]
 > You might get issues in using Git if you have not installed `git-credentials-manager`. Without it, the dev-container cannot fetch your git credentials. Also it is important to provide your git username and email in the git config. Write `git config --global user.name <Your name>` and `git config --global user.email <Your email for your github user>` in the terminal for the dev-container.
 
+> [!NOTE]
+> There might be a possibility that some of the python related commands did not execute. If that is the case then please run the following:
+>```
+>sudo python3 -m venv .venv
+>source .venv/bin/activate
+>python3 -m pip install flask
+>```
+
 ### Develop in Linux
 This should more or less work out of the box... as far as we know at the moment.
 
