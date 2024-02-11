@@ -1,4 +1,5 @@
 using itu_new_minitwit.Model;
+using itu_new_minitwit.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Linq;
@@ -47,6 +48,7 @@ public class LoginModel : PageModel
         {
             // TODO: Get user_id by username from database
             HttpContext.Session.SetInt32("user_id", 1);
+            TempData.QueueFlashMessage("You were logged in");
 
             return RedirectToPage("/Index");
         }

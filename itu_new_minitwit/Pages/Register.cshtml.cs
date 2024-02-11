@@ -1,6 +1,8 @@
 using itu_new_minitwit.Model;
+using itu_new_minitwit.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Net.Http.Headers;
 
 namespace itu_new_minitwit.Pages;
 
@@ -73,8 +75,7 @@ public class RegisterModel : PageModel
             };
 
             _logger.LogDebug("User registered: {Username}", Username);
-
-            // TODO: Add popup message here!
+            TempData.QueueFlashMessage("You were successfully registered and can login now");
 
             return RedirectToPage("/Login");
         }
