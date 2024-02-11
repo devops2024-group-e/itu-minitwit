@@ -1,10 +1,10 @@
 {
-    "name": "minitwit-python3",
-    "image": "mcr.microsoft.com/devcontainers/python:3", // Set to latest python 3 image version. That means, if a new minor version of their python 3 image is released, it will be used.
+    "name": "minitwit-dotnet7",
+    "image": "mcr.microsoft.com/devcontainers/dotnet:7.0", // Set to latest python 3 image version. That means, if a new minor version of their python 3 image is released, it will be used.
     "forwardPorts": [
         8001
     ],
-    "postCreateCommand": "sudo apt install libsqlite3-dev; sudo apt install sqlitebrowser; pip3 install flask",
+    "postCreateCommand": "sudo sh ./.devcontainer/setup.sh",
     "customizations": {
         "vscode": {
             "extensions": [
