@@ -1,6 +1,7 @@
 
 /tmp/**
 !/tmp/minitwit.db
+**/.vscode/**
 flag_tool
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,linux,vs
