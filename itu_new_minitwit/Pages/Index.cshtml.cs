@@ -81,6 +81,6 @@ public class IndexModel : PageModel
 
     public void OnPost()
     {
-        Messages.Add(new Message { Username = "My", Text = Request.Form["message"], PublishedDate = DateTime.Now });
+    
     }
 }
