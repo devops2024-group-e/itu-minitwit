@@ -1,5 +1,7 @@
 #!/bin/bash
 
+dotnet tool install --global dotnet-ef --version 7.0.1
+
 # Update apt and install dependencies
 sudo apt update && sudo apt update && sudo apt install -y python3-pip libsqlite3-dev sqlitebrowser python3.11-venv
 
