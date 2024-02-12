@@ -13,7 +13,8 @@ public class IndexModel : PageModel
 
     private MinitwitContext _context;
 
-    public List<Message> Messages { get; set; } = new List<Message>{};
+    public ICollection<MessageAuthor> Messages { get; set; } = Enumerable.Empty<MessageAuthor>().ToList();
+    public bool Followed { get; set; }
 
     public IndexModel(ILogger<IndexModel> logger, MinitwitContext context)
     {
@@ -23,24 +24,24 @@ public class IndexModel : PageModel
 
     public long GetUserID(string username)
     {
-       return _context.Users.Single(x => x.Username == username).UserId;
+        return _context.Users.Single(x => x.Username == username).UserId;
     }
 
     public void Follow(string usernameToFollow)
     {
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        if(_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
+        if (_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
         {
             //My own user does not exist
         }
-        if(_context.Users.Select(x => x.UserId == GetUserID(usernameToFollow)).ToList().Count == 1)
+        if (_context.Users.Select(x => x.UserId == GetUserID(usernameToFollow)).ToList().Count == 1)
         {
             //The user to follow does not exist
         }
-        
-        _context.Followers.Add(new Follower{WhoId = ownUserID, WhomId = GetUserID(usernameToFollow)});
+
+        _context.Followers.Add(new Follower { WhoId = ownUserID, WhomId = GetUserID(usernameToFollow) });
         //flask: you are now following user usertofollow
-        
+
     }
 
     public void Unfollow(string usernameToUnfollow)
@@ -48,11 +49,11 @@ public class IndexModel : PageModel
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         var whomID = GetUserID(usernameToUnfollow);
 
-        if(_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
+        if (_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
         {
             //My own user does not exist
         }
-        if(_context.Users.Select(x => x.UserId == whomID).ToList().Count == 1)
+        if (_context.Users.Select(x => x.UserId == whomID).ToList().Count == 1)
         {
             //The user to unfollow does not exist
         }
@@ -62,53 +63,30 @@ public class IndexModel : PageModel
     }
 
     public IActionResult OnGet()
-    {   
-
+    {
         string path = HttpContext.Request.Path;
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
 
-        if(path == "/Public")
+        if (!is_loggedin)
         {
-            Title = "Public";
-        }
-        else if(path != "/")
-        {
-            Title = path.Trim('/');
+            return RedirectToPage("/Public");
         }
         else
-        {
-            bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-            if(!is_loggedin)
-            {
-                return RedirectToPage("/Public");
-            }
-            else
-            {
-                Title = "My";
-            }
-        }
-
-        // TODO: If we do not have a user in the session query public timeline
-        
-
-
-        
-        // TODO: Add query for public timeline
-
-        // TODO: Else get timeline from the users follow list
-        
-        /*
-        if (title == null)
         {
             Title = "My";
+            Messages = (from message in _context.Messages
+                        join user in _context.Users on message.AuthorId equals user.UserId
+                        where message.Flagged == 0 && (from follower in _context.Followers
+                                                       where follower.WhoId == HttpContext.Session.GetInt32("user_id")
+                                                       select follower.WhomId).Contains(message.AuthorId)
+                        select new MessageAuthor { Author = user, Message = message }).ToList();
         }
-        else
-        {
-            Title = title;
-        }*/
+
+        return Page();
     }
 
     public void OnPost()
     {
-    
+
     }
 }

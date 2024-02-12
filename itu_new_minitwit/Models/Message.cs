@@ -9,7 +9,7 @@ public partial class Message
 
     public long AuthorId { get; set; }
 
-    public byte[] Text { get; set; } = null!;
+    public string Text { get; set; } = null!;
 
     public long? PubDate { get; set; }
 
