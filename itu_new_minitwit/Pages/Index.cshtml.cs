@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using itu_new_minitwit.Model;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using itu_new_minitwit.Models;
 
 namespace itu_new_minitwit.Pages;
 
@@ -26,16 +27,44 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public void follow(User userToFollow)
+    public long GetUserID(string username)
     {
-        // TODO: Create a query to follow a specific user
+       return _context.Users.Single(x => x.Username == username).UserId;
+    }
+
+    public void Follow(string usernameToFollow)
+    {
         var ownUserID = HttpContext.Session.GetInt32("user_id");
+        if(_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
+        {
+            //My own user does not exist
+        }
+        if(_context.Users.Select(x => x.UserId == GetUserID(usernameToFollow)).ToList().Count == 1)
+        {
+            //The user to follow does not exist
+        }
+        
+        _context.Followers.Add(new Follower{WhoId = ownUserID, WhomId = GetUserID(usernameToFollow)});
+        //flask: you are now following user usertofollow
         
     }
 
-    public void unfollow(User userToUnfollow)
+    public void Unfollow(string usernameToUnfollow)
     {
-        // TODO: Create a query to unfollow a specific user
+        var ownUserID = HttpContext.Session.GetInt32("user_id");
+        var whomID = GetUserID(usernameToUnfollow);
+
+        if(_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
+        {
+            //My own user does not exist
+        }
+        if(_context.Users.Select(x => x.UserId == whomID).ToList().Count == 1)
+        {
+            //The user to unfollow does not exist
+        }
+
+        _context.Followers.Remove(_context.Followers.Single(x => x.WhoId == ownUserID && x.WhomId == whomID));
+        //flask: you have now unfollowed user usertounfollow
     }
 
     public void OnGet(string title)
