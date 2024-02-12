@@ -14,9 +14,18 @@
     <div class="page">
         <h1>MiniTwit</h1>
         <div class="navigation">
-            <a asp-page="/Index">public timeline</a> |
-            <a asp-page="/Register">sign up</a> |
+        @if (this.Context.Session.TryGetValue("user_id", out byte[]? bytes))
+        {
+            <a asp-page="/Index">my timeline | </a> //TODO Change to correct link
+            <a asp-page="/Index">public timeline | </a>
+            <a asp-page="/Index">sign out</a> //TODO Change to correct link
+        }
+        else
+        {
+            <a asp-page="/Index">public timeline | </a>
+            <a asp-page="/Register">sign up | </a>
             <a asp-page="/Login">sign in</a>
+        }
         </div>
         <div class="body">
             <main role="main" class="pb-3">
@@ -24,7 +33,7 @@
             </main>
         </div>
         <div class="footer">
-            MiniTwit &mdash; A Flask Application
+            MiniTwit &mdash; A Razor Page Application
         </div>
 
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
