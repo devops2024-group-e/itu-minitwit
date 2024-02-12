@@ -1,12 +1,16 @@
 using itu_new_minitwit.Model;
+using itu_new_minitwit.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace itu_new_minitwit.Pages;
 
 public class LoginModel : PageModel
 {
+    private readonly MinitwitContext _dbContext;
+
     [BindProperty]
     public string Username { get; set; }
 
@@ -14,6 +18,11 @@ public class LoginModel : PageModel
     public string Password { get; set; }
 
     public string ErrorMessage { get; set; } = default!;
+
+    public LoginModel(MinitwitContext dbcontext)
+    {
+        _dbContext = dbcontext;
+    }
 
     private readonly List<UserCredential> _users = new()
     {
@@ -35,15 +44,15 @@ public class LoginModel : PageModel
         if (is_authenticated)
             return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
 
-        var user = _users.SingleOrDefault(x => x.Username == Username);
+        var user = _dbContext.Users.SingleOrDefault(x => x.Username == Username);
         if (user == null)
         {
             ErrorMessage = "Invalid username"; // NOTE: Potential security risk... not good to tell the username does not exist
             return Page();
         }
 
-
-        if (user.Password == Password)
+        var hashedPassword = PasswordHash.Hash(Password);
+        if (user.PwHash == hashedPassword)
         {
             // TODO: Get user_id by username from database
             HttpContext.Session.SetInt32("user_id", 1);
