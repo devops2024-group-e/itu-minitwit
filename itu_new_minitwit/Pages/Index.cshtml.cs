@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using itu_new_minitwit.Model;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using itu_new_minitwit.Models;
 
@@ -16,10 +15,7 @@ public class IndexModel : PageModel
 
     private MinitwitContext _context;
 
-    public List<Message> Messages { get; set; } = new List<Message>{
-        new Message{Username = "Amalie", Text = "Helloooooo Hanne", PublishedDate = DateTime.Now },
-        new Message{Username = "Malin", Text = "Who is Hanne?", PublishedDate = DateTime.Now.AddMinutes(1)}
-    };
+    public List<Message> Messages { get; set; } = new List<Message>{};
 
     public IndexModel(ILogger<IndexModel> logger, MinitwitContext context)
     {
