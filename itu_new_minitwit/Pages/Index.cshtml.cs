@@ -9,8 +9,6 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
-    public string Timeline { get; set; }
-
     public string Title { get; set; }
 
     private MinitwitContext _context;
@@ -38,14 +36,36 @@ public class IndexModel : PageModel
         // TODO: Create a query to unfollow a specific user
     }
 
-    public void OnGet(string title)
+    public IActionResult OnGet()
     {   
-        // TODO: If we do not have a user in the session query public timeline
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if(is_loggedin)
+
+        string path = HttpContext.Request.Path;
+
+        if(path == "/Public")
         {
-            Title = HttpContext.Session.GetInt32("user_id").ToString();
+            Title = "Public";
         }
+        else if(path != "/")
+        {
+            Title = path.Trim('/');
+        }
+        else
+        {
+            bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+            if(!is_loggedin)
+            {
+                return RedirectToPage("/Public");
+            }
+            else
+            {
+                Title = "My";
+            }
+        }
+
+        // TODO: If we do not have a user in the session query public timeline
+        
+
+
         
         // TODO: Add query for public timeline
 

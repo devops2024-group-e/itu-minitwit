@@ -15,7 +15,9 @@ builder.Services.AddSession(options =>
 
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
-{ });
+{ 
+    options.Conventions.AddPageRoute("/Index", "/Public");
+ });
 
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {
