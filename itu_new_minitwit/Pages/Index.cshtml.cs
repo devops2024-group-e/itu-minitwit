@@ -39,11 +39,19 @@ public class IndexModel : PageModel
     }
 
     public void OnGet(string title)
-    {
+    {   
         // TODO: If we do not have a user in the session query public timeline
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if(is_loggedin)
+        {
+            Title = HttpContext.Session.GetInt32("user_id").ToString();
+        }
+        
         // TODO: Add query for public timeline
 
         // TODO: Else get timeline from the users follow list
+        
+        /*
         if (title == null)
         {
             Title = "My";
@@ -51,7 +59,7 @@ public class IndexModel : PageModel
         else
         {
             Title = title;
-        }
+        }*/
     }
 
     public void OnPost()
