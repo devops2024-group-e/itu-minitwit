@@ -12,10 +12,7 @@ builder.Services.AddSession(options =>
 
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.AddPageRoute("/Index", "/Index/Timeline");
-    options.Conventions.AddPageRoute("/Index", "/Index/{username?}");
-});
+{});
 
 var app = builder.Build();
 

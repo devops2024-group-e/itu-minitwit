@@ -10,6 +10,7 @@ public class IndexModel : PageModel
 
     public string Timeline{ get; set; }
 
+    public string Title{ get; set; }
     
 
     public List<Message> Messages { get; set; } = new List<Message>{
@@ -22,17 +23,20 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet(string username)
+    public void OnGet(string title)
+    {   
+        if(title == null)
+        {
+            Title = "My";
+        }
+        else
+        {
+            Title = title;
+        }
+    }
+
+    public void OnPost()
     {
-        string path = this.HttpContext.Request.Path;
-
-        if(path == "/" || path == "/Index/Public")
-            Timeline = "Public Timeline";
-
-        if(username != string.Empty)
-            Timeline = username;
-
-        
-
+        Messages.Add(new Message{Username = "My", Text = Request.Form["message"], PublishedDate = DateTime.Now});
     }
 }
