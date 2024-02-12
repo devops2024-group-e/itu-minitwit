@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using itu_new_minitwit.Model;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace itu_new_minitwit.Pages;
 
@@ -21,6 +22,16 @@ public class IndexModel : PageModel
     public IndexModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
+    }
+
+    public void follow()
+    {
+        // TODO: Create a query to follow a specific user
+    }
+
+    public void unfollow()
+    {
+        // TODO: Create a query to unfollow a specific user
     }
 
     public void OnGet(string title)
