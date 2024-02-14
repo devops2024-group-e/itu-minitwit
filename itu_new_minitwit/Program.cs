@@ -14,8 +14,7 @@ builder.Services.AddSession(options =>
 });
 
 // Add services to the container.
-builder.Services.AddRazorPages(options =>
-{ });
+builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {

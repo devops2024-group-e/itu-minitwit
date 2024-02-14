@@ -29,7 +29,7 @@ public partial class MinitwitContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follower>(entity =>
-        {
+        { 
             entity
                 .HasNoKey()
                 .ToTable("follower");

@@ -1,4 +1,5 @@
-using itu_new_minitwit.Model;
+using itu_new_minitwit.Models;
+using itu_new_minitwit.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,10 +8,7 @@ namespace itu_new_minitwit.Pages;
 public class RegisterModel : PageModel
 {
     private readonly ILogger<RegisterModel> _logger;
-    private readonly List<UserCredential> _users = new()
-    {
-        new UserCredential { Username = "Testuser", Password = "sesam123" }
-    };
+    private readonly MinitwitContext _dbcontext;
 
     [BindProperty]
     public string Username { get; set; } = string.Empty;
@@ -26,9 +24,10 @@ public class RegisterModel : PageModel
 
     public string ErrorMessage { get; set; } = default!;
 
-    public RegisterModel(ILogger<RegisterModel> logger)
+    public RegisterModel(ILogger<RegisterModel> logger, MinitwitContext dbcontext)
     {
         _logger = logger;
+        _dbcontext = dbcontext;
     }
 
     public IActionResult OnGet()
@@ -60,7 +59,7 @@ public class RegisterModel : PageModel
             ErrorMessage = "Password is required";
         else if (Password != ConfirmPassword)
             ErrorMessage = "The two passwords do not match";
-        else if (_users.Any(x => x.Username == Username))
+        else if (_dbcontext.Users.Any(x => x.Username == Username))
             ErrorMessage = "The username is already taken";
         else
         {
@@ -69,8 +68,11 @@ public class RegisterModel : PageModel
             {
                 Username = Username,
                 Email = Email,
-                Password = Password // TODO: Hash this
+                PwHash = PasswordHash.Hash(Password) // TODO: Hash this
             };
+
+            _dbcontext.Users.Add(user);
+            _dbcontext.SaveChanges();
 
             _logger.LogDebug("User registered: {Username}", Username);
 

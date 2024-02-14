@@ -1,73 +1,47 @@
-﻿@page "{title?}"
+﻿@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page"; //NOTE: I don't know if this is needed? Or if it should be called something else
 }
 
 @* Switch loggedin-user/other-user/public view *@
-@{
-    if(Model.Title == "Public") //TODO: Somehow get logged-in user here
-    {
-        <h2>@Model.Title Timeline</h2>
-    }
-    else if(Model.Title == "My") //loggedin-user
-    {
-        <h2>@Model.Title Timeline</h2>
-        <div class=followstatus>
-            This is you!
-        </div>
-    }
+<h2>My Timeline</h2>
+<div class=followstatus>
+    This is you!
+</div>
 
-    else //other-user
-    {
-        <h2>@Model.Title Timeline</h2>
-        <div class=followstatus>
-            TODO: Check followstatus
-            <br>
-            You are currently following this user.
-            <a class=unfollow href="{{ url_for('unfollow_user', username=profile_user.username)
-          }}">Unfollow user</a>.
-            <br>
-            You are not yet following this user.
-            <a class=follow href="{{ url_for('follow_user', username=profile_user.username)
-          }}">Follow user</a>.
-        </div>
-    }
-}
 
 @* Display message form *@
 
-    <div class=twitbox>
-    <h3>What's on your mind {{ g.user.username }}?</h3>
+<div class=twitbox>
+    <h3>What's on your mind @Model.Username?</h3>
     <form action="" method=post>
         <p><input type=text name="message" size=60><!--
         --><input type=submit value="Share">
     </form>
-    </div>
+</div>
 
 @* Display Tweets *@
 
-    <ul class=messages>
-    
-    @{ 
-        if(Model.Messages.Count != 0)
-        {
-            foreach(var message in Model.Messages)
-            {
-                <li>
-                    @* <img src="{{message.email|gravatar(size=48) }}"> *@
-                    <p>
-                    <strong><a href="#">@message.Username</a></strong>
-                        @message.Text
-                        <small>&mdash; @message.PublishedDate</small>
-                    </p>
-                </li>
-            }
+<ul class=messages>
 
-        }
-        else 
+    @if (Model.Messages.Count != 0)
+    {
+        foreach (var message in Model.Messages)
         {
-            <li><em>There's no message so far.</em></li>    
+            <li>
+                @* <img src="{{message.email|gravatar(size=48) }}"> *@
+                <p>
+                    <strong><a href="#">@message.Author.Username</a></strong>
+                    @message.Message.Text
+                    <small>&mdash; @message.Message.PubDate</small>
+                </p>
+            </li>
         }
+
     }
-    </ul>
+    else
+    {
+        <li><em>There's no message so far.</em></li>
+    }
+</ul>
