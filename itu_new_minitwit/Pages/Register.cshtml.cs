@@ -21,7 +21,7 @@ public class RegisterModel : PageModel
     public string Password { get; set; } = string.Empty;
 
     [BindProperty]
-    public string ConfirmPassword { get; set; } = string.Empty;
+    public string Password2 { get; set; } = string.Empty;
 
     public string ErrorMessage { get; set; } = default!;
 
@@ -58,7 +58,7 @@ public class RegisterModel : PageModel
             ErrorMessage = "You have to enter a valid email address";
         else if (string.IsNullOrEmpty(Password))
             ErrorMessage = "Password is required";
-        else if (Password != ConfirmPassword)
+        else if (Password != Password2)
             ErrorMessage = "The two passwords do not match";
         else if (_dbcontext.Users.Any(x => x.Username == Username))
             ErrorMessage = "The username is already taken";

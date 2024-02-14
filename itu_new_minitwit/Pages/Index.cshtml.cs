@@ -15,6 +15,9 @@ public class IndexModel : PageModel
     public bool Followed { get; set; }
     public string Username { get; set; }
 
+    [BindProperty]
+    public string Message { get; set; }
+
     public IndexModel(ILogger<IndexModel> logger, MinitwitContext context)
     {
         _logger = logger;
@@ -47,8 +50,8 @@ public class IndexModel : PageModel
         return Page();
     }
 
-    public void OnPost()
+    public void OnPostAddMessage()
     {
-
+        _logger.LogInformation($"Added message: {Message}!");
     }
 }
