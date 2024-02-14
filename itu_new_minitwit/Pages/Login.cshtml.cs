@@ -55,6 +55,7 @@ public class LoginModel : PageModel
         if (user.PwHash == hashedPassword)
         {
             HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
+            TempData.QueueFlashMessage("You were logged in");
 
             return RedirectToPage("/Index");
         }

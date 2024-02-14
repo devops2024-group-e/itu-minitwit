@@ -1,4 +1,5 @@
 using itu_new_minitwit.Models;
+using itu_new_minitwit.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -65,6 +66,8 @@ public class UserTimelineModel : PageModel
         _context.Followers.Add(new Follower { WhoId = ownUserID, WhomId = profileUser.UserId });
         _context.SaveChanges();
 
+        TempData.QueueFlashMessage($"You are now following {profileUser.Username}");
+
         return RedirectToPage("/UserTimeline", new { username });
     }
 
@@ -85,6 +88,8 @@ public class UserTimelineModel : PageModel
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         _context.Followers.Remove(_context.Followers.Single(x => x.WhoId == ownUserID && x.WhomId == profileUser.UserId));
         _context.SaveChanges();
+
+        TempData.QueueFlashMessage($"You are no longer following {profileUser.Username}");
 
         return RedirectToPage("/UserTimeline", new { username });
     }
