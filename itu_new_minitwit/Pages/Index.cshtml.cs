@@ -9,12 +9,11 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
-    public string Title { get; set; }
-
     private MinitwitContext _context;
 
     public ICollection<MessageAuthor> Messages { get; set; } = Enumerable.Empty<MessageAuthor>().ToList();
     public bool Followed { get; set; }
+    public string Username { get; set; }
 
     public IndexModel(ILogger<IndexModel> logger, MinitwitContext context)
     {
@@ -30,14 +29,6 @@ public class IndexModel : PageModel
     public void Follow(string usernameToFollow)
     {
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        if (_context.Users.Select(x => x.UserId == ownUserID).ToList().Count == 1)
-        {
-            //My own user does not exist
-        }
-        if (_context.Users.Select(x => x.UserId == GetUserID(usernameToFollow)).ToList().Count == 1)
-        {
-            //The user to follow does not exist
-        }
 
         _context.Followers.Add(new Follower { WhoId = ownUserID, WhomId = GetUserID(usernameToFollow) });
         //flask: you are now following user usertofollow
@@ -73,13 +64,16 @@ public class IndexModel : PageModel
         }
         else
         {
-            Title = "My";
+            var userId = HttpContext.Session.GetInt32("user_id");
+            Username = _context.Users.Single(x => x.UserId == userId).Username;
+
             Messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where message.Flagged == 0 && (from follower in _context.Followers
-                                                       where follower.WhoId == HttpContext.Session.GetInt32("user_id")
+                                                       where follower.WhoId == userId
                                                        select follower.WhomId).Contains(message.AuthorId)
-                        select new MessageAuthor { Author = user, Message = message }).ToList();
+                        orderby message.PubDate descending
+                        select new MessageAuthor { Author = user, Message = message }).Take(30).ToList();
         }
 
         return Page();

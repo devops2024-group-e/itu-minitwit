@@ -5,25 +5,16 @@
 }
 
 @* Switch loggedin-user/other-user/public view *@
-@{
-    if (Model.Title == "Public") //TODO: Somehow get logged-in user here
-    {
-        <h2>@Model.Title Timeline</h2>
-    }
-    else if (Model.Title == "My") //loggedin-user
-    {
-        <h2>@Model.Title Timeline</h2>
-        <div class=followstatus>
-            This is you!
-        </div>
-    }
+<h2>My Timeline</h2>
+<div class=followstatus>
+    This is you!
+</div>
 
-}
 
 @* Display message form *@
 
 <div class=twitbox>
-    <h3>What's on your mind {{ g.user.username }}?</h3>
+    <h3>What's on your mind @Model.Username?</h3>
     <form action="" method=post>
         <p><input type=text name="message" size=60><!--
         --><input type=submit value="Share">

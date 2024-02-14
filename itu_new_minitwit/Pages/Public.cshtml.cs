@@ -23,7 +23,7 @@ public class PublicModel : PageModel
                     join user in _context.Users on message.AuthorId equals user.UserId
                     where message.Flagged == 0
                     orderby message.PubDate descending
-                    select new MessageAuthor { Message = message, Author = user }).ToList();
+                    select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
 
         _logger.LogInformation(Messages.Count.ToString());
     }

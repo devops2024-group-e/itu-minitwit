@@ -38,7 +38,7 @@ public class UserTimelineModel : PageModel
                     join user in _context.Users on message.AuthorId equals user.UserId
                     where user.UserId == profileUser.UserId
                     orderby message.PubDate descending
-                    select new MessageAuthor { Message = message, Author = user }).ToList();
+                    select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
 
         return Page();
     }
