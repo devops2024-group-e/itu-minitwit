@@ -9,7 +9,9 @@ public class UserTimelineModel : PageModel
     private readonly MinitwitContext _context;
 
     public string Username { get; set; }
-    public bool Followed { get; set; }
+    public int UserId { get; set; }
+    public bool IsFollowing { get; set; }
+    public bool IsMe { get; set; }
     public ICollection<MessageAuthor> Messages { get; set; }
 
     public UserTimelineModel(MinitwitContext dbcontext)
@@ -27,10 +29,12 @@ public class UserTimelineModel : PageModel
         }
 
         Username = profileUser.Username;
-        Followed = false;
+        UserId = (int)profileUser.UserId;
+        IsMe = UserId == HttpContext.Session.GetInt32("user_id");
+        IsFollowing = false;
         if (is_loggedin)
         {
-            Followed = _context.Followers
+            IsFollowing = _context.Followers
                                 .Any(x => x.WhoId == HttpContext.Session.GetInt32("user_id") && x.WhomId == profileUser.UserId);
         }
 
