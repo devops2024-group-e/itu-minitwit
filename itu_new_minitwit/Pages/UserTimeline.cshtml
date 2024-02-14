@@ -12,12 +12,12 @@
         else if(Model.IsFollowing)
         {
             <p>You are currently following this user.</p>
-            <a class=unfollow href="{{ url_for('unfollow_user', username=profile_user.username)}}">Unfollow user</a>.
+            <a class=unfollow asp-page="/{@Model.Username}/unfollow">Unfollow user</a>.
         }
         else
         {
             <p>You are not yet following this user.</p>
-            <a class=follow href="{{ url_for('follow_user', username=profile_user.username)}}">Follow user</a>.
+            <a class=follow asp-page="/{@Model.Username}/follow">Follow user</a>.
         }
     </div>
 }
@@ -30,7 +30,7 @@
             <li>
                 @* <img src="{{message.email|gravatar(size=48) }}"> *@
                 <p>
-                    <strong><a href="#">@message.Author.Username</a></strong>
+                    <strong><a asp-page="/" asp-route-key1="@message.Author.Username">@message.Author.Username</a></strong>
                     @message.Message.Text
                     <small>&mdash; @message.Message.PubDate</small>
                 </p>
