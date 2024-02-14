@@ -54,8 +54,7 @@ public class LoginModel : PageModel
         var hashedPassword = PasswordHash.Hash(Password);
         if (user.PwHash == hashedPassword)
         {
-            // TODO: Get user_id by username from database
-            HttpContext.Session.SetInt32("user_id", 1);
+            HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
 
             return RedirectToPage("/Index");
         }
