@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Install dotnet tools
 dotnet tool install --global dotnet-ef --version 7.0.1
 
 # Update apt and install dependencies
