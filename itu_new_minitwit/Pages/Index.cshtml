@@ -1,34 +1,47 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home page"; //NOTE: I don't know if this is needed? Or if it should be called something else
 }
 
-<h1>@Model.Timeline</h1>
+@* Switch loggedin-user/other-user/public view *@
+<h2>My Timeline</h2>
+<div class=followstatus>
+    This is you!
+</div>
+
+
+@* Display message form *@
+
+<div class=twitbox>
+    <h3>What's on your mind @Model.Username?</h3>
+    <form action="" method=post>
+        <p><input type=text name="message" size=60><!--
+        --><input type=submit value="Share">
+    </form>
+</div>
 
 @* Display Tweets *@
 
-    <ul class=messages>
-    
-    @{ 
-        if(Model.Messages.Count != 0)
-        {
-            foreach(var message in Model.Messages)
-            {
-                <li>
-                    @* <img src="{{message.email|gravatar(size=48) }}"> *@
-                    <p>
-                    <strong><a href="#">@message.Username</a></strong>
-                        @message.Text
-                        <small>&mdash; @message.PublishedDate</small>
-                    </p>
-                </li>
-            }
+<ul class=messages>
 
-        }
-        else 
+    @if (Model.Messages.Count != 0)
+    {
+        foreach (var message in Model.Messages)
         {
-            <li><em>There's no message so far.</em></li>    
+            <li>
+                @* <img src="{{message.email|gravatar(size=48) }}"> *@
+                <p>
+                    <strong><a href="#">@message.Author.Username</a></strong>
+                    @message.Message.Text
+                    <small>&mdash; @message.Message.PubDate</small>
+                </p>
+            </li>
         }
+
     }
-    </ul>
+    else
+    {
+        <li><em>There's no message so far.</em></li>
+    }
+</ul>

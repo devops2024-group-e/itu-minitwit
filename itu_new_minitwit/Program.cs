@@ -1,3 +1,6 @@
+using itu_new_minitwit;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDistributedMemoryCache();
@@ -11,10 +14,11 @@ builder.Services.AddSession(options =>
 });
 
 // Add services to the container.
-builder.Services.AddRazorPages(options =>
+builder.Services.AddRazorPages();
+
+builder.Services.AddDbContext<MinitwitContext>(options =>
 {
-    options.Conventions.AddPageRoute("/Index", "/Index/Timeline");
-    options.Conventions.AddPageRoute("/Index", "/Index/{username?}");
+    options.UseSqlite("Data source=/tmp/minitwit.db");
 });
 
 var app = builder.Build();

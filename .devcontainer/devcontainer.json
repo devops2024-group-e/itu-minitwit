@@ -1,6 +1,6 @@
 {
     "name": "minitwit-dotnet7",
-    "image": "mcr.microsoft.com/devcontainers/dotnet:7.0", // Set to latest python 3 image version. That means, if a new minor version of their python 3 image is released, it will be used.
+    "image": "mcr.microsoft.com/devcontainers/dotnet:7.0",
     "forwardPorts": [
         8001
     ],

@@ -1,0 +1,44 @@
+@page "{username}/{handler?}"
+@model UserTimelineModel
+
+@{
+    <h2>@Model.Username Timeline</h2>
+    <div class=followstatus>
+
+        @if(Model.IsMe)
+        {
+            <p>This is you!</p>
+        }
+        else if(Model.IsFollowing)
+        {
+            <p>You are currently following this user.</p>
+            <a class=unfollow href="{{ url_for('unfollow_user', username=profile_user.username)}}">Unfollow user</a>.
+        }
+        else
+        {
+            <p>You are not yet following this user.</p>
+            <a class=follow href="{{ url_for('follow_user', username=profile_user.username)}}">Follow user</a>.
+        }
+    </div>
+}
+<ul class=messages>
+
+    @if (Model.Messages.Count != 0)
+    {
+        foreach (var message in Model.Messages)
+        {
+            <li>
+                @* <img src="{{message.email|gravatar(size=48) }}"> *@
+                <p>
+                    <strong><a href="#">@message.Author.Username</a></strong>
+                    @message.Message.Text
+                    <small>&mdash; @message.Message.PubDate</small>
+                </p>
+            </li>
+        }
+    }
+    else
+    {
+        <li><em>There's no message so far.</em></li>
+    }
+</ul>

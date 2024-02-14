@@ -7,6 +7,11 @@
     <title>@ViewData["Title"] - itu_new_minitwit</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/itu_new_minitwit.styles.css" asp-append-version="true" />
+    <!-- <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> -->
+    <!-- <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> -->
+    <!-- <link rel="stylesheet" href="~/itu_new_minitwit.styles.css" asp-append-version="true" /> -->
+    <link href="/css/main.css" rel="stylesheet" type="text/css" />
+    @RenderSection("css", required: false)
 </head>
 @if (TempData.ContainsKey("FLASH_MESSAGE"))
 {
@@ -25,17 +30,26 @@
     <div class="page">
         <h1>MiniTwit</h1>
         <div class="navigation">
-            <a href="{{ url_for('public_timeline') }}">public timeline</a> |
-            <a href="{{ url_for('register') }}">sign up</a> |
-            <a href="{{ url_for('login') }}">sign in</a>
+        @if (this.Context.Session.TryGetValue("user_id", out byte[]? bytes))
+        {
+            <a asp-page="/Index">my timeline | </a> //TODO Change to correct link
+            <a asp-page="/Index">public timeline | </a>
+            <a asp-page="/Index">sign out</a> //TODO Change to correct link
+        }
+        else
+        {
+            <a asp-page="/Index">public timeline | </a>
+            <a asp-page="/Register">sign up | </a>
+            <a asp-page="/Login">sign in</a>
+        }
         </div>
-
         <div class="body">
-            @RenderBody()
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-
         <div class="footer">
-            &copy; 2024 - itu_new_minitwit - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            MiniTwit &mdash; A Razor Page Application
         </div>
 
         <script src="~/js/site.js" asp-append-version="true"></script>

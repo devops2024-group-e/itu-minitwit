@@ -4,7 +4,7 @@
 <h2>Sign Up</h2>
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
-    <div class="Error"><strong>Error:</strong> @Model.ErrorMessage</div>
+    <div class="error"><strong>Error:</strong> @Model.ErrorMessage</div>
 }
 <form action="" method="post">
     <dl>
@@ -17,7 +17,7 @@
         <dt>Password:</dt>
         <dd><input type="text" asp-for="Password" size="30"></dd>
 
-        <dt>Username <small>(repeat)</small>:</dt>
+        <dt>Password <small>(repeat)</small>:</dt>
         <dd><input type="text" asp-for="ConfirmPassword" size="30"></dd>
     </dl>
 

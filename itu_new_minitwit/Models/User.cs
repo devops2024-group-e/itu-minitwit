@@ -7,9 +7,9 @@ public partial class User
 {
     public long UserId { get; set; }
 
-    public byte[] Username { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
-    public byte[] Email { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
-    public byte[] PwHash { get; set; } = null!;
+    public string PwHash { get; set; } = null!;
 }
