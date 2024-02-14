@@ -42,4 +42,46 @@ public class UserTimelineModel : PageModel
 
         return Page();
     }
+
+    public IActionResult OnGetFollow(string username)
+    {
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (!is_loggedin)
+        {
+            return Unauthorized();
+        }
+
+        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        if (profileUser == null)
+        {
+            return NotFound();
+        }
+
+        var ownUserID = HttpContext.Session.GetInt32("user_id");
+        _context.Followers.Add(new Follower { WhoId = ownUserID, WhomId = profileUser.UserId });
+        _context.SaveChanges();
+
+        return RedirectToPage("/UserTimeline", new { username });
+    }
+
+    public IActionResult OnGetUnfollow(string username)
+    {
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (!is_loggedin)
+        {
+            return Unauthorized();
+        }
+
+        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        if (profileUser == null)
+        {
+            return NotFound();
+        }
+
+        var ownUserID = HttpContext.Session.GetInt32("user_id");
+        _context.Followers.Remove(_context.Followers.Single(x => x.WhoId == ownUserID && x.WhomId == profileUser.UserId));
+        _context.SaveChanges();
+
+        return RedirectToPage("/UserTimeline", new { username });
+    }
 }
