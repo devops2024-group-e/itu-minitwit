@@ -1,0 +1,24 @@
+@model RegisterViewModel
+
+<h2>Sign Up</h2>
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="error"><strong>Error:</strong> @Model.ErrorMessage</div>
+}
+<form action="Register" method="post">
+    <dl>
+        <dt>Username:</dt>
+        <dd><input type="text" name="username" size="30"></dd>
+
+        <dt>Email:</dt>
+        <dd><input type="text" name="email" size="30"></dd>
+
+        <dt>Password:</dt>
+        <dd><input type="text" name="password" size="30"></dd>
+
+        <dt>Password <small>(repeat)</small>:</dt>
+        <dd><input type="text" name="password2" size="30"></dd>
+    </dl>
+
+    <div class="actions"><input type="submit" value="Sign Up"></div>
+</form>

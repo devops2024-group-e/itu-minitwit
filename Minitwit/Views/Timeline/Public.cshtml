@@ -1,0 +1,29 @@
+@model PublicTimelineViewModel
+<h2>Public Timeline</h2>
+
+@* Display Tweets *@
+
+<ul class=messages>
+
+    @if (Model.Messages.Count != 0)
+    {
+        foreach (var message in Model.Messages)
+        {
+            <li>
+                @Html.GravatarImage(message.Author.Email, size: 48, defaultImage: GravatarHtmlHelper.DefaultImage.Identicon)
+                @{
+                    var url = $"/{message.Author.Username}";
+                }
+                <p>
+                    <strong><a href="@url">@message.Author.Username</a></strong>
+                    @message.Message.Text
+                    <small>&mdash; @message.Message.PubDate</small>
+                </p>
+            </li>
+        }
+    }
+    else
+    {
+        <li><em>There's no message so far.</em></li>
+    }
+</ul>
