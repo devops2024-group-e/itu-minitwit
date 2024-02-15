@@ -15,7 +15,7 @@ import requests
 # import schema
 # import data
 # otherwise use the database that you got previously
-BASE_URL = "http://127.0.0.1:5237"
+BASE_URL = "http://127.0.0.1:5191"
 
 def register(username, password, password2=None, email=None):
     """Helper function to register a user"""
@@ -50,7 +50,7 @@ def logout(http_session):
 
 def add_message(http_session, text):
     """Records a message"""
-    r = http_session.post(f'{BASE_URL}/AddMessage', data={'text': text},
+    r = http_session.post(f'{BASE_URL}/add_message', data={'text': text},
                                 allow_redirects=True)
     if text:
         assert 'Your message was recorded' in r.text
@@ -61,8 +61,7 @@ def add_message(http_session, text):
 def test_register():
     """Make sure registering works"""
     r = register('user1', 'default')
-    assert 'You were successfully registered ' \
-           'and can login now' in r.text
+    assert 'You were successfully registered and can login now' in r.text
     r = register('user1', 'default')
     assert 'The username is already taken' in r.text
     r = register('', 'default')
@@ -111,8 +110,8 @@ def test_timelines():
     assert 'the message by bar' in r.text
 
     # now let's follow foo
-    r = http_session.get(f'{BASE_URL}/Timeline/foo/follow', allow_redirects=True)
-    assert 'You are now following &#34;foo&#34;' in r.text
+    r = http_session.get(f'{BASE_URL}/foo/follow', allow_redirects=True)
+    assert 'You are now following &quot;foo&quot;' in r.text
 
     # we should now see foo's message
     r = http_session.get(f'{BASE_URL}/')
@@ -120,16 +119,16 @@ def test_timelines():
     assert 'the message by bar' in r.text
 
     # but on the user's page we only want the user's message
-    r = http_session.get(f'{BASE_URL}/Timeline/bar')
+    r = http_session.get(f'{BASE_URL}/bar')
     assert 'the message by foo' not in r.text
     assert 'the message by bar' in r.text
-    r = http_session.get(f'{BASE_URL}/Timeline/foo')
+    r = http_session.get(f'{BASE_URL}/foo')
     assert 'the message by foo' in r.text
     assert 'the message by bar' not in r.text
 
     # now unfollow and check if that worked
-    r = http_session.get(f'{BASE_URL}/Timeline/foo/unfollow', allow_redirects=True)
-    assert 'You are no longer following &#34;foo&#34;' in r.text
+    r = http_session.get(f'{BASE_URL}/foo/unfollow', allow_redirects=True)
+    assert 'You are no longer following &quot;foo&quot;' in r.text
     r = http_session.get(f'{BASE_URL}/')
     assert 'the message by foo' not in r.text
     assert 'the message by bar' in r.text
