@@ -1,0 +1,69 @@
+﻿@model TimelineViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (Model.Profile == null)
+{
+    <h2>My Timeline</h2>
+    <div class=followstatus>This is you!</div>
+
+    <div class=twitbox>
+    <h3>What's on your mind @Model.CurrentUsername?</h3>
+    <form action="add_message" method=post>
+        @* NOTE: I think the input is in a paragraph tag because they wanted to have both inputs on one single line *@
+
+        <p>
+            <input type=text name="text" size=60>
+            <input type=submit value="Share">
+        </p>
+    </form>
+</div>
+}
+else
+{
+    if (Model.Profile.IsMe)
+    {
+        <p>This is you!</p>
+    }
+    else if (Model.Profile.IsFollowing)
+    {
+        var unfollowUrl = $"/{Model.Profile.Username}/unfollow";
+
+        <p>You are currently following this user.</p>
+        <a class="unfollow" href="@unfollowUrl">Unfollow user</a>
+    }
+    else
+    {
+        var followUrl = $"/{Model.Profile.Username}/follow";
+        <p>You are not yet following this user.</p>
+        <a class="follow" href="@followUrl">Follow user</a>
+    }
+}
+
+@* Display Tweets *@
+
+<ul class=messages>
+
+    @if (Model.Messages.Count != 0)
+    {
+        foreach (var message in Model.Messages)
+        {
+            <li>
+                @Html.GravatarImage(message.Author.Email, size: 48, defaultImage: GravatarHtmlHelper.DefaultImage.Identicon)
+                <p>
+                    @{
+                        var url = $"/{message.Author.Username}";
+                    }
+                    <strong><a href="@url">@message.Author.Username</a></strong>
+                    @message.Message.Text
+                    <small>&mdash; @message.Message.PubDate</small>
+                </p>
+            </li>
+        }
+    }
+    else
+    {
+        <li><em>There's no message so far.</em></li>
+    }
+</ul>

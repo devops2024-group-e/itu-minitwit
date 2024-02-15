@@ -15,7 +15,7 @@ import requests
 # import schema
 # import data
 # otherwise use the database that you got previously
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://127.0.0.1:5191"
 
 def register(username, password, password2=None, email=None):
     """Helper function to register a user"""
@@ -61,8 +61,7 @@ def add_message(http_session, text):
 def test_register():
     """Make sure registering works"""
     r = register('user1', 'default')
-    assert 'You were successfully registered ' \
-           'and can login now' in r.text
+    assert 'You were successfully registered and can login now' in r.text
     r = register('user1', 'default')
     assert 'The username is already taken' in r.text
     r = register('', 'default')
@@ -112,7 +111,7 @@ def test_timelines():
 
     # now let's follow foo
     r = http_session.get(f'{BASE_URL}/foo/follow', allow_redirects=True)
-    assert 'You are now following &#34;foo&#34;' in r.text
+    assert 'You are now following &quot;foo&quot;' in r.text
 
     # we should now see foo's message
     r = http_session.get(f'{BASE_URL}/')
@@ -129,7 +128,7 @@ def test_timelines():
 
     # now unfollow and check if that worked
     r = http_session.get(f'{BASE_URL}/foo/unfollow', allow_redirects=True)
-    assert 'You are no longer following &#34;foo&#34;' in r.text
+    assert 'You are no longer following &quot;foo&quot;' in r.text
     r = http_session.get(f'{BASE_URL}/')
     assert 'the message by foo' not in r.text
     assert 'the message by bar' in r.text
