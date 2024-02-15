@@ -42,8 +42,7 @@ public class LoginController : Controller
             return View("Index", new LoginViewModel() { ErrorMessage = "Invalid username" });
         }
 
-        var hashedPassword = PasswordHash.Hash(password);
-        if (user.PwHash == hashedPassword)
+        if (PasswordHash.CheckPasswordHash(password, user.PwHash))
         {
             HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
             TempData.QueueFlashMessage("You were logged in");
