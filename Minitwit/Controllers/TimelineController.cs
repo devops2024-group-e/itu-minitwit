@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Minitwit.Models;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
@@ -73,10 +74,9 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Add(new Follower { WhoId = ownUserID, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, profileUser.UserId);
 
-        TempData.QueueFlashMessage($"You are now following {profileUser.Username}");
+        TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
         return RedirectToAction("Index", new { username });
     }
@@ -98,16 +98,15 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Remove(_context.Followers.Single(x => x.WhoId == ownUserID && x.WhomId == profileUser.UserId));
-        _context.SaveChanges();
+        _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, profileUser.UserId);
 
-        TempData.QueueFlashMessage($"You are no longer following {profileUser.Username}");
+        TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
         return RedirectToAction("Index", new { username });
     }
 
     [HttpPost("add_message")]
-    public IActionResult AddMessage(string message)
+    public IActionResult AddMessage(string text)
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (!is_loggedin)
@@ -118,7 +117,7 @@ public class TimelineController : Controller
         _context.Messages.Add(new Message
         {
             AuthorId = (int)HttpContext.Session.GetInt32("user_id"),
-            Text = message,
+            Text = text,
             PubDate = DateTime.Now.Ticks,
             Flagged = 0
         });
@@ -186,7 +185,7 @@ public class TimelineController : Controller
                         join msg in _context.Messages on user.UserId equals msg.AuthorId
                         where msg.Flagged == 0 && (user.UserId == currentUserId || (from f in _context.Followers
                                                                                     where f.WhoId == currentUserId
-                                                                                    select f.WhomId).Contains(currentUserId))
+                                                                                    select f.WhomId).Any(x => x == user.UserId))
                         orderby msg.PubDate descending
                         select new MessageAuthor { Author = user, Message = msg }).Take(30).ToList();
 
