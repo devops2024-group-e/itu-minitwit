@@ -1,4 +1,3 @@
-using itu_new_minitwit.Model;
 using itu_new_minitwit.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -23,11 +22,6 @@ public class LoginModel : PageModel
     {
         _dbContext = dbcontext;
     }
-
-    private readonly List<UserCredential> _users = new()
-    {
-        new UserCredential { Username = "Testuser", Password = "sesam123" }
-    };
 
     public IActionResult OnGet()
     {

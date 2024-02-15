@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using itu_new_minitwit.Models;
+using itu_new_minitwit.Utils;
 
 namespace itu_new_minitwit.Pages;
 
@@ -50,8 +51,30 @@ public class IndexModel : PageModel
         return Page();
     }
 
-    public void OnPostAddMessage()
+    public IActionResult OnGetLogout()
     {
-        _logger.LogInformation($"Added message: {Message}!");
+        HttpContext.Session.Remove("user_id");
+        return RedirectToPage("/Public");
+    }
+
+    public IActionResult OnPostAddMessage()
+    {
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (!is_loggedin)
+        {
+            return Unauthorized();
+        }
+
+        _context.Messages.Add(new Message
+        {
+            AuthorId = (int)HttpContext.Session.GetInt32("user_id"),
+            Text = Message,
+            PubDate = DateTime.Now.Ticks
+        });
+        _context.SaveChanges();
+
+        TempData.QueueFlashMessage("Your message was recorded");
+
+        return RedirectToPage("/Index");
     }
 }
