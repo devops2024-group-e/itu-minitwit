@@ -20,7 +20,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 # configuration
-DATABASE = '/tmp/minitwit.db'
+DATABASE = './test-tmp/minitwit.db'
 PER_PAGE = 30
 DEBUG = True
 SECRET_KEY = 'development key'

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {
-    options.UseSqlite("Data source=/tmp/minitwit.db");
+    options.UseSqlite("Data source=../test-tmp/minitwit.db");
 });
 
 // Add session settings
