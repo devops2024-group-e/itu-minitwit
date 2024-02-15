@@ -42,11 +42,11 @@ public class RegisterController : Controller
         string errMessage = "";
 
         if (string.IsNullOrEmpty(username))
-            errMessage = "Username is required";
+            errMessage = "You have to enter a username";
         else if (string.IsNullOrEmpty(email) || !email.Contains("@"))
             errMessage = "You have to enter a valid email address";
         else if (string.IsNullOrEmpty(password))
-            errMessage = "Password is required";
+            errMessage = "You have to enter a password";
         else if (password != password2)
             errMessage = "The two passwords do not match";
         else if (_context.Users.Any(x => x.Username == username))

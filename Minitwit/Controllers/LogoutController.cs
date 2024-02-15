@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Minitwit.Utils;
 
 namespace Minitwit.Controllers;
 
@@ -15,6 +16,7 @@ public class LogoutController : Controller
     public IActionResult Index()
     {
         HttpContext.Session.Remove("user_id");
+        TempData.QueueFlashMessage("You were logged out");
         return RedirectToAction("Index", "Timeline");
     }
 }
