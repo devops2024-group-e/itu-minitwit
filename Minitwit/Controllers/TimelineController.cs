@@ -74,7 +74,8 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, profileUser.UserId);
+        _context.Followers.Add(new Follower { WhoId = Convert.ToInt64(ownUserID), WhomId = profileUser.UserId });
+        _context.SaveChanges();
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
@@ -98,7 +99,8 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, profileUser.UserId);
+        _context.Followers.Remove(new Follower { WhoId = Convert.ToInt64(ownUserID), WhomId = profileUser.UserId });
+        _context.SaveChanges();
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
