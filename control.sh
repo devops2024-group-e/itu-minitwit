@@ -7,7 +7,8 @@ if [ "$1" = "init" ]; then
         exit 1
     fi
     echo "Putting a database to ./test-tmp/minitwit.db..."
-    python3 -c "from minitwit import init_db;init_db()"
+    (cd Minitwit && dotnet ef database update)
+    
 elif [ "$1" = "start" ]; then
     echo "Starting minitwit..."
     nohup "$(which python3)" minitwit.py > /tmp/out.log 2>&1 &
