@@ -1,13 +1,21 @@
 using Minitwit;
+using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register source of configurations
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables(prefix: "Minitwit_");
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {
-    options.UseSqlite("Data source=../test-tmp/minitwit.db");
+    options.UseSqlite(builder.Configuration.GetConnectionString("MinitwitDatabase"));
 });
 
 // Add session settings
