@@ -122,7 +122,7 @@ public class TimelineController : Controller
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         //var default = 100;
-        var followers = _context.Database.ExecuteSqlRaw("SELECT user.username FROM user INNER JOIN follower ON follower.whom_id=user.user_id WHERE follower.who_id={0} LIMIT 100", ownUserID);
+        //var followers = _context.Followers.FromSqlRaw("SELECT user.username FROM user INNER JOIN follower ON follower.whom_id=user.user_id WHERE follower.who_id={0} LIMIT 100", ownUserID);
         return Ok(followers);
     }
 
