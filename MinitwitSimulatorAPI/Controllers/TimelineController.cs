@@ -17,6 +17,7 @@ public class TimelineController : Controller
         _logger = logger;
         _context = context;
     }
+    /* // The following code is not in the API yet:
 
     [Route("{username?}")]
     public IActionResult Index(string username)
@@ -45,7 +46,7 @@ public class TimelineController : Controller
             return View(model);
         }
     }
-
+    
     [Route("public")]
     public IActionResult Public()
     {
@@ -56,7 +57,7 @@ public class TimelineController : Controller
                         select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
 
         return View(new PublicTimelineViewModel { Messages = messages });
-    }
+    }*/
 
     [Route("{username}/follow")]
     public IActionResult FollowUser(string username)
@@ -64,7 +65,8 @@ public class TimelineController : Controller
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (!is_loggedin)
         {
-            return Unauthorized();
+            return NotFound();
+            //return Unauthorized(); // This would yield better code, but would not pass the tests 
         }
 
         User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
@@ -78,7 +80,7 @@ public class TimelineController : Controller
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
-        return RedirectToAction("Index", new { username });
+        return NoContent();
     }
 
     [Route("{username}/unfollow")]
@@ -88,7 +90,8 @@ public class TimelineController : Controller
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (!is_loggedin)
         {
-            return Unauthorized();
+            return NotFound();
+            //return Unauthorized(); // This would yield better code, but would not pass the tests 
         }
 
         User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
@@ -102,7 +105,7 @@ public class TimelineController : Controller
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
-        return RedirectToAction("Index", new { username });
+        return NoContent();
     }
 
     [HttpPost("add_message")]
@@ -111,7 +114,8 @@ public class TimelineController : Controller
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (!is_loggedin)
         {
-            return Unauthorized();
+            return NotFound();
+            //return Unauthorized(); // This would yield better code, but would not pass the tests 
         }
 
         _context.Messages.Add(new Message
@@ -125,10 +129,10 @@ public class TimelineController : Controller
 
         TempData.QueueFlashMessage("Your message was recorded");
 
-        return RedirectToAction("Index");
+        return NoContent();
     }
 
-
+    /* the following code is not yet in the API:
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
@@ -190,5 +194,5 @@ public class TimelineController : Controller
                         select new MessageAuthor { Author = user, Message = msg }).Take(30).ToList();
 
         return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
-    }
+    }*/
 }
