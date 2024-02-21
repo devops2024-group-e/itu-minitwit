@@ -60,6 +60,7 @@ public class TimelineController : Controller
     }*/
 
     [Route("{username}/follow")]
+    [HttpPost]
     public IActionResult FollowUser(string username)
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -78,12 +79,13 @@ public class TimelineController : Controller
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, profileUser.UserId);
 
-        TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
+        //TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
         return NoContent();
     }
 
     [Route("{username}/unfollow")]
+    [HttpPost]
     public IActionResult UnfollowUser(string username)
     {
 
@@ -103,7 +105,7 @@ public class TimelineController : Controller
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, profileUser.UserId);
 
-        TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
+        //TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
         return NoContent();
     }
@@ -127,7 +129,7 @@ public class TimelineController : Controller
         });
         _context.SaveChanges();
 
-        TempData.QueueFlashMessage("Your message was recorded");
+        //TempData.QueueFlashMessage("Your message was recorded");
 
         return NoContent();
     }

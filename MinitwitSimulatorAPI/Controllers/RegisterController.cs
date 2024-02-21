@@ -16,7 +16,7 @@ public class RegisterController : Controller
         _logger = logger;
         _context = context;
     }
-    
+
     /* The following code is not implemented in the API yet:
     public IActionResult Index()
     {
@@ -65,7 +65,7 @@ public class RegisterController : Controller
             _context.SaveChanges();
 
             _logger.LogDebug("User registered: {Username}", username);
-            TempData.QueueFlashMessage("You were successfully registered and can login now");
+            //TempData.QueueFlashMessage("You were successfully registered and can login now");
         }
         if (errMessage != "")
         {

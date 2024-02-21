@@ -49,7 +49,7 @@ public class LoginController : Controller
         if (PasswordHash.CheckPasswordHash(password, user.PwHash))
         {
             HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
-            TempData.QueueFlashMessage("You were logged in");
+            //TempData.QueueFlashMessage("You were logged in");
 
             //return RedirectToAction("Index", "Timeline");
             return NoContent();
