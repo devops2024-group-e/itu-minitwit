@@ -11,12 +11,12 @@ public class LogoutController : Controller
     {
         _logger = logger;
     }
-
+    /* The following code is not implemented in the API yet:
     [Route("logout")]
     public IActionResult Index()
     {
         HttpContext.Session.Remove("user_id");
         TempData.QueueFlashMessage("You were logged out");
         return RedirectToAction("Index", "Timeline");
-    }
+    }*/
 }

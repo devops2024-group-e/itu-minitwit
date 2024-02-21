@@ -17,6 +17,7 @@ public class LoginController : Controller
         _context = context;
     }
 
+    /* The following code is not implemented in the API yet:
     public IActionResult Index()
     {
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -26,7 +27,7 @@ public class LoginController : Controller
         _logger.LogInformation("Login page requested");
 
         return View(new LoginViewModel());
-    }
+    }*/
 
     [HttpPost()]
     public IActionResult LoginNow(string username, string password)

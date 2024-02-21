@@ -16,7 +16,8 @@ public class RegisterController : Controller
         _logger = logger;
         _context = context;
     }
-
+    
+    /* The following code is not implemented in the API yet:
     public IActionResult Index()
     {
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -27,7 +28,7 @@ public class RegisterController : Controller
         }
 
         return View(new RegisterViewModel());
-    }
+    }*/
 
     [HttpPost]
     public IActionResult Register(string username, string email, string password, string password2)
