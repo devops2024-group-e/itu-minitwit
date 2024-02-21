@@ -110,6 +110,22 @@ public class TimelineController : Controller
         return NoContent();
     }
 
+    [Route("{username}/followers")]
+    [HttpGet]
+    public IActionResult GetFollowers()
+    {
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (!is_loggedin)
+        {
+            return NotFound();
+        }
+
+        var ownUserID = HttpContext.Session.GetInt32("user_id");
+        //var default = 100;
+        var followers = _context.Database.ExecuteSqlRaw("SELECT user.username FROM user INNER JOIN follower ON follower.whom_id=user.user_id WHERE follower.who_id={0} LIMIT 100", ownUserID);
+        return Ok(followers);
+    }
+
     [HttpPost("add_message")]
     public IActionResult AddMessage(string text)
     {
