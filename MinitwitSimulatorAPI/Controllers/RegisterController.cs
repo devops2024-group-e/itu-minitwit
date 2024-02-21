@@ -29,7 +29,7 @@ public class RegisterController : Controller
         return View(new RegisterViewModel());
     }
 
-    [HttpPost()]
+    [HttpPost]
     public IActionResult Register(string username, string email, string password, string password2)
     {
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -65,10 +65,14 @@ public class RegisterController : Controller
 
             _logger.LogDebug("User registered: {Username}", username);
             TempData.QueueFlashMessage("You were successfully registered and can login now");
-
-            return RedirectToAction("Index", "Login");
         }
-
-        return View("Index", new RegisterViewModel { ErrorMessage = errMessage });
+        if (errMessage != "")
+        {
+            return BadRequest(errMessage);
+        }
+        else
+        {
+            return NoContent();
+        }
     }
 }

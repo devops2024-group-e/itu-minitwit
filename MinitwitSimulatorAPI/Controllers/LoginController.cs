@@ -34,13 +34,15 @@ public class LoginController : Controller
         _logger.LogInformation("Login attempt for user {username}", username);
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
-            return RedirectToAction("Index", "Timeline"); // TODO: Change to '/Timeline' ??
+            //return RedirectToAction("Index", "Timeline"); // TODO: Change to '/Timeline' ??
+            return NoContent();
 
         var user = _context.Users.SingleOrDefault(x => x.Username == username);
         if (user == null)
         {
             // NOTE: Potential security risk... not good to tell the username does not exist
-            return View("Index", new LoginViewModel() { ErrorMessage = "Invalid username" });
+            //return View("Index", new LoginViewModel() { ErrorMessage = "Invalid username" });
+            return BadRequest("Invalid username");
         }
 
         if (PasswordHash.CheckPasswordHash(password, user.PwHash))
@@ -48,12 +50,14 @@ public class LoginController : Controller
             HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
             TempData.QueueFlashMessage("You were logged in");
 
-            return RedirectToAction("Index", "Timeline");
+            //return RedirectToAction("Index", "Timeline");
+            return NoContent();
         }
         else
         {
             // NOTE: Potential security risk... not good to tell the password is incorrect
-            return View("Index", new LoginViewModel() { ErrorMessage = "Invalid password" });
+            //return View("Index", new LoginViewModel() { ErrorMessage = "Invalid password" });
+            return BadRequest("Invalid password");
         }
     }
 }
