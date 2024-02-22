@@ -17,68 +17,31 @@ public class TimelineController : Controller
         _logger = logger;
         _context = context;
     }
-    /* // The following code is not in the API yet:
 
-    [Route("{username?}")]
-    public IActionResult Index(string username)
+    private bool IsLoggedIn()
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-
-        if (!string.IsNullOrEmpty(username))
-        {
-            var model = GetUserTimelineModel(username, is_loggedin);
-            if (model == null)
-            {
-                return NotFound();
-            }
-
-            return View(model);
-        }
-
-        if (!is_loggedin)
-        {
-            return RedirectToAction("Public");
-        }
-        else
-        {
-            var model = GetCurrentUserTimelineModel((int)HttpContext.Session.GetInt32("user_id"));
-
-            return View(model);
-        }
+        return HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
     }
-    
-    [Route("public")]
-    public IActionResult Public()
-    {
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where message.Flagged == 0
-                        orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
 
-        return View(new PublicTimelineViewModel { Messages = messages });
-    }*/
+    private User GetUser(string username)
+    {
+        return _context.Users.SingleOrDefault(x => x.Username == username);
+    }
+
+    private int GetCurrentUserId()
+    {
+        return (int)HttpContext.Session.GetInt32("user_id");
+    }
 
     [HttpPost("{username}/follow")]
     public IActionResult FollowUser(string username)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
-        {
-            return NotFound();
-            //return Unauthorized(); // This would yield better code, but would not pass the tests 
-        }
+        User? profileUser = GetUser(username);
+        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
-        if (profileUser == null)
-        {
-            return NotFound();
-        }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, profileUser.UserId);
-
-        //TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
         return NoContent();
     }
@@ -87,52 +50,19 @@ public class TimelineController : Controller
     [HttpPost("{username}/unfollow")]
     public IActionResult UnfollowUser(string username)
     {
-
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
-        {
-            return NotFound();
-            //return Unauthorized(); // This would yield better code, but would not pass the tests 
-        }
-
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
-        if (profileUser == null)
-        {
-            return NotFound();
-        }
+        User? profileUser = GetUser(username);
+        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, profileUser.UserId);
 
-        //TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
-
         return NoContent();
     }
-
-    /*[HttpGet("{username}/followers")]
-    public IActionResult GetFollowers()
-    {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
-        {
-            return NotFound();
-        }
-
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        //var default = 100;
-        var followers = _context.Followers.FromSqlRaw("SELECT user.username FROM user INNER JOIN follower ON follower.whom_id=user.user_id WHERE follower.who_id={0} LIMIT 100", ownUserID);
-        return Ok(followers);
-    }*/
 
     [HttpPost("add_message")]
     public IActionResult AddMessage(string text)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
-        {
-            return NotFound();
-            //return Unauthorized(); // This would yield better code, but would not pass the tests 
-        }
+        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
         _context.Messages.Add(new Message
         {
@@ -143,94 +73,39 @@ public class TimelineController : Controller
         });
         _context.SaveChanges();
 
-        //TempData.QueueFlashMessage("Your message was recorded");
-
         return NoContent();
     }
 
     [HttpGet("{username}/messages")]
     public IActionResult GetMessages(string username)
     {
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
-        {
-            return NotFound();
-            //return Unauthorized(); // This would yield better code, but would not pass the tests 
-        }
+        User? profileUser = GetUser(username);
+        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where user.UserId == profileUser.UserId
                         orderby message.PubDate descending
                         select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
-
-        //TempData.QueueFlashMessage("Your message was recorded");
 
         return Ok(messages);
     }
 
-    /* the following code is not yet in the API:
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    [HttpGet("fllws/{username}")]
+    public IActionResult GetFollows(string username)
+    /// <summary>
+    /// This API method returns the users whom the current logged in user follows.
+    /// </summary>
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        User? profileUser = GetUser(username);
+        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+
+        var follows = (from user in _context.Users
+                       join follower in _context.Followers 
+                       on user.UserId equals follower.WhomId
+                       where follower.WhoId == profileUser.UserId
+                       select user.Username).Take(100).ToList();
+              
+        return Ok(follows);
     }
-
-    private TimelineViewModel? GetUserTimelineModel(string username, bool is_loggedin)
-    {
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
-        if (profileUser == null)
-        {
-            return null;
-        }
-
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where user.UserId == profileUser.UserId
-                        orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
-
-        TimelineViewModel model = new TimelineViewModel { Messages = messages };
-        model.Profile = new Profile
-        {
-            Username = profileUser.Username,
-            UserId = (int)profileUser.UserId,
-            IsMe = false,
-            IsFollowing = false
-        };
-
-        if (is_loggedin)
-        {
-            int currentUserId = (int)HttpContext.Session.GetInt32("user_id");
-            model.Profile.IsMe = currentUserId == profileUser.UserId;
-            model.Profile.IsFollowing = _context.Followers
-                                .Any(x => x.WhoId == currentUserId && x.WhomId == profileUser.UserId);
-
-            model.CurrentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
-        }
-
-        model.Messages = (from message in _context.Messages
-                          join user in _context.Users on message.AuthorId equals user.UserId
-                          where user.UserId == profileUser.UserId
-                          orderby message.PubDate descending
-                          select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
-
-        return model;
-    }
-
-    private TimelineViewModel GetCurrentUserTimelineModel(int currentUserId)
-    {
-        var currentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
-
-        var messages = (from user in _context.Users
-                        join msg in _context.Messages on user.UserId equals msg.AuthorId
-                        where msg.Flagged == 0 && (user.UserId == currentUserId || (from f in _context.Followers
-                                                                                    where f.WhoId == currentUserId
-                                                                                    select f.WhomId).Any(x => x == user.UserId))
-                        orderby msg.PubDate descending
-                        select new MessageAuthor { Author = user, Message = msg }).Take(30).ToList();
-
-        return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
-    }*/
 }
