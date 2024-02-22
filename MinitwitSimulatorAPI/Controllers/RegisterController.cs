@@ -15,28 +15,9 @@ public class RegisterController : Controller
         _context = context;
     }
 
-    /* The following code is not implemented in the API yet:
-    public IActionResult Index()
-    {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
-        {
-            _logger.LogDebug("User is already authenticated... redirecting to timeline");
-            return RedirectToAction("Index", "Timeline");
-        }
-
-        return View(new RegisterViewModel());
-    }*/
-
     [HttpPost("/register")]
     public IActionResult Register(string username, string email, string password, string password2)
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
-        {
-            _logger.LogDebug("User is already authenticated... redirecting to timeline");
-            return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
-        }
 
         string errMessage = "";
 
