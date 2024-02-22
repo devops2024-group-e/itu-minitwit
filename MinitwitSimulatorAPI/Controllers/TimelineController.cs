@@ -33,7 +33,7 @@ public class TimelineController : Controller
         return (int)HttpContext.Session.GetInt32("user_id");
     }
 
-    [HttpPost("/fllws/{username}")]
+    [HttpPost("/fllws/{username}/follow")]
     public IActionResult FollowUser(string username)
     {
         User? profileUser = GetUser(username);
@@ -47,7 +47,7 @@ public class TimelineController : Controller
     }
 
 
-    [HttpPost("/fllws/{username}")]
+    [HttpPost("/fllws/{username}/unfollow")]
     public IActionResult UnfollowUser(string username)
     {
         User? profileUser = GetUser(username);
@@ -85,6 +85,18 @@ public class TimelineController : Controller
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where user.UserId == profileUser.UserId
+                        orderby message.PubDate descending
+                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+
+        return Ok(messages);
+    }
+
+    [HttpGet("/msgs")]
+    public IActionResult GetAllMessages()
+    {
+        var messages = (from message in _context.Messages
+                        join user in _context.Users on message.AuthorId equals user.UserId
+                        where message.Flagged == 0
                         orderby message.PubDate descending
                         select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
 
