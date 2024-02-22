@@ -48,44 +48,38 @@ public class TimelineController : Controller
         return (int)HttpContext.Session.GetInt32("user_id");
     }
 
-    [HttpPost("/fllws/{username}/follow")]
-    public IActionResult FollowUser(string otherUsername)
+    [HttpPost("/fllws/{username}")]
+    public async Task<IActionResult> FollowUnfollowUser(string username)
     {
         /// <summary>
-        /// The user currently logged in, follows the given user.
+        /// The user currently logged in, follows or unfollows the user given in the json-body.
         /// </summary>
-        /// <param name="username">The username of the user to be followed.</param>
+        /// <param name="ownUsername">The username of the user to be followed.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
-        
-        User? otherUser = GetUser(otherUsername);
-        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
-        
-        var ownUserID = GetCurrentUserId();
-        if (ownUserID == null) {return NotFound();}
-
-        _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, otherUser.UserId);
-        _logger.LogDebug("User followed {otherUsername}", otherUsername);
-
-        return NoContent();
-    }
-
-    [HttpPost("/fllws/{username}/unfollow")]
-    public IActionResult UnfollowUser(string otherUsername)
-    {
-        /// <summary>
-        /// The user currently logged in, unfollows the given user.
-        /// </summary>
-        /// <param name="username">The username of the user to be unfollowed.</param>
-        /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
-        
-        User? otherUser = GetUser(otherUsername);
+        var ownUserId = GetUser(username).UserId;
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
-        var ownUserID = GetCurrentUserId();
-        if (ownUserID == null) {return NotFound();}
+        string otherUsername = "";
+        string action = "follow";
+        using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
+        {
+            string jsonstring = await reader.ReadToEndAsync();
+            string command = jsonstring.Split(':')[0];
+            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonstring);
+            if (command.Contains("unfollow")) 
+            {
+                action = "unfollow";
+            }
+            otherUsername = dict[action];
+        }
+        var otherUserId = GetUser(otherUsername).UserId;
 
-        _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, otherUser.UserId);
+        string query  = "INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})";
+        if (action.Equals("unfollow")) {
+            query = "DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}";
+        }
 
+        _context.Database.ExecuteSqlRaw(query, ownUserId, otherUserId);
         return NoContent();
     }
 
