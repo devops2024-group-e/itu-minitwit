@@ -1,5 +1,5 @@
 init:
-	python3 -c "from minitwit import init_db; init_db()"
+	sh ./control.sh init
 
 build:
 	gcc flag_tool.c -l sqlite3 -o flag_tool
