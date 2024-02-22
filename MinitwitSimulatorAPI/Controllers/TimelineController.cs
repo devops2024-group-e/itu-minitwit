@@ -33,7 +33,7 @@ public class TimelineController : Controller
         return (int)HttpContext.Session.GetInt32("user_id");
     }
 
-    [HttpPost("{username}/follow")]
+    [HttpPost("/fllws/{username}")]
     public IActionResult FollowUser(string username)
     {
         User? profileUser = GetUser(username);
@@ -47,7 +47,7 @@ public class TimelineController : Controller
     }
 
 
-    [HttpPost("{username}/unfollow")]
+    [HttpPost("/fllws/{username}")]
     public IActionResult UnfollowUser(string username)
     {
         User? profileUser = GetUser(username);
@@ -59,7 +59,7 @@ public class TimelineController : Controller
         return NoContent();
     }
 
-    [HttpPost("add_message")]
+    [HttpPost("/msgs/{username}")]
     public IActionResult AddMessage(string text)
     {
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
@@ -76,7 +76,7 @@ public class TimelineController : Controller
         return NoContent();
     }
 
-    [HttpGet("{username}/messages")]
+    [HttpGet("/msgs/{username}")]
     public IActionResult GetMessages(string username)
     {
         User? profileUser = GetUser(username);
