@@ -29,9 +29,35 @@ Vagrant.configure("2") do |config|
                 File.write($ip_file, remote_ip)
             end
         end
+
+        server.vm.provision "shell", inline: <<-SHELL
+            echo "Installing prerequisites"
+            sudo apt-get install gnupg curl
+            sudo apt-get update
+
+            echo "Installing dotnet"
+            sudo apt-get install -y dotnet-sdk-7.0
+
+            echo "Adding .NET to bash_profile"
+            tee -a ~/.bash_profile << END
+                # Add .NET Core SDK tools
+                export PATH="$PATH:/root/.dotnet/tools"
+END
+
+            #echo "# Add .NET Core SDK tools" >> ~/.bash_profile
+            #echo 'export PATH="$PATH:/root/.dotnet/tools"' >> ~/.bash_profile
+
+            echo "Installing EF"
+            dotnet tool install --global dotnet-ef --version 7.0.1
+
+            echo "Installing Sqlite"
+            sudo apt-get install -y libsqlite3-dev sqlitebrowser
+
+            #might need to start the DB
+        SHELL
     end
 
-    config.vm.define "webserver", primary: false do |server|
+    config.vm.define "webserver-new", primary: false do |server|
 
         server.vm.provider :digital_ocean do |provider|
             provider.ssh_key_name = ENV["SSH_KEY_NAME"]
@@ -42,7 +68,7 @@ Vagrant.configure("2") do |config|
             provider.privatenetworking = true
         end
 
-        server.vm.hostname = "webserver"
+        server.vm.hostname = "webserver-new"
 
         server.trigger.before :up do |trigger|
             trigger.info =  "Waiting to create server until dbserver's IP is available."
@@ -62,5 +88,45 @@ Vagrant.configure("2") do |config|
             File.delete($ip_file) if File.exists? $ip_file
             end
         end
+
+        server.vm.provision "shell", inline: <<-SHELL
+            export DB_IP=`cat /vagrant/db_ip.txt`
+            echo $DB_IP
+
+            echo $DB_IP
+
+            echo "Installing dotnet"
+            sudo apt-get install -y dotnet-sdk-7.0
+
+            echo "Adding .NET to bash_profile"
+            tee -a ~/.bash_profile << END
+                # Add .NET Core SDK tools
+                export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/root/.dotnet/tools"
+END
+
+            #echo "# Add .NET Core SDK tools" >> ~/.bash_profile
+            #echo 'export PATH="$PATH:/root/.dotnet/tools"' >> ~/.bash_profile
+
+            echo "Installing EF"
+            dotnet tool install --global dotnet-ef --version 7.0.1
+    
+    
+            cp -r /vagrant/* $HOME
+            echo "GOING INTO MINITWIT"
+            cd Minitwit/
+            pwd | echo
+            echo "RUNNING THE PROGRAM"
+            nohup dotnet run #> out.log &
+            echo "================================================================="
+            echo "=                            DONE                               ="
+            echo "================================================================="
+            echo "Navigate in your browser to:"
+            THIS_IP=`hostname -I | cut -d" " -f1`
+            echo "http://${THIS_IP}:5000"
+        SHELL
     end
+
+    config.vm.provision "shell", privileged: false, inline: <<-SHELL
+        sudo apt-get update
+    SHELL
 end
