@@ -24,8 +24,8 @@ public class TimelineController : Controller
         /// This method checks whether the user is logged in.
         /// </summary>
         /// <returns>A <c>bool</c> describing if the user is logged in.</returns>
-
-        return HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        Console.WriteLine(HttpContext.Request.Headers["Authorization"]);
+        return HttpContext.Request.Headers["Authorization"] == "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
     }
 
     private User GetUser(string username)
@@ -50,7 +50,7 @@ public class TimelineController : Controller
     }
 
     [HttpPost("/fllws/{username}/follow")]
-    public IActionResult FollowUser(string username)
+    public IActionResult FollowUser(string otherUsername)
     {
         /// <summary>
         /// The user currently logged in, follows the given user.
@@ -58,21 +58,21 @@ public class TimelineController : Controller
         /// <param name="username">The username of the user to be followed.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
         
-        User? otherUser = GetUser(username);
+        User? otherUser = GetUser(otherUsername);
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
         
         var ownUserID = GetCurrentUserId();
         if (ownUserID == null) {return NotFound();}
 
         _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, otherUser.UserId);
-        _logger.LogDebug("User {username} followed {otherUser.Id}", username, otherUser.UserId);
+        _logger.LogDebug("User followed {otherUsername}", otherUsername);
 
         return NoContent();
     }
 
 
     [HttpPost("/fllws/{username}/unfollow")]
-    public IActionResult UnfollowUser(string username)
+    public IActionResult UnfollowUser(string otherUsername)
     {
         /// <summary>
         /// The user currently logged in, unfollows the given user.
@@ -80,7 +80,7 @@ public class TimelineController : Controller
         /// <param name="username">The username of the user to be unfollowed.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
         
-        User? otherUser = GetUser(username);
+        User? otherUser = GetUser(otherUsername);
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
         var ownUserID = GetCurrentUserId();
@@ -92,19 +92,19 @@ public class TimelineController : Controller
     }
 
     [HttpPost("/msgs/{username}")]
-    public IActionResult AddMessage(string text)
+    public IActionResult AddMessage(string username, string text)
     {
         /// <summary>
         /// Adds a message to the database.
         /// </summary>
         /// <param name="text">The message to be posted.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
-        
+        Console.WriteLine("Hello");
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
         _context.Messages.Add(new Message
         {
-            AuthorId = (int)HttpContext.Session.GetInt32("user_id"),
+            AuthorId = GetUser(username).UserId,
             Text = text,
             PubDate = DateTime.Now.Ticks,
             Flagged = 0
@@ -122,7 +122,7 @@ public class TimelineController : Controller
         /// </summary>
         /// <param name="username">The username of the user, whose messages should be returned.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 200 (Ok)</returns>
-        
+
         User? profileUser = GetUser(username);
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
