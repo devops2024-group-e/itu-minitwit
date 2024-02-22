@@ -5,7 +5,7 @@ namespace Minitwit.Models;
 
 public partial class Follower
 {
-    public long? WhoId { get; set; }
+    public long WhoId { get; set; }
 
-    public long? WhomId { get; set; }
+    public long WhomId { get; set; }
 }
