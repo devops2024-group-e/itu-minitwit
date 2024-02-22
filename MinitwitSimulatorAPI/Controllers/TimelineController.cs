@@ -58,12 +58,14 @@ public class TimelineController : Controller
         /// <param name="username">The username of the user to be followed.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
         
-        User? profileUser = GetUser(username);
+        User? otherUser = GetUser(username);
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+        
+        var ownUserID = GetCurrentUserId();
+        if (ownUserID == null) {return NotFound();}
 
-
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, profileUser.UserId);
+        _context.Database.ExecuteSqlRaw("INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})", ownUserID, otherUser.UserId);
+        _logger.LogDebug("User {username} followed {otherUser.Id}", username, otherUser.UserId);
 
         return NoContent();
     }
@@ -78,11 +80,13 @@ public class TimelineController : Controller
         /// <param name="username">The username of the user to be unfollowed.</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
         
-        User? profileUser = GetUser(username);
+        User? otherUser = GetUser(username);
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
 
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, profileUser.UserId);
+        var ownUserID = GetCurrentUserId();
+        if (ownUserID == null) {return NotFound();}
+
+        _context.Database.ExecuteSqlRaw("DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}", ownUserID, otherUser.UserId);
 
         return NoContent();
     }
