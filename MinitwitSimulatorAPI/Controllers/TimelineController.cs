@@ -24,7 +24,6 @@ public class TimelineController : Controller
         /// This method checks whether the user is logged in.
         /// </summary>
         /// <returns>A <c>bool</c> describing if the user is logged in.</returns>
-        Console.WriteLine(HttpContext.Request.Headers["Authorization"]);
         return HttpContext.Request.Headers["Authorization"] == "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
     }
 
@@ -70,7 +69,6 @@ public class TimelineController : Controller
         return NoContent();
     }
 
-
     [HttpPost("/fllws/{username}/unfollow")]
     public IActionResult UnfollowUser(string otherUsername)
     {
@@ -92,15 +90,21 @@ public class TimelineController : Controller
     }
 
     [HttpPost("/msgs/{username}")]
-    public IActionResult AddMessage(string username, string text)
+    public async Task<IActionResult> AddMessage(string username)
     {
         /// <summary>
         /// Adds a message to the database.
         /// </summary>
-        /// <param name="text">The message to be posted.</param>
+        /// <param name="username">The user whose message is to be posted</param>
         /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
-        Console.WriteLine("Hello");
         if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+        string text = "";
+        using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
+        {
+            string jsonstring = await reader.ReadToEndAsync();
+            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonstring);
+            text = dict["content"];
+        }
 
         _context.Messages.Add(new Message
         {
