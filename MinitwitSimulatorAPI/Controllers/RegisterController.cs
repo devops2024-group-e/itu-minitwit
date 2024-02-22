@@ -4,8 +4,6 @@ using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
 using MinitwitSimulatorAPI.ViewModels;
-
-[Route("Register")]
 public class RegisterController : Controller
 {
     private readonly ILogger<RegisterController> _logger;
@@ -30,7 +28,7 @@ public class RegisterController : Controller
         return View(new RegisterViewModel());
     }*/
 
-    [HttpPost]
+    [HttpPost("/register")]
     public IActionResult Register(string username, string email, string password, string password2)
     {
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);

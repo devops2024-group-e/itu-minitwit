@@ -4,8 +4,6 @@ using MinitwitSimulatorAPI.ViewModels;
 using MinitwitSimulatorAPI.Models;
 
 namespace MinitwitSimulatorAPI.Controllers;
-
-[Route("Login")]
 public class LoginController : Controller
 {
     private readonly ILogger<LoginController> _logger;
@@ -29,7 +27,7 @@ public class LoginController : Controller
         return View(new LoginViewModel());
     }*/
 
-    [HttpPost()]
+    [HttpPost("/login")]
     public IActionResult LoginNow(string username, string password)
     {
         _logger.LogInformation("Login attempt for user {username}", username);
