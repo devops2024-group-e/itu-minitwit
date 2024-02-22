@@ -16,7 +16,6 @@ public class LogoutController : Controller
     public IActionResult Index()
     {
         HttpContext.Session.Remove("user_id");
-        //TempData.QueueFlashMessage("You were logged out");
         return NoContent();
     }
 }
