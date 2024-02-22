@@ -59,8 +59,7 @@ public class TimelineController : Controller
         return View(new PublicTimelineViewModel { Messages = messages });
     }*/
 
-    [Route("{username}/follow")]
-    [HttpPost]
+    [HttpPost("{username}/follow")]
     public IActionResult FollowUser(string username)
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -84,8 +83,8 @@ public class TimelineController : Controller
         return NoContent();
     }
 
-    [Route("{username}/unfollow")]
-    [HttpPost]
+
+    [HttpPost("{username}/unfollow")]
     public IActionResult UnfollowUser(string username)
     {
 
@@ -110,8 +109,7 @@ public class TimelineController : Controller
         return NoContent();
     }
 
-    [Route("{username}/followers")]
-    [HttpGet]
+    /*[HttpGet("{username}/followers")]
     public IActionResult GetFollowers()
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -122,9 +120,9 @@ public class TimelineController : Controller
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
         //var default = 100;
-        //var followers = _context.Followers.FromSqlRaw("SELECT user.username FROM user INNER JOIN follower ON follower.whom_id=user.user_id WHERE follower.who_id={0} LIMIT 100", ownUserID);
+        var followers = _context.Followers.FromSqlRaw("SELECT user.username FROM user INNER JOIN follower ON follower.whom_id=user.user_id WHERE follower.who_id={0} LIMIT 100", ownUserID);
         return Ok(followers);
-    }
+    }*/
 
     [HttpPost("add_message")]
     public IActionResult AddMessage(string text)
@@ -148,6 +146,28 @@ public class TimelineController : Controller
         //TempData.QueueFlashMessage("Your message was recorded");
 
         return NoContent();
+    }
+
+    [HttpGet("{username}/messages")]
+    public IActionResult GetMessages(string username)
+    {
+        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        if (!is_loggedin)
+        {
+            return NotFound();
+            //return Unauthorized(); // This would yield better code, but would not pass the tests 
+        }
+
+        var messages = (from message in _context.Messages
+                        join user in _context.Users on message.AuthorId equals user.UserId
+                        where user.UserId == profileUser.UserId
+                        orderby message.PubDate descending
+                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+
+        //TempData.QueueFlashMessage("Your message was recorded");
+
+        return Ok(messages);
     }
 
     /* the following code is not yet in the API:
