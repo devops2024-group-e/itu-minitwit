@@ -36,6 +36,17 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else
+{
+    // Ensure that the database is created when in development mode
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetService<MinitwitContext>();
+        if (dbContext is not null)
+            dbContext.Database.EnsureCreated();
+
+    }
+}
 
 // Ensure that the database is created when in development mode
 using (var scope = app.Services.CreateScope())
