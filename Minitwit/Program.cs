@@ -36,6 +36,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Ensure that the database is created when in development mode
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetService<MinitwitContext>();
+    if (dbContext is not null)
+        dbContext.Database.EnsureCreated();
+
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
