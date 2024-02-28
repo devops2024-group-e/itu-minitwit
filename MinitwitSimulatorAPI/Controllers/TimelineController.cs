@@ -49,7 +49,7 @@ public class TimelineController : Controller
     }
 
     [HttpPost("/fllws/{username}")]
-    public async Task<IActionResult> FollowUnfollowUser(string username)
+    public async Task<IActionResult> FollowUnfollowUser([FromQuery]int latest, string username)
     {
         /// <summary>
         /// The user currently logged in, follows or unfollows the user given in the json-body.
@@ -84,7 +84,7 @@ public class TimelineController : Controller
     }
 
     [HttpPost("/msgs/{username}")]
-    public async Task<IActionResult> AddMessage(string username)
+    public async Task<IActionResult> AddMessage([FromQuery]int latest, string username)
     {
         /// <summary>
         /// Adds a message to the database.
@@ -104,7 +104,7 @@ public class TimelineController : Controller
         {
             AuthorId = GetUser(username).UserId,
             Text = text,
-            PubDate = DateTime.Now.Ticks,
+            PubDate = (int)DateTime.Now.Ticks,
             Flagged = 0
         });
         _context.SaveChanges();
@@ -113,7 +113,7 @@ public class TimelineController : Controller
     }
 
     [HttpGet("/msgs/{username}")]
-    public IActionResult GetMessages(string username)
+    public IActionResult GetMessages([FromQuery]int latest, string username)
     {
         /// <summary>
         /// Gets the messages posted by a given user.
@@ -134,7 +134,7 @@ public class TimelineController : Controller
     }
 
     [HttpGet("/msgs")]
-    public IActionResult GetAllMessages()
+    public IActionResult GetAllMessages([FromQuery]int latest)
     {
         /// <summary>
         /// Gets all messages in the database
@@ -150,7 +150,7 @@ public class TimelineController : Controller
     }
 
     [HttpGet("fllws/{username}")]
-    public IActionResult GetFollows(string username)
+    public IActionResult GetFollows([FromQuery]int latest, string username)
     {
         /// <summary>
         /// Gets the users followed by a given user.

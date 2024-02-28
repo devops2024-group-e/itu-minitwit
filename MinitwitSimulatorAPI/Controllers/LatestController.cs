@@ -22,41 +22,11 @@ public class LatestController : Controller
         _context = context;
     }
 
-    private async void update_latest(string request)
-    {
-        string parsed_command_id = "-1"
-        using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
-        {
-            string jsonstring = await reader.ReadToEndAsync();
-            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonstring);
-            parsed_command_id = dict["latest"];
-        }
-        if (!parsed_command_id.equals("-1"))
-        {   
-            string path = "./latest_processed_sim_action_id.txt";
-            using (FileStream fp = File.Open(path, FileMode.Open, FileAccess.Write, FileShare.None))
-            {
-                fp.Write(parsed_command_id);
-            }
-        }
-
-    }
-
     [HttpGet("/latest")]
-    public async Task<IActionResult> getLatest()
+    public IActionResult GetLatest()
     {
-        int latest_processed_command_id = -1
-        string content = "";
-        string path = "./latest_processed_sim_action_id.txt";
-
-        using (FileStream fp = File.OpenRead(path))
-        {
-            content = fp.Read();
-        }
-        try
-        {
-            latest_processed_command_id = int(content)
-        }
-        return latest_processed_command_id;
+        var content = _context.Latests.MaxBy(x => x.CommandId);
+        int latest_processed_command_id = content?.CommandId ?? -1;
+        return Ok(new {Latest = latest_processed_command_id});
     }
 }

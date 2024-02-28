@@ -16,7 +16,7 @@ public class RegisterController : Controller
     }
 
     [HttpPost("/register")]
-    public IActionResult Register(string username, string email, string password, string password2)
+    public IActionResult Register([FromQuery]int latest, string username, string email, string password, string password2)
     {
         /// <summary>
         /// This API method inserts a user into the database.
