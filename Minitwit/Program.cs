@@ -15,7 +15,7 @@ builder.Configuration
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("MinitwitDatabase"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MinitwitDatabase"));
 });
 
 // Add session settings
