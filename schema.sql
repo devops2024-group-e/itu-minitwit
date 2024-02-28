@@ -21,3 +21,8 @@ create table message (
   pub_date integer,
   flagged integer
 );
+
+drop table if exists "latest";
+create table latest (
+  command_id integer primary key
+);
