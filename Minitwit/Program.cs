@@ -42,7 +42,6 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetService<MinitwitContext>();
     if (dbContext is not null)
         dbContext.Database.EnsureCreated();
-
 }
 
 app.UseHttpsRedirection();

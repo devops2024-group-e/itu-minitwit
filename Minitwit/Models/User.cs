@@ -5,7 +5,7 @@ namespace Minitwit.Models;
 
 public partial class User
 {
-    public long UserId { get; set; }
+    public int UserId { get; set; }
 
     public string Username { get; set; } = null!;
 
