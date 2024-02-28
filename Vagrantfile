@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "minitwit", primary: true do |server|
 
     server.vm.provider :digital_ocean do |provider|
-      provider.ssh_key_name = "MillesHomeSetup"
+      provider.ssh_key_name = ENV["DIGITAL_OCEAN_SSH_KEY_NAME"]
       provider.token = ENV["DIGITAL_OCEAN_TOKEN"]
       provider.image = 'ubuntu-22-04-x64'
       provider.region = 'fra1'
