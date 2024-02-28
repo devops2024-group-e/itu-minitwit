@@ -18,49 +18,63 @@ public partial class MinitwitContext : DbContext
 
     public virtual DbSet<Follower> Followers { get; set; }
 
+    public virtual DbSet<Latest> Latests { get; set; }
+
     public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follower>(entity =>
         {
-            entity
-                .ToTable("follower")
-                .HasKey(e => new { e.WhoId, e.WhomId });
+            entity.HasKey(e => new { e.WhoId, e.WhomId }).HasName("follower_pkey");
+
+            entity.ToTable("follower");
 
             entity.Property(e => e.WhoId).HasColumnName("who_id");
             entity.Property(e => e.WhomId).HasColumnName("whom_id");
         });
 
+        modelBuilder.Entity<Latest>(entity =>
+        {
+            entity.HasKey(e => e.CommandId).HasName("latest_pkey");
+
+            entity.ToTable("latest");
+
+            entity.Property(e => e.CommandId)
+                .ValueGeneratedNever()
+                .HasColumnName("command_id");
+        });
+
         modelBuilder.Entity<Message>(entity =>
         {
+            entity.HasKey(e => e.MessageId).HasName("message_pkey");
+
             entity.ToTable("message");
 
             entity.Property(e => e.MessageId).HasColumnName("message_id");
             entity.Property(e => e.AuthorId).HasColumnName("author_id");
             entity.Property(e => e.Flagged).HasColumnName("flagged");
             entity.Property(e => e.PubDate).HasColumnName("pub_date");
-            entity.Property(e => e.Text)
-                .HasColumnType("string")
-                .HasColumnName("text");
+            entity.Property(e => e.Text).HasColumnName("text");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
+            entity.HasKey(e => e.UserId).HasName("user_pkey");
+
             entity.ToTable("user");
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Email)
-                .HasColumnType("string")
+                .HasMaxLength(300)
                 .HasColumnName("email");
             entity.Property(e => e.PwHash)
-                .HasColumnType("string")
+                .HasMaxLength(200)
                 .HasColumnName("pw_hash");
             entity.Property(e => e.Username)
-                .HasColumnType("string")
+                .HasMaxLength(100)
                 .HasColumnName("username");
         });
 

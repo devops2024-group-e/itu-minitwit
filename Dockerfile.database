@@ -1,0 +1,9 @@
+FROM postgres:16
+
+ENV POSTGRES_USER=minitwit-sa
+ENV POSTGRES_PASSWORD=123
+ENV POSTGRES_DB=minitwit
+
+WORKDIR /db-setup
+COPY . /db-setup
+ADD schema.sql /docker-entrypoint-initdb.d
