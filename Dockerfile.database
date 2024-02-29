@@ -6,8 +6,6 @@ ENV POSTGRES_USER=minitwit-sa
 ENV POSTGRES_PASSWORD=${USER_PWD}
 ENV POSTGRES_DB=minitwit
 
-RUN echo ${USER_PWD}
-
 WORKDIR /db-setup
 COPY . /db-setup
 ADD schema.sql /docker-entrypoint-initdb.d
