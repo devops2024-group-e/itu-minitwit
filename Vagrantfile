@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
       provider.size = 's-1vcpu-1gb'
     end
 
-    server.vm.hostname = "minitwit-ci-server"
+    server.vm.hostname = "minitwit-web-01"
 
     server.vm.provision "shell", inline: 'echo "export DOCKER_USERNAME=' + "'" + ENV["DOCKER_USERNAME"] + "'" + '" >> ~/.bash_profile'
     server.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + ENV["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
