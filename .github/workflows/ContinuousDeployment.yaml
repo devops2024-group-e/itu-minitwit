@@ -33,8 +33,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile.database
           build-args: USER_PWD=${{ secrets.DB_USER_PWD }}
+          file: ./Dockerfile.database
           push: true
           tags: ghcr.io/devops2024-group-e/database.minitwit:latest
 
@@ -51,8 +51,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile.backend
           build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
+          file: ./Dockerfile.backend
           push: true
           tags: ghcr.io/devops2024-group-e/backend.minitwit:latest
 
