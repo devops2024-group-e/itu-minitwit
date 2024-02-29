@@ -15,7 +15,6 @@ builder.Configuration
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {
-    System.Console.WriteLine(builder.Configuration.GetConnectionString("MinitwitDatabase"));
     options.UseNpgsql(builder.Configuration.GetConnectionString("MinitwitDatabase"));
 });
 
