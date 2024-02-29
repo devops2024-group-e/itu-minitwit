@@ -44,7 +44,7 @@ using (var scope = app.Services.CreateScope())
         dbContext.Database.EnsureCreated();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

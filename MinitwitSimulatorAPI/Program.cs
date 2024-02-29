@@ -11,9 +11,11 @@ builder.Configuration
     .AddEnvironmentVariables(prefix: "Minitwit_");
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<MinitwitContext>(opt =>
-    opt.UseSqlite("Data source=../test-tmp/minitwit.db"));
+builder.Services.AddDbContext<MinitwitContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MinitwitDatabase"));
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -35,7 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
