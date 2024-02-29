@@ -34,6 +34,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile.database
+          build-args: USER_PWD=${{ secrets.DB_USER_PWD }}
           push: true
           tags: ghcr.io/devops2024-group-e/database.minitwit:latest
 
@@ -41,15 +42,17 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
           file: ./Dockerfile.frontend
           push: true
           tags: ghcr.io/devops2024-group-e/frontend.minitwit:latest
 
-      - name: Build and push backend minitwit 
+      - name: Build and push backend minitwit
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile.backend
+          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
           push: true
           tags: ghcr.io/devops2024-group-e/backend.minitwit:latest
 
