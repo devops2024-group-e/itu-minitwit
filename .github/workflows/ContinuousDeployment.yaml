@@ -36,8 +36,6 @@ jobs:
           file: ./Dockerfile.backend
           push: true
           tags: ghcr.io/devops2024-group-e/backend.minitwit:latest
-          cache-from: type=registry
-          cache-to: type=registry,mode=max
 
       - name: Build and push database minitwit
         uses: docker/build-push-action@v2
@@ -46,8 +44,6 @@ jobs:
           file: ./Dockerfile.database
           push: true
           tags: ghcr.io/devops2024-group-e/database.minitwit:latest
-          cache-from: type=registry
-          cache-to: type=registry,,mode=max
 
       - name: Build and push frontend minitwit
         uses: docker/build-push-action@v2
@@ -56,8 +52,6 @@ jobs:
           file: ./Dockerfile.frontend
           push: true
           tags: registry,ref=ghcr.io/devops2024-group-e/frontend.minitwit:latest
-          cache-from: type=registry
-          cache-to: type=registry,mode=max
 
      # - name: Test minitwit
        # run: |
