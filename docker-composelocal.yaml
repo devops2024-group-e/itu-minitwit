@@ -1,0 +1,39 @@
+version: '3.5'
+
+networks:
+  main:
+    name: minitwit-network
+
+services:
+
+  minitwit-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    networks:
+      - main
+    depends_on:
+      - minitwit-db
+    ports:
+      - '80:80'
+
+  minitwit-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: backend
+    networks:
+      - main
+    depends_on:
+      - minitwit-db
+    ports:
+      - '8080:8080'
+
+  minitwit-db:
+    image: ghcr.io/devops2024-group-e/database.minitwit:latest
+    container_name: database
+    networks:
+      - main
+    ports:
+      - '5432:5432'
