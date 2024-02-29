@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "itu_new_minitwit", "itu_new_minitwit\itu_new_minitwit.csproj", "{C87097A7-A761-4D65-BCA3-BCD88CF5CEC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinitwitSimulatorAPI", "MinitwitSimulatorAPI.csproj", "{E9E01BF8-B368-4C61-8852-07C737AE5A21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C87097A7-A761-4D65-BCA3-BCD88CF5CEC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C87097A7-A761-4D65-BCA3-BCD88CF5CEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C87097A7-A761-4D65-BCA3-BCD88CF5CEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C87097A7-A761-4D65-BCA3-BCD88CF5CEC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9E01BF8-B368-4C61-8852-07C737AE5A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9E01BF8-B368-4C61-8852-07C737AE5A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9E01BF8-B368-4C61-8852-07C737AE5A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9E01BF8-B368-4C61-8852-07C737AE5A21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C36B5AAB-72D7-4FA7-9CD4-F80922C055B8}
+		SolutionGuid = {E7082DCF-00D0-441C-948D-EF4F9698A767}
 	EndGlobalSection
 EndGlobal

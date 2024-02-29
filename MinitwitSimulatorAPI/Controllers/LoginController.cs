@@ -15,27 +15,16 @@ public class LoginController : Controller
         _context = context;
     }
 
-    /* The following code is not implemented in the API yet:
-    public IActionResult Index()
-    {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
-            return RedirectToAction("Index", "Timeline");
 
-        _logger.LogInformation("Login page requested");
-
-        return View(new LoginViewModel());
-    }*/
-
+    /// <summary>
+    /// This API method logs in a user by their username and password.
+    /// </summary>
+    /// <param name="username">The username of the user to be logged in</param>
+    /// <param name="password">The password of the user to be logged in</param>
+    /// <returns>Either Http code 400 (BadRequest) or Http code 204 (Nocontent)</returns>
     [HttpPost("/login")]
     public IActionResult LoginNow(string username, string password)
     {
-        /// <summary>
-        /// This API method logs in a user by their username and password.
-        /// </summary>
-        /// <param name="username">The username of the user to be logged in</param>
-        /// <param name="password">The password of the user to be logged in</param>
-        /// <returns>Either Http code 400 (BadRequest) or Http code 204 (Nocontent)</returns>
         _logger.LogInformation("Login attempt for user {username}", username);
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
