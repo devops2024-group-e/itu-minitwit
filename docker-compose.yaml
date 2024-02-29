@@ -15,8 +15,6 @@ services:
       - minitwit-db
     ports:
       - '80:80'
-    environment:
-      - Minitwit_ConnectionStrings__MinitwitDatabase="Host=minitwit-db;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit"
 
   minitwit-backend:
     image: ghcr.io/devops2024-group-e/backend.minitwit:latest
