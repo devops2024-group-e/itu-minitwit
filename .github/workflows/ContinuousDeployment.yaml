@@ -43,7 +43,7 @@ jobs:
           context: .
           file: ./Dockerfile.frontend
           push: true
-          tags: ref=ghcr.io/devops2024-group-e/frontend.minitwit:latest
+          tags: ghcr.io/devops2024-group-e/frontend.minitwit:latest
 
       - name: Build and push backend minitwit 
         uses: docker/build-push-action@v2
