@@ -15,17 +15,18 @@ public class RegisterController : Controller
         _context = context;
     }
 
+    /// <summary>
+    /// This API method inserts a user into the database.
+    /// </summary>
+    /// <param name="username">The username of the new user.</param>
+    /// <param name="email">The email of the new user.</param>
+    /// <param name="password">The password of the new user.</param>
+    /// <param name="password2">A repetition of the password of the new user.</param>
+    /// <returns>Either http code 400 (BadRequest) or http code 204 (Nocontent)</returns>
     [HttpPost("/register")]
     public IActionResult Register([FromQuery]int latest, string username, string email, string password, string password2)
     {
-        /// <summary>
-        /// This API method inserts a user into the database.
-        /// </summary>
-        /// <param name="username">The username of the new user.</param>
-        /// <param name="email">The email of the new user.</param>
-        /// <param name="password">The password of the new user.</param>
-        /// <param name="password2">A repetition of the password of the new user.</param>
-        /// <returns>Either http code 400 (BadRequest) or http code 204 (Nocontent)</returns>
+        LatestDBUtils.UpdateLatest(_context, latest);
 
         string errMessage = "";
 
