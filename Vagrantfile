@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
   config.ssh.private_key_path = '~/.ssh/do_ssh_key'
 
-  config.vm.synced_folder ".", "/minitwit", type: "rsync"
+  config.vm.synced_folder "./remote-server", "/minitwit", type: "rsync"
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
   config.vm.define "minitwit", primary: true do |server|
@@ -55,11 +55,12 @@ Vagrant.configure("2") do |config|
     echo -e "\nSelecting Minitwit Folder as default folder when you ssh into the server...\n"
     echo "cd /minitwit" >> ~/.bash_profile
 
-    #chmod +x /minitwit/deploy.sh
+    chmod +x /minitwit/deploy.sh
+    chmod +x /minitwit/init.sh
 
     echo -e "\nVagrant setup done ..."
     echo -e "minitwit will later be accessible at http://$(hostname -I | awk '{print $1}'):80"
-    echo -e "The mysql database needs a minute to initialize, if the landing page shows an error stack-trace ..."
+    echo -e "The postgres sql database needs a minute to initialize, if the landing page shows an error stack-trace ..."
     SHELL
   end
 end
