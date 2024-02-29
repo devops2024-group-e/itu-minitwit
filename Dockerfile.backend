@@ -2,15 +2,16 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 WORKDIR /src
 COPY . ./
+RUN cd ./MinitwitSimulatorAPI && dotnet build -c release
 RUN cd ./MinitwitSimulatorAPI && dotnet publish -c release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 
-ENV ASPNETCORE_URLS=http://*:80/
+ENV ASPNETCORE_URLS=http://*:8080/
 
 WORKDIR /src
 COPY --from=build /src/MinitwitSimulatorAPI/out .
 
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT [ "./MinitwitSimulatorAPI" ]
