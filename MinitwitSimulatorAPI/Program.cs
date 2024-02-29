@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
+using MinitwitSimulatorAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
