@@ -33,6 +33,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: USER_PWD=${{ secrets.USER_PWD }}
           file: ./Dockerfile.database
           push: true
           tags: ghcr.io/devops2024-group-e/database.minitwit:latest
@@ -41,14 +42,16 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
           file: ./Dockerfile.frontend
           push: true
           tags: ghcr.io/devops2024-group-e/frontend.minitwit:latest
 
-      - name: Build and push backend minitwit 
+      - name: Build and push backend minitwit
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
           file: ./Dockerfile.backend
           push: true
           tags: ghcr.io/devops2024-group-e/backend.minitwit:latest
@@ -72,8 +75,7 @@ jobs:
       - name: Deploy to server
         # Configure the ~./bash_profile and deploy.sh file on the Vagrantfile
         run: >
-          ssh $SSH_USER@$SSH_HOST
-          -i ~/.ssh/minitwit.key -o StrictHostKeyChecking=no
+          ssh $SSH_USER@$SSH_HOST -i ~/.ssh/minitwit.key -o StrictHostKeyChecking=no
           '/minitwit/deploy.sh'
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
