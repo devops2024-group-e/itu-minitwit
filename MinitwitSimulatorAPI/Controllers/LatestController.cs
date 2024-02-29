@@ -1,5 +1,5 @@
-using System;  
-using System.IO;  
+using System;
+using System.IO;
 using System.Text;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +25,11 @@ public class LatestController : Controller
     [HttpGet("/latest")]
     public IActionResult GetLatest()
     {
-        var content = _context.Latests.MaxBy(x => x.CommandId);
-        int latest_processed_command_id = content?.CommandId ?? -1;
-        return Ok(new {Latest = latest_processed_command_id});
+        var content = (from l in _context.Latests
+                       orderby l.CommandId descending
+                       select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
+
+
+        return Ok(new { Latest = content });
     }
 }
