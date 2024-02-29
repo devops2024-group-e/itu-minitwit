@@ -75,9 +75,7 @@ jobs:
       - name: Deploy to server
         # Configure the ~./bash_profile and deploy.sh file on the Vagrantfile
         run: >
-          ssh $SSH_USER@$SSH_HOST
-          -i ~/.ssh/minitwit.key -o StrictHostKeyChecking=no
-          '/minitwit/deploy.sh'
+          ssh $SSH_USER@$SSH_HOST -i ~/.ssh/minitwit.key -o StrictHostKeyChecking=no
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
