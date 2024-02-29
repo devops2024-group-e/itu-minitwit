@@ -8,13 +8,12 @@ RUN cd ./MinitwitSimulatorAPI && dotnet publish -c release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 ARG DB_CONN=""
 
-ENV ASPNETCORE_URLS=http://*:8080/
-
 WORKDIR /src
 COPY --from=build /src/MinitwitSimulatorAPI/out .
 
 EXPOSE 8080
 
+ENV ASPNETCORE_URLS=http://*:8080/
 ENV Minitwit_ConnectionStrings__MinitwitDatabase=${DB_CONN}
 
 ENTRYPOINT [ "./MinitwitSimulatorAPI" ]
