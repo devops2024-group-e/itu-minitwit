@@ -24,35 +24,33 @@ public class RegisterController : Controller
     /// <param name="password2">A repetition of the password of the new user.</param>
     /// <returns>Either http code 400 (BadRequest) or http code 204 (Nocontent)</returns>
     [HttpPost("/register")]
-    public IActionResult Register([FromQuery]int latest, string username, string email, string password, string password2)
+    public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
         LatestDBUtils.UpdateLatest(_context, latest);
 
         string errMessage = "";
 
-        if (string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(user.Username))
             errMessage = "You have to enter a username";
-        else if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+        else if (string.IsNullOrEmpty(user.Email) || !user.Email.Contains("@"))
             errMessage = "You have to enter a valid email address";
-        else if (string.IsNullOrEmpty(password))
+        else if (string.IsNullOrEmpty(user.Pwd))
             errMessage = "You have to enter a password";
-        else if (password != password2)
-            errMessage = "The two passwords do not match";
-        else if (_context.Users.Any(x => x.Username == username))
+        else if (_context.Users.Any(x => x.Username == user.Username))
             errMessage = "The username is already taken";
         else
         {
-            User user = new User // We should use another type to represent the model the database
+            User userRecord = new User // We should use another type to represent the model the database
             {
-                Username = username,
-                Email = email,
-                PwHash = PasswordHash.Hash(password)
+                Username = user.Username,
+                Email = user.Email,
+                PwHash = PasswordHash.Hash(user.Pwd)
             };
 
-            _context.Users.Add(user);
+            _context.Users.Add(userRecord);
             _context.SaveChanges();
 
-            _logger.LogDebug("User registered: {Username}", username);
+            _logger.LogDebug("User registered: {Username}", user.Username);
             //TempData.QueueFlashMessage("You were successfully registered and can login now");
         }
         if (errMessage != "")
