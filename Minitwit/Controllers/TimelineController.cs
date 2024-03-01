@@ -14,12 +14,14 @@ public class TimelineController : Controller
     private readonly ILogger<TimelineController> _logger;
     private readonly MinitwitContext _context;
     private readonly MessageRepository _messageRepository;
+    private readonly UserRepository _userRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, MessageRepository messageRepository)
+    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, MessageRepository messageRepository, UserRepository userRepository)
     {
         _logger = logger;
         _context = context;
         _messageRepository = messageRepository;
+        _userRepository = userRepository;
     }
 
     [Route("{username?}")]
@@ -67,7 +69,7 @@ public class TimelineController : Controller
             return Unauthorized();
         }
 
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        User? profileUser = _userRepository.GetUser(username);
         if (profileUser == null)
         {
             return NotFound();
@@ -92,7 +94,7 @@ public class TimelineController : Controller
             return Unauthorized();
         }
 
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        User? profileUser = _userRepository.GetUser(username);
         if (profileUser == null)
         {
             return NotFound();
@@ -133,7 +135,7 @@ public class TimelineController : Controller
 
     private TimelineViewModel? GetUserTimelineModel(string username, bool is_loggedin)
     {
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        User? profileUser = _userRepository.GetUser(username);
         if (profileUser == null)
         {
             return null;
@@ -157,10 +159,10 @@ public class TimelineController : Controller
             model.Profile.IsFollowing = _context.Followers
                                 .Any(x => x.WhoId == currentUserId && x.WhomId == profileUser.UserId);
 
-            model.CurrentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
+            model.CurrentUsername = _userRepository.GetUser(currentUserId).Username;
         }
 
-        //Is this really needed? Nothing has chanched since the last call in line 141, as far as i can see.
+        //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
         model.Messages = _messageRepository.GetUserSpecificMessages(profileUser);
 
         return model;
@@ -168,7 +170,7 @@ public class TimelineController : Controller
 
     private TimelineViewModel GetCurrentUserTimelineModel(int currentUserId)
     {
-        var currentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
+        var currentUsername = _userRepository.GetUser(currentUserId).Username;
 
         var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId);
 
