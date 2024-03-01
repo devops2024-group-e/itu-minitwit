@@ -1,6 +1,7 @@
 using Minitwit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Minitwit.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

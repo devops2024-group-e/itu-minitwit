@@ -1,6 +1,6 @@
-using Minitwit.Models;
+using Minitwit.Infrastructure.Models;
 
-namespace Minitwit.Repositories;
+namespace Minitwit.Infrastructure.Repositories;
 
 public class MessageRepository
 {
@@ -63,10 +63,5 @@ public class MessageRepository
                         select new MessageAuthor { Author = user, Message = msg }).Take(30).ToList();
 
         return messages;
-    }
-
-
-
-           
-
+    }      
 }

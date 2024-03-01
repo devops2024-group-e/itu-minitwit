@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Minitwit.Models;
+using Minitwit.Infrastructure;
+using Minitwit.Infrastructure.Models;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
-using Minitwit.Repositories;
+using Minitwit.Infrastructure.Repositories;
 
 namespace Minitwit.Controllers;
 

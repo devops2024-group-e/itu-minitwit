@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Minitwit.Models;
+namespace Minitwit.Infrastructure.Models;
 
 public partial class Follower
 {
