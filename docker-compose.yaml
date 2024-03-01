@@ -4,6 +4,10 @@ networks:
   main:
     name: minitwit-network
 
+volumes:
+  pgdata:
+
+
 services:
 
   minitwit-frontend:
@@ -33,3 +37,5 @@ services:
       - main
     ports:
       - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
