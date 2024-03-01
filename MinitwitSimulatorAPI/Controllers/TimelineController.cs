@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
@@ -32,7 +32,7 @@ public class TimelineController : Controller
     /// </summary>
     /// <param name="username">The username of the user.</param>
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
-    private User GetUser(string username)
+    private User? GetUser(string username)
     {
         return _context.Users.SingleOrDefault(x => x.Username == username);
     }
