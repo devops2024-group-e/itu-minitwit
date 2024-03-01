@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
@@ -54,6 +54,7 @@ public class TimelineController : Controller
             return NotFound();
 
         var ownUserId = user.UserId;
+        if (!IsLoggedIn()) { return Forbid(); }
 
         string otherUsername = "";
         string action = "follow";
@@ -94,7 +95,7 @@ public class TimelineController : Controller
 
         LatestDBUtils.UpdateLatest(_context, latest);
 
-        if (!IsLoggedIn()) { return NotFound(); } // maybe should be Unauthorized();
+        if (!IsLoggedIn()) { return Forbid(); }
         string text = "";
         using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
         {
@@ -149,6 +150,8 @@ public class TimelineController : Controller
     {
         LatestDBUtils.UpdateLatest(_context, latest);
 
+        if (!IsLoggedIn()) { return Forbid(); }
+
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where message.Flagged == 0
@@ -171,6 +174,8 @@ public class TimelineController : Controller
         User? profileUser = GetUser(username);
         if (profileUser is null)
             return NotFound();
+
+        if (!IsLoggedIn()) { return Forbid(); }
 
         var follows = (from user in _context.Users
                        join follower in _context.Followers
