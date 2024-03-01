@@ -24,5 +24,6 @@ create table message (
 
 drop table if exists "latest";
 create table latest (
-  command_id integer primary key
+  id serial primary key,
+  command_id integer not null
 );

@@ -31,7 +31,9 @@ services:
       - '8080:8080'
 
   minitwit-db:
-    image: ghcr.io/devops2024-group-e/database.minitwit:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.database
     container_name: database
     networks:
       - main
