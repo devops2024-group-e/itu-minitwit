@@ -26,7 +26,7 @@ public class LatestController : Controller
     public IActionResult GetLatest()
     {
         var content = (from l in _context.Latests
-                       orderby l.CommandId descending
+                       orderby l.Id descending
                        select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
 
 
