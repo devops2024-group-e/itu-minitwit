@@ -4,12 +4,14 @@ networks:
   main:
     name: minitwit-network
 
+volumes:
+  pgdata:
+
+
 services:
 
   minitwit-frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
+    image: ghcr.io/devops2024-group-e/frontend.minitwit:latest
     container_name: frontend
     networks:
       - main
@@ -19,9 +21,7 @@ services:
       - '80:80'
 
   minitwit-backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
+    image: ghcr.io/devops2024-group-e/backend.minitwit:latest
     container_name: backend
     networks:
       - main
@@ -31,11 +31,11 @@ services:
       - '8080:8080'
 
   minitwit-db:
-    build:
-      context: .
-      dockerfile: Dockerfile.database
+    image: ghcr.io/devops2024-group-e/database.minitwit:latest
     container_name: database
     networks:
       - main
     ports:
       - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
