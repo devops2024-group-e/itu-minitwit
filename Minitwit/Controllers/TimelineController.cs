@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Minitwit.Models;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
+using Minitwit.Repositories;
 
 namespace Minitwit.Controllers;
 
@@ -11,11 +12,13 @@ public class TimelineController : Controller
 {
     private readonly ILogger<TimelineController> _logger;
     private readonly MinitwitContext _context;
+    private readonly MessageRepository _messageRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context)
+    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, MessageRepository messageRepository)
     {
         _logger = logger;
         _context = context;
+        _messageRepository = messageRepository;
     }
 
     [Route("{username?}")]
@@ -49,11 +52,7 @@ public class TimelineController : Controller
     [Route("public")]
     public IActionResult Public()
     {
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where message.Flagged == 0
-                        orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+        var messages = _messageRepository.GetMessages();
 
         return View(new PublicTimelineViewModel { Messages = messages });
     }
@@ -115,15 +114,9 @@ public class TimelineController : Controller
         {
             return Unauthorized();
         }
-
-        _context.Messages.Add(new Message
-        {
-            AuthorId = (int)HttpContext.Session.GetInt32("user_id"),
-            Text = text,
-            PubDate = ((int)DateTime.Now.Ticks),
-            Flagged = 0
-        });
-        _context.SaveChanges();
+    
+        var authorId = (int)HttpContext.Session.GetInt32("user_id");
+        _messageRepository.AddMessage(text, authorId);
 
         TempData.QueueFlashMessage("Your message was recorded");
 
@@ -145,11 +138,7 @@ public class TimelineController : Controller
             return null;
         }
 
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where user.UserId == profileUser.UserId
-                        orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+        var messages = _messageRepository.GetUserSpecificMessages(profileUser);
 
         TimelineViewModel model = new TimelineViewModel { Messages = messages };
         model.Profile = new Profile
@@ -170,11 +159,8 @@ public class TimelineController : Controller
             model.CurrentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
         }
 
-        model.Messages = (from message in _context.Messages
-                          join user in _context.Users on message.AuthorId equals user.UserId
-                          where user.UserId == profileUser.UserId
-                          orderby message.PubDate descending
-                          select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+        //Is this really needed? Nothing has chanched since the last call in line 141, as far as i can see.
+        model.Messages = _messageRepository.GetUserSpecificMessages(profileUser);
 
         return model;
     }
@@ -183,13 +169,7 @@ public class TimelineController : Controller
     {
         var currentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
 
-        var messages = (from user in _context.Users
-                        join msg in _context.Messages on user.UserId equals msg.AuthorId
-                        where msg.Flagged == 0 && (user.UserId == currentUserId || (from f in _context.Followers
-                                                                                    where f.WhoId == currentUserId
-                                                                                    select f.WhomId).Any(x => x == user.UserId))
-                        orderby msg.PubDate descending
-                        select new MessageAuthor { Author = user, Message = msg }).Take(30).ToList();
+        var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId);
 
         return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
     }
