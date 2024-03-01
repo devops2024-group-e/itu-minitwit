@@ -38,13 +38,12 @@ public partial class MinitwitContext : DbContext
 
         modelBuilder.Entity<Latest>(entity =>
         {
-            entity.HasKey(e => e.CommandId).HasName("latest_pkey");
+            entity.HasKey(e => e.Id).HasName("latest_pkey");
 
             entity.ToTable("latest");
 
-            entity.Property(e => e.CommandId)
-                .ValueGeneratedNever()
-                .HasColumnName("command_id");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CommandId).HasColumnName("command_id");
         });
 
         modelBuilder.Entity<Message>(entity =>
