@@ -67,13 +67,13 @@ public class TimelineController : Controller
         }
         var otherUserId = GetUser(otherUsername).UserId;
 
-        string query = "INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})";
-        if (action.Equals("unfollow"))
-        {
-            query = "DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}";
-        }
+        if (action == "unfollow")
+            _context.Followers.Remove(new Follower { WhoId = ownUserId, WhomId = otherUserId });
+        else
+            _context.Followers.Add(new Follower { WhoId = ownUserId, WhomId = otherUserId });
 
-        _context.Database.ExecuteSqlRaw(query, ownUserId, otherUserId);
+        _context.SaveChanges();
+
         return NoContent();
     }
 
@@ -155,7 +155,7 @@ public class TimelineController : Controller
     /// <param name="username">The username of the user, whose follows should be returned.</param>
     /// <returns>Either http code 404 (NotFound) or http code 200 (Ok)</returns>
     [HttpGet("fllws/{username}")]
-    public IActionResult GetFollows([FromQuery] int latest, string username)
+    public IActionResult GetFollows([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
         LatestDBUtils.UpdateLatest(_context, latest);
 
@@ -166,8 +166,8 @@ public class TimelineController : Controller
                        join follower in _context.Followers
                        on user.UserId equals follower.WhomId
                        where follower.WhoId == profileUser.UserId
-                       select user.Username).Take(100).ToList();
+                       select user.Username).Take(no).ToList();
 
-        return Ok(follows);
+        return Ok(new { Follows = follows });
     }
 }

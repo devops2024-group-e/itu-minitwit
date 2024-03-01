@@ -7,7 +7,7 @@ from pathlib import Path
 from contextlib import closing
 
 
-BASE_URL = 'http://127.0.0.1:5001'
+BASE_URL = 'http://127.0.0.1:5121'
 DATABASE = "./tmp/minitwit.db"
 USERNAME = 'simulator'
 PWD = 'super_safe!'
@@ -195,4 +195,3 @@ def test_a_unfollows_b():
     # verify that latest was updated
     response = requests.get(f'{BASE_URL}/latest', headers=HEADERS)
     assert response.json()['latest'] == 11
-
