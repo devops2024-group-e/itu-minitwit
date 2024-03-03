@@ -2,7 +2,6 @@
 /tmp/**
 !/tmp/minitwit.db
 **/.vscode/**
-flag_tool
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,linux,vs
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,macos,linux,vs
