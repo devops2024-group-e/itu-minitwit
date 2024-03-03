@@ -1,6 +1,7 @@
 using Minitwit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,3 +59,7 @@ app.MapControllerRoute(
     pattern: "{controller=Timeline}/{action=Index}/{id?}");
 
 app.Run();
+
+// Adding this in order to make the Program class visible to our integration tests
+// as stated by the offical documentation https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0
+public partial class Program { }
