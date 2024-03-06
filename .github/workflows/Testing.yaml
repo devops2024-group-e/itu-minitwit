@@ -28,8 +28,8 @@ jobs:
           echo "Installing pip ==="
           python -m pip install --upgrade pip
           echo "Installing dependences ==="
+          cd ..
           echo "$PWD"
-          cd .github/workflows/
           pip install -r requirements.txt
         
       - name: Set up Dotnet
