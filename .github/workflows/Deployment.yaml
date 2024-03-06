@@ -2,14 +2,10 @@
 name: Deployment
 
 on:
-# Everytime a PR is closed deploy it
-#  pull_request:
-#    types: closed
-#    branches:
-#      - main
-  # allow manual triggers for now tooo
-  workflow_dispatch:
-    manual: true
+#  Everytime a PR is closed deploy it
+  push:
+    branches:
+      - main
 
 jobs:
   build:
