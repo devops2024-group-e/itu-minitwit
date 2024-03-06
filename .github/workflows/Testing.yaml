@@ -28,7 +28,6 @@ jobs:
           echo "Installing pip ==="
           python -m pip install --upgrade pip
           echo "Installing dependences ==="
-          cd ..
           echo "$PWD"
           pip install -r requirements.txt
         
