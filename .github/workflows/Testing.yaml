@@ -24,7 +24,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install Python dependencies
-        run: | 
+        run: |
           echo "Installing pip ==="
           python -m pip install --upgrade pip
           echo "Installing dependences ==="
