@@ -2,17 +2,14 @@
 name: Testing
 
 on:
-#  pull_request:
-#    types: opened
-#    branches:
-#      - 'feature/**'
-#    paths:
-#      - 'Minitwit/**'
-#      - 'MinitwitSimulatorAPI/**'
-  # allow manual triggers for now tooo
-  workflow_dispatch:
-    manual: true
-
+  pull_request:
+    types: opened
+    paths:
+      - 'Minitwit/**'
+      - 'Minitwit.Tests/**'
+      - 'MinitwitSimulatorAPI/**'
+      - 'Minitwit.Simulator.Api.Tests/**'
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,18 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install Python dependencies
-        run: |
-          echo "Installing pip ==="
-          python -m pip install --upgrade pip
-          echo "Installing dependences ==="
-          pip install -r PythonTests/requirements.txt
-        
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
         with:
@@ -43,8 +28,6 @@ jobs:
       
       - name: Test versions
         run: |
-          echo "Python version ==="
-          python --version
           echo "Dotnet version ==="
           dotnet --version
      
@@ -60,9 +43,3 @@ jobs:
       - name: Run API tests - Endpoint tests
         run: |
           dotnet test
-      
-#          docker build -t $DOCKER_USERNAME/minitwittestimage -f Dockerfile-minitwit-tests .
-#          yes 2>/dev/null | docker-compose up -d
-#          docker run --rm --network=itu-minitwit-network $DOCKER_USERNAME/minitwittestimage
-#        env:
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
