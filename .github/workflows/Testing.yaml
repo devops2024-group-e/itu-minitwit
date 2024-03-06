@@ -10,7 +10,6 @@ on:
 #      - 'Minitwit/**'
 #      - 'MinitwitSimulatorAPI/**'
   # allow manual triggers for now tooo
-
   workflow_dispatch:
     manual: true
 
