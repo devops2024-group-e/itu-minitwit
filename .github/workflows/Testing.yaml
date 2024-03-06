@@ -25,10 +25,10 @@ jobs:
 
       - name: Install Python dependencies
         run: | 
-          echo "installing pip"
+          echo "Installing pip ==="
           python -m pip install --upgrade pip
-          echo "installing dependences"
-          pip install -r /PythonTests/requirements.txt
+          echo "Installing dependences ==="
+          pip install -r ../../PythonTests/requirements.txt
         
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
