@@ -15,13 +15,15 @@ public class TimelineController : Controller
     private readonly MinitwitContext _context;
     private readonly MessageRepository _messageRepository;
     private readonly UserRepository _userRepository;
+    private readonly IFollowerRepository _followerRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, MessageRepository messageRepository, UserRepository userRepository)
+    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, MessageRepository messageRepository, UserRepository userRepository, IFollowerRepository followerRepository)
     {
         _logger = logger;
         _context = context;
         _messageRepository = messageRepository;
         _userRepository = userRepository;
+        _followerRepository = followerRepository;
     }
 
     [Route("{username?}")]
@@ -76,8 +78,7 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Add(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _followerRepository.AddFollower(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
@@ -101,8 +102,7 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Remove(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _followerRepository.RemoveFollower(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
