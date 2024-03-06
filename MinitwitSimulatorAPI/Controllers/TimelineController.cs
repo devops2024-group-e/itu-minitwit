@@ -15,7 +15,7 @@ public class TimelineController : Controller
     public TimelineController(ILogger<TimelineController> logger, MinitwitContext context)
     {
         _logger = logger;
-        _context = context;
+        _context = context; 
     }
 
     /// <summary>
