@@ -2,7 +2,7 @@
 name: Deployment
 
 on:
-#  Everytime a PR is closed deploy it
+  # Everytime something is pushed to main we deploy
   push:
     branches:
       - main
