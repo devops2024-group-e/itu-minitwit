@@ -29,6 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           echo "Installing dependences ==="
           echo "$PWD"
+          ls
           pip install -r .github/workflows/requirements.txt
         
       - name: Set up Dotnet
