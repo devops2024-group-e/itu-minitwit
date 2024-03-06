@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -31,8 +31,7 @@ jobs:
           echo "Installing pip ==="
           python -m pip install --upgrade pip
           echo "Installing dependences ==="
-          echo "$PWD"
-          pip install -r requirements.txt
+          pip install -r PythonTests/requirements.txt
         
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
