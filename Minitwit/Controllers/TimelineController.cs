@@ -40,7 +40,7 @@ public class TimelineController : Controller
         }
         else
         {
-            var model = GetCurrentUserTimelineModel((int)HttpContext.Session.GetInt32("user_id"));
+            var model = GetCurrentUserTimelineModel(HttpContext.Session.GetInt32("user_id").Value);
 
             return View(model);
         }
@@ -74,7 +74,7 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Add(new Follower { WhoId = Convert.ToInt64(ownUserID), WhomId = profileUser.UserId });
+        _context.Followers.Add(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
         _context.SaveChanges();
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
@@ -99,7 +99,7 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Remove(new Follower { WhoId = Convert.ToInt64(ownUserID), WhomId = profileUser.UserId });
+        _context.Followers.Remove(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
         _context.SaveChanges();
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
@@ -120,7 +120,7 @@ public class TimelineController : Controller
         {
             AuthorId = (int)HttpContext.Session.GetInt32("user_id"),
             Text = text,
-            PubDate = DateTime.Now.Ticks,
+            PubDate = ((int)DateTime.Now.Ticks),
             Flagged = 0
         });
         _context.SaveChanges();
@@ -162,7 +162,7 @@ public class TimelineController : Controller
 
         if (is_loggedin)
         {
-            int currentUserId = (int)HttpContext.Session.GetInt32("user_id");
+            int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
             model.Profile.IsMe = currentUserId == profileUser.UserId;
             model.Profile.IsFollowing = _context.Followers
                                 .Any(x => x.WhoId == currentUserId && x.WhomId == profileUser.UserId);

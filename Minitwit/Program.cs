@@ -16,7 +16,7 @@ builder.Configuration
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MinitwitContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("MinitwitDatabase"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MinitwitDatabase"));
 });
 
 // Add session settings
@@ -48,7 +48,15 @@ else
     }
 }
 
-app.UseHttpsRedirection();
+// Ensure that the database is created when in development mode
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetService<MinitwitContext>();
+    if (dbContext is not null)
+        dbContext.Database.EnsureCreated();
+}
+
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

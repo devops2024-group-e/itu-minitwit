@@ -18,46 +18,43 @@ public class TimelineController : Controller
         _context = context;
     }
 
+    /// <summary>
+    /// This method checks whether the user is logged in.
+    /// </summary>
+    /// <returns>A <c>bool</c> describing if the user is logged in.</returns>
     private bool IsLoggedIn()
     {
-        /// <summary>
-        /// This method checks whether the user is logged in.
-        /// </summary>
-        /// <returns>A <c>bool</c> describing if the user is logged in.</returns>
         return HttpContext.Request.Headers["Authorization"] == "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
     }
 
-    private User GetUser(string username)
+    /// <summary>
+    /// This method gets a user from the database by username.
+    /// </summary>
+    /// <param name="username">The username of the user.</param>
+    /// <returns>A <c>User</c> object of the user with the given username.</returns>
+    private User? GetUser(string username)
     {
-        /// <summary>
-        /// This method gets a user from the database by username.
-        /// </summary>
-        /// <param name="username">The username of the user.</param>
-        /// <returns>A <c>User</c> object of the user with the given username.</returns>
-
         return _context.Users.SingleOrDefault(x => x.Username == username);
     }
 
-    private int GetCurrentUserId()
-    {
-        /// <summary>
-        /// This method gets the <c>UserId</c> from the user currently logged in to the session.
-        /// </summary>
-        /// <returns>The UserId as an <c>int</c>.</returns>
-
-        return (int)HttpContext.Session.GetInt32("user_id");
-    }
-
+    /// <summary>
+    /// The user currently logged in, follows or unfollows the user given in the json-body.
+    /// </summary>
+    /// <param name="ownUsername">The username of the user to be followed.</param>
+    /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
+    ///
     [HttpPost("/fllws/{username}")]
-    public async Task<IActionResult> FollowUnfollowUser(string username)
+    public async Task<IActionResult> FollowUnfollowUser([FromQuery] int latest, string username)
     {
-        /// <summary>
-        /// The user currently logged in, follows or unfollows the user given in the json-body.
-        /// </summary>
-        /// <param name="ownUsername">The username of the user to be followed.</param>
-        /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
-        var ownUserId = GetUser(username).UserId;
-        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+
+        LatestDBUtils.UpdateLatest(_context, latest);
+
+        var user = GetUser(username);
+        if (user is null)
+            return NotFound();
+
+        var ownUserId = user.UserId;
+        if (!IsLoggedIn()) { return Forbid(); }
 
         string otherUsername = "";
         string action = "follow";
@@ -66,32 +63,39 @@ public class TimelineController : Controller
             string jsonstring = await reader.ReadToEndAsync();
             string command = jsonstring.Split(':')[0];
             var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonstring);
-            if (command.Contains("unfollow")) 
+            if (command.Contains("unfollow"))
             {
                 action = "unfollow";
             }
             otherUsername = dict[action];
         }
-        var otherUserId = GetUser(otherUsername).UserId;
+        var otherUser = GetUser(otherUsername);
 
-        string query  = "INSERT INTO follower (who_id, whom_id) VALUES ({0}, {1})";
-        if (action.Equals("unfollow")) {
-            query = "DELETE FROM follower WHERE who_id = {0} AND whom_id = {1}";
-        }
+        if (otherUser is null)
+            return NotFound();
 
-        _context.Database.ExecuteSqlRaw(query, ownUserId, otherUserId);
+        if (action == "unfollow")
+            _context.Followers.Remove(new Follower { WhoId = ownUserId, WhomId = otherUser.UserId });
+        else
+            _context.Followers.Add(new Follower { WhoId = ownUserId, WhomId = otherUser.UserId });
+
+        _context.SaveChanges();
+
         return NoContent();
     }
 
+    /// <summary>
+    /// Adds a message to the database.
+    /// </summary>
+    /// <param name="username">The user whose message is to be posted</param>
+    /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
     [HttpPost("/msgs/{username}")]
-    public async Task<IActionResult> AddMessage(string username)
+    public async Task<IActionResult> AddMessage([FromQuery] int latest, string username)
     {
-        /// <summary>
-        /// Adds a message to the database.
-        /// </summary>
-        /// <param name="username">The user whose message is to be posted</param>
-        /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
-        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+
+        LatestDBUtils.UpdateLatest(_context, latest);
+
+        if (!IsLoggedIn()) { return Forbid(); }
         string text = "";
         using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
         {
@@ -104,7 +108,7 @@ public class TimelineController : Controller
         {
             AuthorId = GetUser(username).UserId,
             Text = text,
-            PubDate = DateTime.Now.Ticks,
+            PubDate = (int)DateTime.Now.Ticks,
             Flagged = 0
         });
         _context.SaveChanges();
@@ -112,60 +116,73 @@ public class TimelineController : Controller
         return NoContent();
     }
 
+    /// <summary>
+    /// Gets the messages posted by a given user.
+    /// </summary>
+    /// <param name="username">The username of the user, whose messages should be returned.</param>
+    /// <returns>Either Http code 404 (NotFound) or Http code 200 (Ok)</returns>
     [HttpGet("/msgs/{username}")]
-    public IActionResult GetMessages(string username)
+    public IActionResult GetMessages([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        /// <summary>
-        /// Gets the messages posted by a given user.
-        /// </summary>
-        /// <param name="username">The username of the user, whose messages should be returned.</param>
-        /// <returns>Either Http code 404 (NotFound) or Http code 200 (Ok)</returns>
+        LatestDBUtils.UpdateLatest(_context, latest);
 
         User? profileUser = GetUser(username);
-        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+        if (profileUser is null)
+            return NotFound();
+
+        if (!IsLoggedIn()) { return Forbid(); }
 
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where user.UserId == profileUser.UserId
                         orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+                        select new { Content = message.Text, message.PubDate, User = user.Username }).Take(no).ToList();
 
         return Ok(messages);
     }
 
+    /// <summary>
+    /// Gets all messages in the database
+    /// </summary>
+    /// <returns>Http code 200 (Ok)</returns>
     [HttpGet("/msgs")]
-    public IActionResult GetAllMessages()
+    public IActionResult GetAllMessages([FromQuery] int latest, [FromQuery] int no = 100)
     {
-        /// <summary>
-        /// Gets all messages in the database
-        /// </summary>
-        /// <returns>Http code 200 (Ok)</returns>
+        LatestDBUtils.UpdateLatest(_context, latest);
+
+        if (!IsLoggedIn()) { return Forbid(); }
+
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where message.Flagged == 0
                         orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+                        select new { Content = message.Text, message.PubDate, User = user.Username }).Take(no).ToList();
 
         return Ok(messages);
     }
 
+    /// <summary>
+    /// Gets the users followed by a given user.
+    /// </summary>
+    /// <param name="username">The username of the user, whose follows should be returned.</param>
+    /// <returns>Either http code 404 (NotFound) or http code 200 (Ok)</returns>
     [HttpGet("fllws/{username}")]
-    public IActionResult GetFollows(string username)
+    public IActionResult GetFollows([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        /// <summary>
-        /// Gets the users followed by a given user.
-        /// </summary>
-        /// <param name="username">The username of the user, whose follows should be returned.</param>
-        /// <returns>Either http code 404 (NotFound) or http code 200 (Ok)</returns>
+        LatestDBUtils.UpdateLatest(_context, latest);
+
         User? profileUser = GetUser(username);
-        if (!IsLoggedIn()){ return NotFound(); } // maybe should be Unauthorized();
+        if (profileUser is null)
+            return NotFound();
+
+        if (!IsLoggedIn()) { return Forbid(); }
 
         var follows = (from user in _context.Users
-                       join follower in _context.Followers 
+                       join follower in _context.Followers
                        on user.UserId equals follower.WhomId
                        where follower.WhoId == profileUser.UserId
-                       select user.Username).Take(100).ToList();
-              
-        return Ok(follows);
+                       select user.Username).Take(no).ToList();
+
+        return Ok(new { Follows = follows });
     }
 }

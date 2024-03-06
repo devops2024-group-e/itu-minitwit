@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using MinitwitSimulatorAPI.Models;
 
-namespace MinitwitSimulatorAPI.Models;
+namespace MinitwitSimulatorAPI;
 
 public partial class MinitwitContext : DbContext
 {
@@ -17,52 +18,62 @@ public partial class MinitwitContext : DbContext
 
     public virtual DbSet<Follower> Followers { get; set; }
 
+    public virtual DbSet<Latest> Latests { get; set; }
+
     public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlite("Data Source=../tmp/minitwit.db");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Follower>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("follower");
+            entity.HasKey(e => new { e.WhoId, e.WhomId }).HasName("follower_pkey");
+
+            entity.ToTable("follower");
 
             entity.Property(e => e.WhoId).HasColumnName("who_id");
             entity.Property(e => e.WhomId).HasColumnName("whom_id");
         });
 
+        modelBuilder.Entity<Latest>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("latest_pkey");
+
+            entity.ToTable("latest");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CommandId).HasColumnName("command_id");
+        });
+
         modelBuilder.Entity<Message>(entity =>
         {
+            entity.HasKey(e => e.MessageId).HasName("message_pkey");
+
             entity.ToTable("message");
 
             entity.Property(e => e.MessageId).HasColumnName("message_id");
             entity.Property(e => e.AuthorId).HasColumnName("author_id");
             entity.Property(e => e.Flagged).HasColumnName("flagged");
             entity.Property(e => e.PubDate).HasColumnName("pub_date");
-            entity.Property(e => e.Text)
-                .HasColumnType("string")
-                .HasColumnName("text");
+            entity.Property(e => e.Text).HasColumnName("text");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
+            entity.HasKey(e => e.UserId).HasName("user_pkey");
+
             entity.ToTable("user");
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Email)
-                .HasColumnType("string")
+                .HasMaxLength(300)
                 .HasColumnName("email");
             entity.Property(e => e.PwHash)
-                .HasColumnType("string")
+                .HasMaxLength(200)
                 .HasColumnName("pw_hash");
             entity.Property(e => e.Username)
-                .HasColumnType("string")
+                .HasMaxLength(100)
                 .HasColumnName("username");
         });
 
