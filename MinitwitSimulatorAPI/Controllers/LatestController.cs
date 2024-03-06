@@ -18,7 +18,7 @@ public class LatestController : Controller
 
     public LatestController(ILogger<LatestController> logger, MinitwitContext context)
     {
-        _logger = logger; 
+        _logger = logger;
         _context = context;
     }
 
