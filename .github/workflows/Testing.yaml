@@ -43,17 +43,19 @@ jobs:
       
       - name: Test versions
         run: |
+          echo "Python version ==="
           python --version
+          echo "Dotnet version ==="
           dotnet --version
      
       - name: Set up database
         run: | 
-          docker compose -f docker-compose.yaml up minitwit-db
+          docker compose -f docker-compose.yaml up minitwit-db -d
 
       - name: Run API
         run: | 
           cd MinitwitSimulatorAPI
-          dotnet run
+          dotnet run &
       
       - name: Run API tests - Endpoint tests
         run: |
