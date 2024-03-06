@@ -59,6 +59,7 @@ jobs:
       
       - name: Run API tests - Endpoint tests
         run: |
+          pipenv update pytest
           pytest PythonTests/minitwit_sim_api_test.py 
       
 #          docker build -t $DOCKER_USERNAME/minitwittestimage -f Dockerfile-minitwit-tests .
