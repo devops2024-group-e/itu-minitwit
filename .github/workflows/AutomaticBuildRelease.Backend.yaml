@@ -1,0 +1,68 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Automatic Build Release Backend
+
+# Controls when the workflow will run
+on:
+  push:
+      branches:
+        - main
+      paths:
+        - 'MinitwitSimulatorAPI/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+    # Give the default GITHUB_TOKEN write permission to commit and push the
+    # added or changed files to the repository.
+      contents: write
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
+      - name: Install .NET 7
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7
+
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build
+
+      - name: Bump build version - Backend
+        id: bump
+        uses: vers-one/dotnet-project-version-updater@v1.5
+        with:
+          file: "MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj"
+          version: bump-build
+
+      - run: |
+          git config user.name "Pinkvinus"
+          git config user.email "mille.mei.zhen.loo@gmail.com"
+          git add .
+          git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
+          git push
+          
+      # Runs a single command using the runners shell
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+        env:
+          REPO: ${{ github.repository }}
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump.outputs.newVersion }}
+          release_name: API v${{ steps.bump.outputs.newVersion }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+        
