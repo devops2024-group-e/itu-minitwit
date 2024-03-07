@@ -7,12 +7,6 @@ namespace Minitwit.Simulator.Api.Tests;
 
 public class MinitwitSimulatorApiApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
-
-    public MinitwitSimulatorApiApplicationFactory()
-    {
-
-    }
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
