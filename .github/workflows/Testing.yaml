@@ -1,0 +1,44 @@
+---
+name: Testing
+
+on:
+  pull_request:
+    paths:
+      - 'Minitwit/**'
+      - 'Minitwit.Tests/**'
+      - 'MinitwitSimulatorAPI/**'
+      - 'Minitwit.Simulator.Api.Tests/**'
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      
+      - name: Install dotnet dependencies
+        run: dotnet restore
+      
+      - name: Test versions
+        run: |
+          echo "Dotnet version ==="
+          dotnet --version
+     
+      - name: Set up database
+        run: | 
+          docker compose -f docker-compose.yaml up minitwit-db -d
+
+      - name: Run API
+        run: | 
+          cd MinitwitSimulatorAPI
+          dotnet run &
+      
+      - name: Run API tests - Endpoint tests
+        run: |
+          dotnet test

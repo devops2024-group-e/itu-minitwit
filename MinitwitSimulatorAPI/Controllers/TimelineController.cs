@@ -37,7 +37,7 @@ public class TimelineController : Controller
     /// </summary>
     /// <param name="username">The username of the user.</param>
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
-    private User GetUser(string username)
+    private User? GetUser(string username)
     {
         return _context.Users.SingleOrDefault(x => x.Username == username);
     }
@@ -54,8 +54,12 @@ public class TimelineController : Controller
 
         LatestDBUtils.UpdateLatest(_latestRepository, latest);
 
-        var ownUserId = GetUser(username).UserId;
-        if (!IsLoggedIn()) { return NotFound(); } // maybe should be Unauthorized();
+        var user = GetUser(username);
+        if (user is null)
+            return NotFound();
+
+        var ownUserId = user.UserId;
+        if (!IsLoggedIn()) { return Forbid(); }
 
         string otherUsername = "";
         string action = "follow";
@@ -70,12 +74,15 @@ public class TimelineController : Controller
             }
             otherUsername = dict[action];
         }
-        var otherUserId = GetUser(otherUsername).UserId;
+        var otherUser = GetUser(otherUsername);
+
+        if (otherUser is null)
+            return NotFound();
 
         if (action == "unfollow")
-            _followerRepository.RemoveFollower(ownUserId, otherUserId);
+            _followerRepository.RemoveFollower(ownUserId, otherUser.UserId);
         else
-            _followerRepository.AddFollower(ownUserId, otherUserId);
+            _followerRepository.AddFollower(ownUserId, otherUser.UserId);
 
         return NoContent();
     }
@@ -91,7 +98,7 @@ public class TimelineController : Controller
 
         LatestDBUtils.UpdateLatest(_latestRepository, latest);
 
-        if (!IsLoggedIn()) { return NotFound(); } // maybe should be Unauthorized();
+        if (!IsLoggedIn()) { return Forbid(); }
         string text = "";
         using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
         {
@@ -123,7 +130,10 @@ public class TimelineController : Controller
         LatestDBUtils.UpdateLatest(_latestRepository, latest);
 
         User? profileUser = GetUser(username);
-        if (!IsLoggedIn()) { return NotFound(); } // maybe should be Unauthorized();
+        if (profileUser is null)
+            return NotFound();
+
+        if (!IsLoggedIn()) { return Forbid(); }
 
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
@@ -142,6 +152,8 @@ public class TimelineController : Controller
     public IActionResult GetAllMessages([FromQuery] int latest, [FromQuery] int no = 100)
     {
         LatestDBUtils.UpdateLatest(_latestRepository, latest);
+
+        if (!IsLoggedIn()) { return Forbid(); }
 
         var messages = (from message in _context.Messages
                         join user in _context.Users on message.AuthorId equals user.UserId
@@ -163,7 +175,10 @@ public class TimelineController : Controller
         LatestDBUtils.UpdateLatest(_latestRepository, latest);
 
         User? profileUser = GetUser(username);
-        if (!IsLoggedIn()) { return NotFound(); } // maybe should be Unauthorized();
+        if (profileUser is null)
+            return NotFound();
+
+        if (!IsLoggedIn()) { return Forbid(); } // maybe should be Unauthorized();
 
         var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);
 
