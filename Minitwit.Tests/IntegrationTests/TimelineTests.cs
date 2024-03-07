@@ -40,22 +40,25 @@ public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>,
     [Fact]
     public async Task TestTimeline_FollowAndUnfollowInteractionAndAddingMessages_ShowsCorrectTimelines()
     {
+        string messageFoo = "the message by foo";
+        string messageBar = "the message by bar";
+
         // See that public timeline works
         await _client.LoginUserAsync($"{USERNAME_PREFIX}Foo", "default");
-        await _client.AddMessageAsync("the message by foo");
+        await _client.AddMessageAsync(messageFoo);
         await _client.LogoutUserAsync();
 
         await _client.LoginUserAsync($"{USERNAME_PREFIX}Bar", "default");
-        await _client.AddMessageAsync("the message by bar");
+        await _client.AddMessageAsync(messageBar);
 
         var publicContent = await _client.GetPageAsync("public");
-        Assert.Contains("the message by foo", publicContent);
-        Assert.Contains("the message by bar", publicContent);
+        Assert.Contains(messageFoo, publicContent);
+        Assert.Contains(messageBar, publicContent);
 
         // bar's timeline should jsut show bar's message
         var barPublicTimeline = await _client.GetPageAsync();
-        Assert.Contains("the message by bar", barPublicTimeline);
-        Assert.DoesNotContain("the message by foo", barPublicTimeline);
+        Assert.Contains(messageBar, barPublicTimeline);
+        Assert.DoesNotContain(messageFoo, barPublicTimeline);
 
         // Let bar follow foo
         var afterFollowContent = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo/follow");
@@ -63,25 +66,25 @@ public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>,
 
         // Foo's message should be visible in bars homepage
         barPublicTimeline = await _client.GetPageAsync();
-        Assert.Contains("the message by foo", barPublicTimeline);
-        Assert.Contains("the message by bar", barPublicTimeline);
+        Assert.Contains(messageFoo, barPublicTimeline);
+        Assert.Contains(messageBar, barPublicTimeline);
 
         // On user timeline pages we should only see the user specific messages
         var fooTimeline = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo");
-        Assert.DoesNotContain("the message by bar", fooTimeline);
-        Assert.Contains("the message by foo", fooTimeline);
+        Assert.DoesNotContain(messageBar, fooTimeline);
+        Assert.Contains(messageFoo, fooTimeline);
 
         var barTimeline = await _client.GetPageAsync($"{USERNAME_PREFIX}Bar");
-        Assert.Contains("the message by bar", barTimeline);
-        Assert.DoesNotContain("the message by foo", barTimeline);
+        Assert.Contains(messageBar, barTimeline);
+        Assert.DoesNotContain(messageFoo, barTimeline);
 
         // Unfollow and see that foo is no longer present in bar's timeline feed
         var unfollowResponse = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo/unfollow");
         Assert.Contains("You are no longer following &quot;TimelineFoo&quot;", unfollowResponse);
 
         var timelineContent = await _client.GetPageAsync();
-        Assert.DoesNotContain("the message by foo", timelineContent);
-        Assert.Contains("the message by bar", timelineContent);
+        Assert.DoesNotContain(messageFoo, timelineContent);
+        Assert.Contains(messageBar, timelineContent);
     }
 
     public void Dispose()
