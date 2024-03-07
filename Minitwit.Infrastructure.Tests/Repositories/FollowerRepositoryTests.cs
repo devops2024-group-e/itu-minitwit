@@ -80,10 +80,8 @@ public class FollowerRepositoryTests : IDisposable
     [Fact]
     public void IsFollowing_ChecksFalseFollowing_ReturnsFalse()
     {
-        // Act
         var result = _followerRepository.IsFollowing(1, 3);
 
-        // Assert
         Assert.False(result);
     }
 
