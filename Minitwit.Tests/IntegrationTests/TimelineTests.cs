@@ -1,3 +1,4 @@
+using Minitwit.Infrastructure;
 using Minitwit.Tests.Utils;
 
 namespace Minitwit.Tests.IntegrationTests;
