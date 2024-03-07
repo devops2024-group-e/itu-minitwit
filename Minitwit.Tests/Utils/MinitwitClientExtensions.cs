@@ -3,16 +3,18 @@ namespace Minitwit.Tests.Utils;
 public static class MinitwitClientExtensions
 {
     private const string REGISTER_ENDPOINT = "/register";
-    private const string TEST_USERNAME = "user1";
     private const string TEST_PASSWORD = "default";
 
-    public static async Task CreateTestUserAsync(this HttpClient client)
+    public static async Task CreateTestUserAsync(this HttpClient client, string username)
     {
+        if (string.IsNullOrEmpty(username))
+            throw new ArgumentException("Username cannot be a null or empty string");
+
         var reqContent = new Dictionary<string, string>{
-            { "username", TEST_USERNAME },
+            { "username", username },
             { "password", TEST_PASSWORD },
             { "password2", TEST_PASSWORD },
-            { "email", $"{TEST_USERNAME}@example.com" }
+            { "email", $"{username}@example.com" }
         };
         var content = new FormUrlEncodedContent(reqContent);
 
