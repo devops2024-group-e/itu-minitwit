@@ -30,6 +30,6 @@ public class LatestController : Controller
                        select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
 
 
-        return Ok(new { Latest = content });
+        return Ok(new LatestDTO(content));
     }
 }
