@@ -37,6 +37,53 @@ public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>,
         Assert.Contains("&lt;test message 2&gt", publicTimelineContent);
     }
 
+    [Fact]
+    public async Task TestTimeline_FollowAndUnfollowInteractionAndAddingMessages_ShowsCorrectTimelines()
+    {
+        // See that public timeline works
+        await _client.LoginUserAsync($"{USERNAME_PREFIX}Foo", "default");
+        await _client.AddMessageAsync("the message by foo");
+        await _client.LogoutUserAsync();
+
+        await _client.LoginUserAsync($"{USERNAME_PREFIX}Bar", "default");
+        await _client.AddMessageAsync("the message by bar");
+
+        var publicContent = await _client.GetPageAsync("public");
+        Assert.Contains("the message by foo", publicContent);
+        Assert.Contains("the message by bar", publicContent);
+
+        // bar's timeline should jsut show bar's message
+        var barPublicTimeline = await _client.GetPageAsync();
+        Assert.Contains("the message by bar", barPublicTimeline);
+        Assert.DoesNotContain("the message by foo", barPublicTimeline);
+
+        // Let bar follow foo
+        var afterFollowContent = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo/follow");
+        Assert.Contains("You are now following &quot;TimelineFoo&quot;", afterFollowContent);
+
+        // Foo's message should be visible in bars homepage
+        barPublicTimeline = await _client.GetPageAsync();
+        Assert.Contains("the message by foo", barPublicTimeline);
+        Assert.Contains("the message by bar", barPublicTimeline);
+
+        // On user timeline pages we should only see the user specific messages
+        var fooTimeline = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo");
+        Assert.DoesNotContain("the message by bar", fooTimeline);
+        Assert.Contains("the message by foo", fooTimeline);
+
+        var barTimeline = await _client.GetPageAsync($"{USERNAME_PREFIX}Bar");
+        Assert.Contains("the message by bar", barTimeline);
+        Assert.DoesNotContain("the message by foo", barTimeline);
+
+        // Unfollow and see that foo is no longer present in bar's timeline feed
+        var unfollowResponse = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo/unfollow");
+        Assert.Contains("You are no longer following &quot;TimelineFoo&quot;", unfollowResponse);
+
+        var timelineContent = await _client.GetPageAsync();
+        Assert.DoesNotContain("the message by foo", timelineContent);
+        Assert.Contains("the message by bar", timelineContent);
+    }
+
     public void Dispose()
     {
         using (var cleanUpScope = _factory.Services.CreateScope())
@@ -47,8 +94,20 @@ public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>,
                 return;
 
             context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith(USERNAME_PREFIX)));
-            context.Messages.RemoveRange(context.Messages);
-            context.Followers.RemoveRange(context.Followers); // TODO: Should maybe only be the users from this test
+
+            // Remove test messages
+            var testMessages = context.Users.Join(context.Messages, x => x.UserId, x => x.AuthorId, (user, message) => new { user.Username, Message = message })
+                                            .Where(x => x.Username.StartsWith(USERNAME_PREFIX))
+                                            .Select(x => x.Message);
+
+            context.Messages.RemoveRange(testMessages);
+
+            // Remove test followers
+            var testFollowers = context.Users.Join(context.Followers, x => x.UserId, x => x.WhomId, (user, follower) => new { user.Username, Follower = follower })
+                                            .Where(x => x.Username.StartsWith(USERNAME_PREFIX))
+                                            .Select(x => x.Follower);
+
+            context.Followers.RemoveRange(testFollowers);
             context.SaveChanges();
         }
     }
