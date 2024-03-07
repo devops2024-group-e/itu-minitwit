@@ -17,9 +17,9 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
     }
 
     [Theory]
-    [InlineData("a", "a@a.a", "a", 1)]
-    [InlineData("b", "b@b.b", "b", 5)]
-    [InlineData("c", "c@c.c", "c", 6)]
+    [InlineData("Registera", "a@a.a", "a", 1)]
+    [InlineData("Registerb", "b@b.b", "b", 5)]
+    [InlineData("Registerc", "c@c.c", "c", 6)]
     public async Task Register_WithValidForm_ReturnsNoContentStatusCode(string username, string email, string password, int latest)
     {
         var response = await _client.RegisterUserAsync(username, email, password, latest: latest);
