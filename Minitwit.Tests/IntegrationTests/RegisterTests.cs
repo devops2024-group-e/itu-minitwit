@@ -30,10 +30,10 @@ public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>,
     }
 
     [Theory()]
-    [InlineData("user1", "default", "default", "", "You were successfully registered and can login now")]
+    [InlineData("Registeruser1", "default", "default", "", "You were successfully registered and can login now")]
     [InlineData("", "default", "", "", "You have to enter a username")]
-    [InlineData("meh", "x", "y", "", "The two passwords do not match")]
-    [InlineData("meh", "foo", "foo", "broken", "You have to enter a valid email address")]
+    [InlineData("Registermeh", "x", "y", "", "The two passwords do not match")]
+    [InlineData("Registermeh", "foo", "foo", "broken", "You have to enter a valid email address")]
     public async Task Register_WithCombinationsOfUsernamesAndPasswords_ReturnsCorrectPopupMessage(string username, string password, string password2, string email, string expectedMessage)
     {
         // Arrange
@@ -53,7 +53,7 @@ public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>,
         // Arrange
         string username = "user2";
         string password = "default";
-        var content = new FormUrlEncodedContent(CreateRegisterFormData(username, password, password, ""));
+        var content = new FormUrlEncodedContent(CreateRegisterFormData($"Register{username}", password, password, ""));
 
         // Act
         var resp = await _client.PostAsync("/register", content);
@@ -66,7 +66,6 @@ public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>,
 
         // Assert
         Assert.Contains("The username is already taken", result);
-
     }
 
     public void Dispose()
@@ -78,7 +77,7 @@ public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>,
             if (context is null)
                 return;
 
-            context.Users.RemoveRange(context.Users.ToList());
+            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith("Register")).ToList());
             context.SaveChanges();
         }
     }
