@@ -10,9 +10,9 @@ public class LoginController : Controller
 {
     private readonly ILogger<LoginController> _logger;
 
-    private readonly UserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
 
-    public LoginController(ILogger<LoginController> logger, UserRepository userRepository)
+    public LoginController(ILogger<LoginController> logger, IUserRepository userRepository)
     {
         _logger = logger;
         _userRepository = userRepository;

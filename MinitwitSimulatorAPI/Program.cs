@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI;
+using Minitwit.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables(prefix: "Minitwit_");
+
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<MinitwitContext>(options =>

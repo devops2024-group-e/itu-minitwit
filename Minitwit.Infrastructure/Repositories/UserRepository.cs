@@ -3,7 +3,7 @@ using Minitwit.Infrastructure.Models;
 
 namespace Minitwit.Infrastructure.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly MinitwitContext _context;
 
