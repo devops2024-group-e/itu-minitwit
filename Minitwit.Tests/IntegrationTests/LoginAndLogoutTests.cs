@@ -22,10 +22,14 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
         }
     }
 
+    private IDictionary<string, string> CreateLoginFormData(string username, string password)
+        => new Dictionary<string, string> { { "username", username }, { "password", password } };
+
+
     [Fact]
     public async Task LoginAndLogout_WithCorrectCredentials_ReturnsCorrectMessages()
     {
-        var content = new FormUrlEncodedContent(new Dictionary<string, string> { { "username", "UserInteractionUser1" }, { "password", "default" } });
+        var content = new FormUrlEncodedContent(CreateLoginFormData("UserInteractionUser1", "default"));
 
         var response = await _client.PostAsync("/login", content);
         var responseText = await response.Content.ReadAsStringAsync();
