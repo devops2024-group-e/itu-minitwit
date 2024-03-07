@@ -6,7 +6,7 @@ name: Automatic Build Release Frontend
 on:
     workflow_dispatch:
     schedule:
-    - cron: ‘* 20 * * 4’
+    - cron: '0 20 * * 4'
 
 jobs:
   build:
