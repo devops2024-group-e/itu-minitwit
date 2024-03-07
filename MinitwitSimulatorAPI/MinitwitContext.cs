@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
 
-namespace MinitwitSimulatorAPI;
+namespace MinitwitSimulatorAPI; 
 
 public partial class MinitwitContext : DbContext
 {
