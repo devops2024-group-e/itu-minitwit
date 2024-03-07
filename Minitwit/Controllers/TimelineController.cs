@@ -156,9 +156,7 @@ public class TimelineController : Controller
         {
             int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
             model.Profile.IsMe = currentUserId == profileUser.UserId;
-            model.Profile.IsFollowing = _context.Followers
-                                .Any(x => x.WhoId == currentUserId && x.WhomId == profileUser.UserId);
-
+            model.Profile.IsFollowing = _followerRepository.IsFollowing(currentUserId, profileUser.UserId);
             model.CurrentUsername = _userRepository.GetUser(currentUserId).Username;
         }
 

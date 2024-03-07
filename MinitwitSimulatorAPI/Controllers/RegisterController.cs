@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
@@ -9,10 +10,13 @@ public class RegisterController : Controller
     private readonly ILogger<RegisterController> _logger;
     private readonly MinitwitContext _context;
 
-    public RegisterController(ILogger<RegisterController> logger, MinitwitContext context)
+    private readonly ILatestRepository _latestRepository;
+
+    public RegisterController(ILogger<RegisterController> logger, MinitwitContext context, ILatestRepository latestRepository)
     {
         _logger = logger;
         _context = context;
+        _latestRepository = latestRepository;
     }
 
     /// <summary>
@@ -26,7 +30,7 @@ public class RegisterController : Controller
     [HttpPost("/register")]
     public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
-        LatestDBUtils.UpdateLatest(_context, latest);
+        LatestDBUtils.UpdateLatest(_latestRepository, latest);
 
         string errMessage = "";
 

@@ -44,4 +44,22 @@ public class FollowerRepository : IFollowerRepository
         }
         return true;
     }
+
+    public bool IsFollowing(int whoId, int whomId)
+    {
+        var isFollowing = _context.Followers
+                                .Any(x => x.WhoId == whoId && x.WhomId == whomId);
+        return isFollowing;
+    }
+
+    public List<WhomId> GetCurrentUserFollows(int whoId)
+    {
+        var follows = (from user in _context.Users
+                       join follower in _context.Followers
+                       on user.UserId equals follower.WhomId
+                       where follower.WhoId == whoId
+                       select user.Username).Take(no).ToList();
+        
+        return follows
+    }
 }

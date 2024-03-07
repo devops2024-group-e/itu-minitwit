@@ -1,17 +1,12 @@
-using MinitwitSimulatorAPI.Models;
+using Minitwit.Infrastructure.Repositories;
 
 namespace MinitwitSimulatorAPI.Utils;
 
 public class LatestDBUtils
 {
-    public static void UpdateLatest(MinitwitContext context, int CommandId)
+    public static void UpdateLatest(ILatestRepository latestRepository, int CommandId)
     {   
-        Latest latest = new Latest
-        {
-            CommandId = CommandId
-        };
-
-        context.Latests.Add(latest);
-        context.SaveChanges();
+        //NOTE: this is called "UpdateLatest" but it seems that it just adds a Latest
+        latestRepository.AddLatest(CommandId);
     }
 }
