@@ -44,7 +44,7 @@ jobs:
           git config user.email "anti@itu.dk"
           git add .
           git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
-          git push --force
+          git push
           
       # Runs a single command using the runners shell
       - name: Changelog
