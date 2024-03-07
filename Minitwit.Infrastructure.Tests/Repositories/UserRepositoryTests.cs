@@ -3,24 +3,25 @@ using Minitwit.Infrastructure.Repositories;
 
 namespace Minitwit.Infrastructure.Tests.Repositories;
 
-public class UserRepositoryTests
+public class UserRepositoryTests : IDisposable
 {
 
     private readonly IUserRepository _userRepo;
+    private readonly MinitwitContext _context;
     public UserRepositoryTests()
     {
         var builder = new DbContextOptionsBuilder<MinitwitContext>();
         builder.UseInMemoryDatabase("MinitwitUserTestDB");
-        var context = new MinitwitContext(builder.Options);
-        context.Database.EnsureCreated();
+        _context = new MinitwitContext(builder.Options);
+        _context.Database.EnsureCreated();
 
-        context.Users.Add(new Models.User{UserId = 1, Email = "1@g.dk", Username = "user1", PwHash = "abcd"});
-        context.Users.Add(new Models.User{UserId = 2, Email = "2@g.dk", Username = "user2", PwHash = "efgh"});
-        context.Users.Add(new Models.User{UserId = 3, Email = "3@g.dk", Username = "user3", PwHash = "ijkl"});
+        _context.Users.Add(new Models.User{UserId = 1, Email = "1@g.dk", Username = "user1", PwHash = "abcd"});
+        _context.Users.Add(new Models.User{UserId = 2, Email = "2@g.dk", Username = "user2", PwHash = "efgh"});
+        _context.Users.Add(new Models.User{UserId = 3, Email = "3@g.dk", Username = "user3", PwHash = "ijkl"});
 
-        _userRepo = new UserRepository(context);
+        _userRepo = new UserRepository(_context);
 
-        context.SaveChanges();
+        _context.SaveChanges();
     }
 
     [Fact]
@@ -67,5 +68,12 @@ public class UserRepositoryTests
         var response = _userRepo.AddUser("newUser", "adsj@ad.dk", "szdhi");
 
         Assert.True(response);
+    }
+
+    public void Dispose()
+    {
+        if (_context is null) return;
+
+        _context.Database.EnsureDeleted();
     }
 }
