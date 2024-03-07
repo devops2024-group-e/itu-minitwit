@@ -136,7 +136,7 @@ public class TimelineController : Controller
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where user.UserId == profileUser.UserId
                         orderby message.PubDate descending
-                        select new { Content = message.Text, message.PubDate, User = user.Username }).Take(no).ToList();
+                        select new MessageDTO(message.Text, message.PubDate.Value, user.Username)).Take(no).ToList();
 
         return Ok(messages);
     }
@@ -156,7 +156,7 @@ public class TimelineController : Controller
                         join user in _context.Users on message.AuthorId equals user.UserId
                         where message.Flagged == 0
                         orderby message.PubDate descending
-                        select new { Content = message.Text, message.PubDate, User = user.Username }).Take(no).ToList();
+                        select new MessageDTO(message.Text, message.PubDate.Value, user.Username)).Take(no).ToList();
 
         return Ok(messages);
     }
@@ -183,6 +183,6 @@ public class TimelineController : Controller
                        where follower.WhoId == profileUser.UserId
                        select user.Username).Take(no).ToList();
 
-        return Ok(new { Follows = follows });
+        return Ok(new FollowerDTO(follows));
     }
 }
