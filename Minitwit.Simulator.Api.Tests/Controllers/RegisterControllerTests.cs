@@ -7,6 +7,7 @@ namespace Minitwit.Simulator.Api.Tests.Controllers;
 [Collection("SimulatorTest_Sequential")]
 public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplicationFactory<Program>>, IDisposable
 {
+    private const string USERNAME_PREFIX = "RegisterApi";
     private readonly MinitwitSimulatorApiApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
 
@@ -18,9 +19,9 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
     }
 
     [Theory]
-    [InlineData("Registera", "a@a.a", "a", 1)]
-    [InlineData("Registerb", "b@b.b", "b", 5)]
-    [InlineData("Registerc", "c@c.c", "c", 6)]
+    [InlineData($"{USERNAME_PREFIX}a", "a@a.a", "a", 1)]
+    [InlineData($"{USERNAME_PREFIX}b", "b@b.b", "b", 5)]
+    [InlineData($"{USERNAME_PREFIX}c", "c@c.c", "c", 6)]
     public async Task Register_WithValidForm_ReturnsNoContentStatusCode(string username, string email, string password, int latest)
     {
         var response = await _client.RegisterUserAsync(username, email, password, latest: latest);
@@ -44,7 +45,7 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
             if (latestCommand is not null)
                 context.Latests.RemoveRange(latestCommand);
 
-            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith("Register")));
+            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith(USERNAME_PREFIX)));
             context.SaveChanges();
         }
     }
