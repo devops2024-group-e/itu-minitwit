@@ -49,7 +49,7 @@ jobs:
           git config user.email "anti@itu.dk"
           git add .
           git commit -m "Bump frontend version to ${{ steps.bumpfrontend.outputs.newVersion }}, and backend version to ${{ steps.bumpbackend.outputs.newVersion }}"
-          git push --force
+          git push
           
       # Runs a single command using the runners shell
       - name: Changelog
