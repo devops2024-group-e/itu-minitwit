@@ -42,6 +42,22 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
         Assert.Contains("You were logged out", logoutResponseText);
     }
 
+    [Theory]
+    [InlineData("UserInteractionUser1", "wrongpassword", "Invalid password")]
+    [InlineData("UserInteractionUserDoesNotExist", "wrongpassword", "Invalid username")]
+    public async Task Login_WrongCredentials_ReturnsCorrectErrorMessage(string username, string password, string expectedMessage)
+    {
+        // Arrange
+        var content = new FormUrlEncodedContent(CreateLoginFormData(username, password));
+
+        // Act
+        var response = await _client.PostAsync("/login", content);
+        var responseText = await response.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Contains(expectedMessage, responseText);
+    }
+
     public void Dispose()
     {
         using (var cleanUpScope = _factory.Services.CreateScope())
