@@ -165,7 +165,7 @@ public class TimelineController : Controller
         User? profileUser = GetUser(username);
         if (!IsLoggedIn()) { return NotFound(); } // maybe should be Unauthorized();
 
-        var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId);
+        var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);
 
         return Ok(new { Follows = follows });
     }

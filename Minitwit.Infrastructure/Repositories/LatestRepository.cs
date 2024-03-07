@@ -27,7 +27,7 @@ public class LatestRepository : ILatestRepository
         return true;
     }
 
-    public List<CommandId> GetLatest()
+    public int GetLatest()
     {
         var content = (from l in _context.Latests
                        orderby l.Id descending

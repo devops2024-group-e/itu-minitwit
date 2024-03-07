@@ -7,4 +7,6 @@ public interface IFollowerRepository
     bool RemoveFollower(int whoId, int whomId);
 
     bool IsFollowing(int whoId, int whomId);
+
+    List<string> GetCurrentUserFollows(int whoId, int no);
 }

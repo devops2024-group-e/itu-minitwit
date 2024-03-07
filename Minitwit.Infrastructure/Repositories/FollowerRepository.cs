@@ -30,11 +30,8 @@ public class FollowerRepository : IFollowerRepository
 
     public bool RemoveFollower(int whoId, int whomId)
     {
-        _context.Followers.Remove(new Follower
-        {
-            WhoId = whoId,
-            WhomId = whomId
-        });
+        var follower = _context.Followers.FirstOrDefault(x => x.WhoId == whoId && x.WhomId == whomId);
+        _context.Followers.Remove(follower);
         try
         {
             _context.SaveChanges();
@@ -52,7 +49,7 @@ public class FollowerRepository : IFollowerRepository
         return isFollowing;
     }
 
-    public List<WhomId> GetCurrentUserFollows(int whoId)
+    public List<string> GetCurrentUserFollows(int whoId, int no)
     {
         var follows = (from user in _context.Users
                        join follower in _context.Followers
@@ -60,6 +57,6 @@ public class FollowerRepository : IFollowerRepository
                        where follower.WhoId == whoId
                        select user.Username).Take(no).ToList();
         
-        return follows
+        return follows;
     }
 }
