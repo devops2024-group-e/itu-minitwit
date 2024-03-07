@@ -183,6 +183,6 @@ public class TimelineController : Controller
                        where follower.WhoId == profileUser.UserId
                        select user.Username).Take(no).ToList();
 
-        return Ok(new { Follows = follows });
+        return Ok(new FollowerDTO(follows));
     }
 }
