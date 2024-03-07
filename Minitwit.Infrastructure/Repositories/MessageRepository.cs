@@ -2,7 +2,7 @@ using Minitwit.Infrastructure.Models;
 
 namespace Minitwit.Infrastructure.Repositories;
 
-public class MessageRepository
+public class MessageRepository : IMessageRepository
 {
     private readonly MinitwitContext _context;
 

@@ -10,9 +10,9 @@ public class RegisterController : Controller
 {
     private readonly ILogger<RegisterController> _logger;
 
-    private readonly UserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
 
-    public RegisterController(ILogger<RegisterController> logger, UserRepository userRepository)
+    public RegisterController(ILogger<RegisterController> logger, IUserRepository userRepository)
     {
         _logger = logger;
         _userRepository = userRepository;

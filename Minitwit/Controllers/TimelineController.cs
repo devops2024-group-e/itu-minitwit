@@ -13,10 +13,10 @@ public class TimelineController : Controller
 {
     private readonly ILogger<TimelineController> _logger;
     private readonly MinitwitContext _context;
-    private readonly MessageRepository _messageRepository;
-    private readonly UserRepository _userRepository;
+    private readonly IMessageRepository _messageRepository;
+    private readonly IUserRepository _userRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, MessageRepository messageRepository, UserRepository userRepository)
+    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, IMessageRepository messageRepository, IUserRepository userRepository)
     {
         _logger = logger;
         _context = context;
