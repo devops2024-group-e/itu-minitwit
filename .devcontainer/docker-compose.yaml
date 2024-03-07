@@ -1,0 +1,24 @@
+version: '3.5'
+
+networks:
+  main:
+    name: minitwit-network
+
+services:
+  minitwit-backend:
+    image: mcr.microsoft.com/devcontainers/dotnet:7.0
+    container_name: backend
+    networks:
+      - main
+    depends_on:
+      - minitwit-db
+
+  minitwit-db:
+    build:
+      context: .
+      dockerfile: Dockerfile.database
+    container_name: database
+    networks:
+      - main
+    ports:
+      - '5432:5432'
