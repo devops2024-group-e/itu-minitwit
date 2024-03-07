@@ -1,0 +1,72 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Automatic Build Release Frontend
+
+# Controls when the workflow will run
+on:
+    workflow_dispatch:
+    schedule:
+    - cron: ‘* 20 * * 4’
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+    # Give the default GITHUB_TOKEN write permission to commit and push the
+    # added or changed files to the repository.
+      contents: write
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
+      - name: Install .NET 7
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7
+
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build
+
+      - name: Bump minor version - Backend
+        id: bumpbackend
+        uses: vers-one/dotnet-project-version-updater@v1.5
+        with:
+          file: "MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj"
+          version: *.^.0
+
+      - name: Bump minor version - Frontend
+        id: bumpfrontend
+        uses: vers-one/dotnet-project-version-updater@v1.5
+        with:
+          file: "Minitwit/Minitwit.csproj"
+          version: *.^.0
+
+      - run: |
+          git config user.name "anti-itu"
+          git config user.email "anti@itu.dk"
+          git add .
+          git commit -m "Bump frontend version to ${{ steps.bumpfrontend.outputs.newVersion }}, and backend version to ${{ steps.bumpbackend.outputs.newVersion }}"
+          git push --force
+          
+      # Runs a single command using the runners shell
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+        env:
+          REPO: ${{ github.repository }}
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.bumpfrontend.outputs.newVersion }}
+          release_name: v${{ steps.bumpfrontend.outputs.newVersion }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
