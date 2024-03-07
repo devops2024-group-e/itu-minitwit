@@ -4,6 +4,7 @@ using static System.Net.HttpStatusCode;
 
 namespace Minitwit.Simulator.Api.Tests.Controllers;
 
+[Collection("SimulatorTest_Sequential")]
 public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplicationFactory<Program>>, IDisposable
 {
     private readonly MinitwitSimulatorApiApplicationFactory<Program> _factory;
@@ -13,7 +14,7 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
     {
         _factory = factory;
         _client = _factory.CreateClient();
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", "c2ltdWxhdG9yOnN1cGVyX3NhZmUh");
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "c2ltdWxhdG9yOnN1cGVyX3NhZmUh");
     }
 
     [Theory]
