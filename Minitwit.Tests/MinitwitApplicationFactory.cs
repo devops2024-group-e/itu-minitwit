@@ -7,6 +7,7 @@ namespace Minitwit.Tests;
 
 public class MinitwitApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
+
     public MinitwitApplicationFactory()
     {
     }
@@ -15,6 +16,7 @@ public class MinitwitApplicationFactory<TProgram> : WebApplicationFactory<TProgr
     {
         builder.ConfigureServices(services =>
         {
+            // Remove the application registered Minitwit services
             var dbContextDescriptor = services.SingleOrDefault(
                 d => d.ServiceType ==
                     typeof(DbContextOptions<MinitwitContext>));
@@ -27,20 +29,12 @@ public class MinitwitApplicationFactory<TProgram> : WebApplicationFactory<TProgr
 
             services.Remove(dbConnectionDescriptor);
 
-            // Create open SqliteConnection so EF won't automatically close it.
-            services.AddSingleton<DbConnection>(container =>
-            {
-                var connection = new SqliteConnection("DataSource=:memory:"); // NOTE: Cannot use db file due to multiple interactions with it
-                connection.Open();
-
-                return connection;
-            });
-
             services.AddDbContext<MinitwitContext>((container, options) =>
             {
-                var connection = container.GetRequiredService<DbConnection>();
-                options.UseSqlite(connection);
+                options.UseNpgsql($"Host=127.0.0.1;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit");
             });
+
+
         });
 
         builder.UseEnvironment("Development");
