@@ -3,7 +3,7 @@ using Minitwit.Tests.Utils;
 
 namespace Minitwit.Tests.IntegrationTests;
 
-public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<Program>>
+public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
     private readonly MinitwitApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
@@ -18,8 +18,8 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
             var context = setupScope.ServiceProvider.GetService<MinitwitContext>();
 
             var createUserTask = _client.CreateTestUserAsync("UserInteractionUser1");
-        createUserTask.Wait();
-    }
+            createUserTask.Wait();
+        }
     }
 
     [Fact]
@@ -36,5 +36,19 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
         var logoutResponseText = await logoutResponse.Content.ReadAsStringAsync();
 
         Assert.Contains("You were logged out", logoutResponseText);
+    }
+
+    public void Dispose()
+    {
+        using (var cleanUpScope = _factory.Services.CreateScope())
+        {
+            var context = cleanUpScope.ServiceProvider.GetService<MinitwitContext>();
+
+            if (context is null)
+                return;
+
+            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith("UserInteraction")).ToList());
+            context.SaveChanges();
+        }
     }
 }
