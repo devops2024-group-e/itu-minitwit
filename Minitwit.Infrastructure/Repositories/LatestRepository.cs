@@ -26,4 +26,13 @@ public class LatestRepository : ILatestRepository
         }
         return true;
     }
+
+    public List<CommandId> GetLatest()
+    {
+        var content = (from l in _context.Latests
+                       orderby l.Id descending
+                       select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
+        
+        return content;
+    }
 }
