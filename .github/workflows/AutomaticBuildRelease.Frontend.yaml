@@ -40,8 +40,8 @@ jobs:
           version: bump-build
 
       - run: |
-          git config user.name "Pinkvinus"
-          git config user.email "mille.mei.zhen.loo@gmail.com"
+          git config user.name "anti-itu"
+          git config user.email "anti@itu.dk"
           git add .
           git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
           git push
@@ -59,7 +59,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.bump.outputs.newVersion }}
+          tag_name: Frontend-v${{ steps.bump.outputs.newVersion }}
           release_name: Frontend v${{ steps.bump.outputs.newVersion }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
