@@ -2,8 +2,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Minitwit.Tests.IntegrationTests;
 
-// [CollectionDefinition("Non-parallel", DisableParallelization = false)]
-public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>
+public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
 
     private readonly MinitwitApplicationFactory<Program> _factory;
@@ -68,5 +67,19 @@ public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>
         // Assert
         Assert.Contains("The username is already taken", result);
 
+    }
+
+    public void Dispose()
+    {
+        using (var cleanUpScope = _factory.Services.CreateScope())
+        {
+            var context = cleanUpScope.ServiceProvider.GetService<MinitwitContext>();
+
+            if (context is null)
+                return;
+
+            context.Users.RemoveRange(context.Users.ToList());
+            context.SaveChanges();
+        }
     }
 }
