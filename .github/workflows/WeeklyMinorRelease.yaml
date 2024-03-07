@@ -4,11 +4,9 @@ name: Automatic Build Release Frontend
 
 # Controls when the workflow will run
 on:
-  push:
-      branches:
-        - main
-      paths:
-        - 'Minitwit/**'
+    workflow_dispatch:
+    schedule:
+    - cron: '0 20 * * 4'
 
 jobs:
   build:
@@ -32,18 +30,25 @@ jobs:
       - name: Build
         run: dotnet build
 
-      - name: Bump build version - Frontend
-        id: bump
+      - name: Bump minor version - Backend
+        id: bumpbackend
+        uses: vers-one/dotnet-project-version-updater@v1.5
+        with:
+          file: "MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj"
+          version: '*.^.0'
+
+      - name: Bump minor version - Frontend
+        id: bumpfrontend
         uses: vers-one/dotnet-project-version-updater@v1.5
         with:
           file: "Minitwit/Minitwit.csproj"
-          version: bump-build
+          version: '*.^.0'
 
       - run: |
           git config user.name "anti-itu"
           git config user.email "anti@itu.dk"
           git add .
-          git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
+          git commit -m "Bump frontend version to ${{ steps.bumpfrontend.outputs.newVersion }}, and backend version to ${{ steps.bumpbackend.outputs.newVersion }}"
           git push --force
           
       # Runs a single command using the runners shell
@@ -59,10 +64,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Frontend-v${{ steps.bump.outputs.newVersion }}
-          release_name: Frontend v${{ steps.bump.outputs.newVersion }}
+          tag_name: v${{ steps.bumpfrontend.outputs.newVersion }}
+          release_name: v${{ steps.bumpfrontend.outputs.newVersion }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
-        
