@@ -16,15 +16,13 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("basic", "c2ltdWxhdG9yOnN1cGVyX3NhZmUh");
     }
 
-    [Fact]
-    public async Task Register_WithValidForm_ReturnsNoContentStatusCode()
+    [Theory]
+    [InlineData("a", "a@a.a", "a", 1)]
+    [InlineData("b", "b@b.b", "b", 5)]
+    [InlineData("c", "c@c.c", "c", 6)]
+    public async Task Register_WithValidForm_ReturnsNoContentStatusCode(string username, string email, string password, int latest)
     {
-        var response = await _client.PostAsJsonAsync("/register?latest=1", new
-        {
-            Username = "Registera",
-            Email = "a@a.a",
-            Pwd = "a"
-        });
+        var response = await _client.RegisterUserAsync(username, email, password, latest: latest);
 
         Assert.True(response.IsSuccessStatusCode);
         Assert.Equal(NoContent, response.StatusCode);
@@ -39,7 +37,8 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
             if (context is null)
                 return;
 
-            var latestCommand = context.Latests.Where(x => x.CommandId == 1);
+            var commandIds = new List<int> { 1, 5, 6 };
+            var latestCommand = context.Latests.Where(x => commandIds.Contains(x.CommandId));
 
             if (latestCommand is not null)
                 context.Latests.RemoveRange(latestCommand);
