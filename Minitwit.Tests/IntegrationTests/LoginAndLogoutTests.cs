@@ -3,12 +3,12 @@ using Minitwit.Tests.Utils;
 
 namespace Minitwit.Tests.IntegrationTests;
 
-public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
+public class LoginAndLogoutTests : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
     private readonly MinitwitApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
 
-    public MinitwitUserInteraction(MinitwitApplicationFactory<Program> factory)
+    public LoginAndLogoutTests(MinitwitApplicationFactory<Program> factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
@@ -17,7 +17,7 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
         {
             var context = setupScope.ServiceProvider.GetService<MinitwitContext>();
 
-            var createUserTask = _client.CreateTestUserAsync("UserInteractionUser1");
+            var createUserTask = _client.CreateTestUserAsync("LoginAndLogoutUser1");
             createUserTask.Wait();
         }
     }
@@ -29,7 +29,7 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
     [Fact]
     public async Task LoginAndLogout_WithCorrectCredentials_ReturnsCorrectMessages()
     {
-        var content = new FormUrlEncodedContent(CreateLoginFormData("UserInteractionUser1", "default"));
+        var content = new FormUrlEncodedContent(CreateLoginFormData("LoginAndLogoutUser1", "default"));
 
         var response = await _client.PostAsync("/login", content);
         var responseText = await response.Content.ReadAsStringAsync();
@@ -43,8 +43,8 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
     }
 
     [Theory]
-    [InlineData("UserInteractionUser1", "wrongpassword", "Invalid password")]
-    [InlineData("UserInteractionUserDoesNotExist", "wrongpassword", "Invalid username")]
+    [InlineData("LoginAndLogoutUser1", "wrongpassword", "Invalid password")]
+    [InlineData("LoginAndLogoutUserDoesNotExist", "wrongpassword", "Invalid username")]
     public async Task Login_WrongCredentials_ReturnsCorrectErrorMessage(string username, string password, string expectedMessage)
     {
         // Arrange
@@ -67,7 +67,7 @@ public class MinitwitUserInteraction : IClassFixture<MinitwitApplicationFactory<
             if (context is null)
                 return;
 
-            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith("UserInteraction")).ToList());
+            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith("LoginAndLogout")).ToList());
             context.SaveChanges();
         }
     }
