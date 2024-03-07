@@ -10,12 +10,12 @@ public static class MinitwtiApiHttpClientExtensions
             Pwd = password
         });
 
-    public static async Task<HttpResponseMessage> CreateMessage(this HttpClient client, string content, string username, int latest)
+    public static async Task<HttpResponseMessage> CreateMessageAsync(this HttpClient client, string content, string username, int latest)
         => await client.PostAsJsonAsync($"/msgs/{username}?latest={latest}", new { Content = content });
 
-    public static async Task<HttpResponseMessage> GetLatestMessages(this HttpClient client, int messageCount, int latest)
+    public static async Task<HttpResponseMessage> GetLatestMessagesAsync(this HttpClient client, int messageCount, int latest)
         => await client.GetAsync($"/msgs?latest={latest}&no={messageCount}");
 
-    public static async Task<HttpResponseMessage> GetLatestUserMessages(this HttpClient client, string username, int messageCount, int latest)
+    public static async Task<HttpResponseMessage> GetLatestUserMessagesAsync(this HttpClient client, string username, int messageCount, int latest)
         => await client.GetAsync($"/msgs/{username}?latest={latest}&no={messageCount}");
 }
