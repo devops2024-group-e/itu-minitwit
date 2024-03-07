@@ -14,21 +14,18 @@ public class LatestController : Controller
 {
     private readonly ILogger<LatestController> _logger;
 
-    private readonly MinitwitContext _context;
+    private readonly ILatestRepository _latestRepository;
 
-    public LatestController(ILogger<LatestController> logger, MinitwitContext context)
+    public LatestController(ILogger<LatestController> logger, ILatestRepository latestRepository)
     {
         _logger = logger;
-        _context = context;
+        _latestRepository = latestRepository;
     }
 
     [HttpGet("/latest")]
     public IActionResult GetLatest()
     {
-        var content = (from l in _context.Latests
-                       orderby l.Id descending
-                       select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
-
+        var content = _latestRepository.GetLatest()
 
         return Ok(new { Latest = content });
     }

@@ -22,6 +22,9 @@ builder.Services.AddDbContext<MinitwitContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MinitwitDatabase"));
 });
 
+// Add dependencies to dependency injection
+builder.Services.AddScoped<IFollowerRepository,FollowerRepository>();
+
 // Add session settings
 builder.Services.AddSession(options =>
 {

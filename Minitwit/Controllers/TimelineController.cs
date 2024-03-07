@@ -15,13 +15,15 @@ public class TimelineController : Controller
     private readonly MinitwitContext _context;
     private readonly IMessageRepository _messageRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IFollowerRepository _followerRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, IMessageRepository messageRepository, IUserRepository userRepository)
+    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, IMessageRepository messageRepository, IUserRepository userRepository, IFollowerRepository followerRepository)
     {
         _logger = logger;
         _context = context;
         _messageRepository = messageRepository;
         _userRepository = userRepository;
+        _followerRepository = followerRepository;
     }
 
     [Route("{username?}")]
@@ -76,8 +78,7 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Add(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _followerRepository.AddFollower(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
@@ -101,8 +102,7 @@ public class TimelineController : Controller
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Remove(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _followerRepository.RemoveFollower(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
@@ -156,9 +156,7 @@ public class TimelineController : Controller
         {
             int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
             model.Profile.IsMe = currentUserId == profileUser.UserId;
-            model.Profile.IsFollowing = _context.Followers
-                                .Any(x => x.WhoId == currentUserId && x.WhomId == profileUser.UserId);
-
+            model.Profile.IsFollowing = _followerRepository.IsFollowing(currentUserId, profileUser.UserId);
             model.CurrentUsername = _userRepository.GetUser(currentUserId).Username;
         }
 
