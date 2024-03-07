@@ -28,6 +28,6 @@ public class LatestController : Controller
     {
         var content = _latestRepository.GetLatest();
 
-        return Ok(new { Latest = content });
+        return Ok(new LatestDTO(content));
     }
 }

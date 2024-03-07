@@ -57,3 +57,7 @@ app.UseSession();
 app.MapControllers();
 
 app.Run();
+
+// Adding this in order to make the Program class visible to our integration tests
+// as stated by the offical documentation https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0
+public partial class Program { }

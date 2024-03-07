@@ -43,7 +43,7 @@ jobs:
           git config user.name "anti-itu"
           git config user.email "anti@itu.dk"
           git add .
-          git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
+          git commit -m "Bump backend version to ${{ steps.bump.outputs.newVersion }}"
           git push
           
       # Runs a single command using the runners shell
