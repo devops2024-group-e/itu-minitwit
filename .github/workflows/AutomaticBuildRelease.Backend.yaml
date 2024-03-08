@@ -11,8 +11,7 @@ on:
         - main
       paths:
         - 'MinitwitSimulatorAPI/**'
-      paths-ignore:
-        - 'MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj'
+        - '!MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj'
 
 jobs:
   build:
