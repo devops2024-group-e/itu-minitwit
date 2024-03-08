@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Minitwit.Infrastructure;
 using MinitwitSimulatorAPI;
 
 namespace Minitwit.Simulator.Api.Tests;
