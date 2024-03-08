@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Minitwit.Infrastructure;
 using Minitwit.Infrastructure.Repositories;
-using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
 using MinitwitSimulatorAPI.ViewModels;
 

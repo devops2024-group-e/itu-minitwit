@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Minitwit.Infrastructure;
 using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;

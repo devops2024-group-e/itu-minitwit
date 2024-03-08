@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI;
 using Minitwit.Infrastructure.Repositories;
+using Minitwit.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
