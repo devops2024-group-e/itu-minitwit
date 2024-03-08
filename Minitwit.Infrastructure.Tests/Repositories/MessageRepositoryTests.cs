@@ -50,7 +50,7 @@ public class MessageRepositoryTests : IDisposable
     [Fact]
     public void GetMessagesReturnsRightMessages()
     {
-        var response = _messageRepo.GetMessages();
+        var response = _messageRepo.GetMessages(30);
 
         Assert.Equal(3, response.Count);
     }
@@ -58,7 +58,7 @@ public class MessageRepositoryTests : IDisposable
     [Fact]
     public void GetUserSpecificMessagesReturnsRightMessages()
     {
-        var response = _messageRepo.GetUserSpecificMessages(_user1);
+        var response = _messageRepo.GetUserSpecificMessages(_user1, 30);
 
         Assert.Equal(1, response.Count);
         Assert.Equal("hello guys", response[0].Message.Text);
@@ -67,7 +67,7 @@ public class MessageRepositoryTests : IDisposable
     [Fact]
     public void GetCurrentUserSpecificMessagesReturnsRightMessages()
     {
-        var response = _messageRepo.GetCurrentUserSpecificMessages(_context.Users.Single(x => x.Username == "user1").UserId);
+        var response = _messageRepo.GetCurrentUserSpecificMessages(_context.Users.Single(x => x.Username == "user1").UserId, 30);
 
         Assert.Equal(1, response.Count);
         Assert.Equal("hello guys", response[0].Message.Text);
