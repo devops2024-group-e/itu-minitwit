@@ -2,14 +2,14 @@
 name: Deployment
 
 on:
-# Everytime a PR is closed deploy it
-#  pull_request:
-#    types: closed
-#    branches:
-#      - main
-  # allow manual triggers for now tooo
   workflow_dispatch:
     manual: true
+  push:
+    branches:
+      - main
+    paths:
+      - 'Minitwit/**'
+      - 'MinitwitSimulatorAPI/**'
 
 jobs:
   build:
