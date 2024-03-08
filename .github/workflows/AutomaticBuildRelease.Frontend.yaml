@@ -9,6 +9,7 @@ on:
         - main
       paths:
         - 'Minitwit/**'
+        - '!Minitwit/Minitwit.csproj'
 
 jobs:
   build:
