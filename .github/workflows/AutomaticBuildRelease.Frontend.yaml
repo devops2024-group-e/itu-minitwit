@@ -21,7 +21,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         with:
-          ${{ sectrets.BOT_ACCESS_TOKEN }}
+          token: ${{ secrets.BOT_ACCESS_TOKEN }}
       
       - name: Install .NET 7
         uses: actions/setup-dotnet@v3
