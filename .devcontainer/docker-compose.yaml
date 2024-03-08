@@ -2,12 +2,14 @@ version: '3.5'
 
 networks:
   main:
-    name: minitwit-network
+    name: minitwit-dev-network
 
 services:
-  minitwit-backend:
+  dotnet-dev:
     image: mcr.microsoft.com/devcontainers/dotnet:7.0
-    container_name: backend
+    volumes:
+      # Mount the root folder that contains .git
+      - .:/workspace:cachedd
     networks:
       - main
     depends_on:
@@ -15,9 +17,9 @@ services:
 
   minitwit-db:
     build:
-      context: .
+      context: ./..
       dockerfile: Dockerfile.database
-    container_name: database
+    container_name: minitwit-dev-database
     networks:
       - main
     ports:

@@ -1,15 +1,13 @@
 {
     "name": "minitwit-dotnet7",
-    "image": "mcr.microsoft.com/devcontainers/dotnet:7.0",
-    "forwardPorts": [
-        8001
+    "dockerComposeFile": [
+        "./docker-compose.yaml"
     ],
-    "postCreateCommand": "sudo sh ./.devcontainer/setup.sh",
+    "service": "dotnet-dev",
+    "workspaceFolder": "/workspace",
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
-                "ms-vscode.cpptools-extension-pack",
                 "visualstudioexptteam.vscodeintellicode"
             ]
         }
