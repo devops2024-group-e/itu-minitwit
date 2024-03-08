@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MinitwitSimulatorAPI\MinitwitSimulatorAPI.csproj" />
+    <ProjectReference Include="..\Minitwit.Infrastructure\Minitwit.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

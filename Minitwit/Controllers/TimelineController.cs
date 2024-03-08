@@ -12,15 +12,13 @@ namespace Minitwit.Controllers;
 public class TimelineController : Controller
 {
     private readonly ILogger<TimelineController> _logger;
-    private readonly MinitwitContext _context;
     private readonly IMessageRepository _messageRepository;
     private readonly IUserRepository _userRepository;
     private readonly IFollowerRepository _followerRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, IMessageRepository messageRepository, IUserRepository userRepository, IFollowerRepository followerRepository)
+    public TimelineController(ILogger<TimelineController> logger, IMessageRepository messageRepository, IUserRepository userRepository, IFollowerRepository followerRepository)
     {
         _logger = logger;
-        _context = context;
         _messageRepository = messageRepository;
         _userRepository = userRepository;
         _followerRepository = followerRepository;
@@ -57,7 +55,7 @@ public class TimelineController : Controller
     [Route("public")]
     public IActionResult Public()
     {
-        var messages = _messageRepository.GetMessages();
+        var messages = _messageRepository.GetMessages(30);
 
         return View(new PublicTimelineViewModel { Messages = messages });
     }
@@ -141,7 +139,7 @@ public class TimelineController : Controller
             return null;
         }
 
-        var messages = _messageRepository.GetUserSpecificMessages(profileUser);
+        var messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
 
         TimelineViewModel model = new TimelineViewModel { Messages = messages };
         model.Profile = new Profile
@@ -161,7 +159,7 @@ public class TimelineController : Controller
         }
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
-        model.Messages = _messageRepository.GetUserSpecificMessages(profileUser);
+        model.Messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
 
         return model;
     }
@@ -170,7 +168,7 @@ public class TimelineController : Controller
     {
         var currentUsername = _userRepository.GetUser(currentUserId).Username;
 
-        var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId);
+        var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId, 30);
 
         return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
     }

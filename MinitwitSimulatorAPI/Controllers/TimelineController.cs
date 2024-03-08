@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Minitwit.Infrastructure;
+using Minitwit.Infrastructure.Models;
 using Minitwit.Infrastructure.Repositories;
+using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
 using MinitwitSimulatorAPI.ViewModels;
 
@@ -11,16 +13,20 @@ namespace MinitwitSimulatorAPI.Controllers;
 public class TimelineController : Controller
 {
     private readonly ILogger<TimelineController> _logger;
-    private readonly MinitwitContext _context;
     private readonly ILatestRepository _latestRepository;
     private readonly IFollowerRepository _followerRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context, ILatestRepository latestRepository, IFollowerRepository followerRepository)
+    private readonly IUserRepository _userRepository;
+    
+    private readonly IMessageRepository _messageRepository;
+
+    public TimelineController(ILogger<TimelineController> logger, ILatestRepository latestRepository, IFollowerRepository followerRepository, IUserRepository userRepository, IMessageRepository messageRepository)
     {
         _logger = logger;
-        _context = context;
         _latestRepository = latestRepository;
         _followerRepository = followerRepository;
+        _userRepository = userRepository;
+        _messageRepository = messageRepository;
     }
 
     /// <summary>
@@ -39,7 +45,7 @@ public class TimelineController : Controller
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
     private User? GetUser(string username)
     {
-        return _context.Users.SingleOrDefault(x => x.Username == username);
+        return _userRepository.GetUser(username);
     }
 
     /// <summary>
@@ -107,14 +113,7 @@ public class TimelineController : Controller
             text = dict["content"];
         }
 
-        _context.Messages.Add(new Message
-        {
-            AuthorId = GetUser(username).UserId,
-            Text = text,
-            PubDate = (int)DateTime.Now.Ticks,
-            Flagged = 0
-        });
-        _context.SaveChanges();
+        _messageRepository.AddMessage(text, GetUser(username).UserId);
 
         return NoContent();
     }
@@ -135,11 +134,11 @@ public class TimelineController : Controller
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where user.UserId == profileUser.UserId
-                        orderby message.PubDate descending
-                        select new MessageDTO(message.Text, message.PubDate.Value, user.Username)).Take(no).ToList();
+        var messages = new List<MessageDTO>();
+        foreach (var messageAuthor in _messageRepository.GetUserSpecificMessages(profileUser, no))
+        {
+           messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
+        }
 
         return Ok(messages);
     }
@@ -155,11 +154,11 @@ public class TimelineController : Controller
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where message.Flagged == 0
-                        orderby message.PubDate descending
-                        select new MessageDTO(message.Text, message.PubDate.Value, user.Username)).Take(no).ToList();
+        var messages = new List<MessageDTO>();
+        foreach (var messageAuthor in _messageRepository.GetMessages(no))
+        {
+           messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
+        }
 
         return Ok(messages);
     }
