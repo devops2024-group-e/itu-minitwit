@@ -41,6 +41,9 @@ jobs:
     needs: build
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Run API tests - Endpoint tests
         run: |
           dotnet test
