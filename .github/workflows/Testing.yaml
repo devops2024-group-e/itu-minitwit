@@ -2,6 +2,8 @@
 name: Testing
 
 on:
+  workflow_dispatch:
+    manual: true
   pull_request:
     paths:
       - 'Minitwit/**'
@@ -34,11 +36,11 @@ jobs:
         run: | 
           docker compose -f docker-compose.yaml up minitwit-db -d
 
-      - name: Run API
-        run: | 
-          cd MinitwitSimulatorAPI
-          dotnet run &
-      
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
       - name: Run API tests - Endpoint tests
         run: |
           dotnet test
