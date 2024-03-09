@@ -1,12 +1,30 @@
 version: "3.8"
+
+networks:
+  minitwit-ops-network:
+    name: monitoring-network
+
 services:
   grafana:
     image: grafana/grafana-oss
     container_name: grafana
     restart: unless-stopped
     ports:
-     - '80:3000'
+      - '80:3000'
+    networks:
+      - minitwit-ops-network
     volumes:
       - grafana-storage:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '8080:9090'
+    networks:
+      - minitwit-ops-network
+
 volumes:
   grafana-storage: {}
