@@ -5,6 +5,7 @@
     ],
     "service": "dotnet-dev",
     "workspaceFolder": "/workspace",
+    "shutdownAction": "none",
     "customizations": {
         "vscode": {
             "extensions": [

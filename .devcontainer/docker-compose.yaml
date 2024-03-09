@@ -9,11 +9,10 @@ services:
     image: mcr.microsoft.com/devcontainers/dotnet:7.0
     volumes:
       # Mount the root folder that contains .git
-      - .:/workspace:cachedd
+      - ../:/workspace
+    command: sleep infinity
     networks:
       - main
-    depends_on:
-      - minitwit-db
 
   minitwit-db:
     build:
