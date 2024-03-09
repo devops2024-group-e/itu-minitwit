@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
     end
 
     server.vm.hostname = "minitwit-web-01"
-    server.vm.synced_folder = "./.infrastructure/remote-server", "/minitwit", type: "rsync"
+    server.vm.synced_folder "./.infrastructure/remote-server", "/minitwit", type: "rsync"
 
     server.vm.provision "shell", inline: 'echo "export DOCKER_USERNAME=' + "'" + ENV["DOCKER_USERNAME"] + "'" + '" >> ~/.bash_profile'
     server.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + ENV["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
@@ -75,15 +75,16 @@ Vagrant.configure("2") do |config|
     end
 
     server.vm.hostname = "minitwit-ops-01"
-    server.vm.synced_folder = "./.infrastructure/monitor-server", "/minitwit-monitoring", type: "rsync"
+    server.vm.synced_folder "./.infrastructure/monitor-server", "/minitwit-monitoring", type: "rsync"
 
     server.vm.provision "shell", inline: <<-SHELL
 
     sudo apt-get update
 
     # The following address an issue in DO's Ubuntu images, which still contain a lock file
-    #sudo killall apt apt-get
+    sudo killall apt-get
     sudo rm /var/lib/dpkg/lock-frontend
+    sudo apt-get update
 
     # Install docker and docker compose
     sudo apt-get install -y docker.io docker-compose-v2
