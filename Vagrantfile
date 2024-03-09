@@ -26,6 +26,8 @@ Vagrant.configure("2") do |config|
 
     server.vm.provision "shell", inline: <<-SHELL
 
+    cp ./daemon.json /etc/docker/daemon.json
+
     sudo apt-get update
 
     # The following address an issue in DO's Ubuntu images, which still contain a lock file
