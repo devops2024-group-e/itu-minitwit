@@ -9,6 +9,7 @@ on:
         - main
       paths:
         - 'Minitwit/**'
+        - '!Minitwit/Minitwit.csproj'
 
 jobs:
   build:
@@ -20,6 +21,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.BOT_ACCESS_TOKEN }}
       
       - name: Install .NET 7
         uses: actions/setup-dotnet@v3
@@ -43,8 +46,9 @@ jobs:
           git config user.name "anti-itu"
           git config user.email "anti@itu.dk"
           git add .
-          git commit -m "Bump project version to ${{ steps.bump.outputs.newVersion }}"
+          git commit -m "Bump frontend version to ${{ steps.bump.outputs.newVersion }}"
           git push
+          
           
       # Runs a single command using the runners shell
       - name: Changelog

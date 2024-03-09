@@ -1,6 +1,3 @@
-init:
-	sh ./control.sh init
-
 test:
 	python3 minitwit_tests.py
 
