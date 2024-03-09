@@ -31,7 +31,7 @@ public class MinitwitApplicationFactory<TProgram> : WebApplicationFactory<TProgr
 
             services.AddDbContext<MinitwitContext>((container, options) =>
             {
-                options.UseNpgsql($"Host=127.0.0.1;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit");
+                options.UseNpgsql($"Host=minitwit-dev-database;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit");
             });
 
 
