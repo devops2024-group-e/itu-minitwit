@@ -31,4 +31,10 @@ What we need to do is to start the database. We do so by typing in the following
 docker compose up minitwit-db
 ```
 
-Now you can run whatever `dotnet` command in order to run the projects or tests.
+Now you can run whatever `dotnet` command in order to run the projects or tests. As an example you can navigate to the frontend project and run it:
+```bash
+cd Minitwit
+dotnet run
+```
+
+Then application should start and display where you can access the webpage in the terminal.
