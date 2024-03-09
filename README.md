@@ -9,11 +9,8 @@ In order to start contributing to the project you need to have your development 
 - Visual Studio Code
   - Dev Container (Latest version of the Visual Studio Code Extension)
 
-### Develop in MacOS or Windows
-> [!TIP]
-> If you develop in Windows Operating System you also have the option to use WSL which more or less works as if you have installed a linux/unix OS on bare metal
-
-In order to develop in MacOS or Windows you need to have the prerequisites installed (Note in the end you do not really develop in MacOS or Windows but in a linux environment created by a docker container). If that is installed you can go ahead and clone the git repo.
+### Develop with Dev Container
+In order to get started with development you need to have the prerequisites installed. If that is installed you can go ahead and clone the git repo.
 Then follow these steps:
 
 1. Open the project in Visual Studio Code
