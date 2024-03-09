@@ -13,6 +13,8 @@ services:
     command: sleep infinity
     networks:
       - main
+    environment:
+      - Minitwit_ConnectionStrings__MinitwitDatabase=Host=minitwit-dev-database;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit
 
   minitwit-db:
     build:
