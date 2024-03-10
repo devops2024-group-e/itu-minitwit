@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddOpenTelemetry()
-  .WithMetrics(b => b.AddPrometheusExporter());
+  .WithMetrics(b => b.AddAspNetCoreInstrumentation()
+                     .AddPrometheusExporter());
 
 var app = builder.Build();
 
