@@ -34,7 +34,7 @@ jobs:
         run: docker compose -f docker-compose.yaml up minitwit-db -d
       
       - name: Test
-        run: dotnet test --filter ClassName=Minitwit.Tests.IntegrationTests.LoginAndLogoutTests
+        run: dotnet test Minitwit.Tests/Minitwit.Tests.csproj --filter FullyQualifiedName~Minitwit.Tests.IntegrationTests.LoginAndLogoutTests
 
   IntegrationTests-Register:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
         run: docker compose -f docker-compose.yaml up minitwit-db -d
       
       - name: Test
-        run: dotnet test --filter ClassName=Minitwit.Tests.IntegrationTests.RegisterTests
+        run: dotnet test Minitwit.Tests/Minitwit.Tests.csproj --filter FullyQualifiedName~Minitwit.Tests.IntegrationTests.RegisterTests
 
   IntegrationTests-Timeline:
     runs-on: ubuntu-latest
@@ -82,4 +82,4 @@ jobs:
         run: docker compose -f docker-compose.yaml up minitwit-db -d
       
       - name: Test
-        run: dotnet test --filter ClassName=Minitwit.Tests.IntegrationTests.TimelineTests
+        run: dotnet test Minitwit.Tests/Minitwit.Tests.csproj --filter FullyQualifiedName~Minitwit.Tests.IntegrationTests.TimelineTests
