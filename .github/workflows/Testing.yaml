@@ -27,7 +27,7 @@ jobs:
       - name: Install dotnet dependencies
         run: dotnet restore
       
-      - name: Test versions
+      - name: Test dotnet version
         run: dotnet --version
      
       - name: Set up database
@@ -51,7 +51,7 @@ jobs:
       - name: Install dotnet dependencies
         run: dotnet restore
       
-      - name: Test versions
+      - name: Test dotnet version
         run: dotnet --version
      
       - name: Set up database
@@ -75,7 +75,7 @@ jobs:
       - name: Install dotnet dependencies
         run: dotnet restore
       
-      - name: Test versions
+      - name: Test dotnet version
         run: dotnet --version
      
       - name: Set up database
