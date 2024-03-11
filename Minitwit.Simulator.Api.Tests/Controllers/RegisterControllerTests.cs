@@ -4,8 +4,8 @@ using static System.Net.HttpStatusCode;
 
 namespace Minitwit.Simulator.Api.Tests.Controllers;
 
-[Collection("SimulatorTest_Sequential")]
-public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplicationFactory<Program>>, IDisposable
+[Collection(nameof(SequentialControllerTestCollectionDefinition))]
+public class RegisterControllerTests
 {
     private const string USERNAME_PREFIX = "RegisterApi";
     private readonly MinitwitSimulatorApiApplicationFactory<Program> _factory;
@@ -28,25 +28,5 @@ public class RegisterControllerTests : IClassFixture<MinitwitSimulatorApiApplica
 
         Assert.True(response.IsSuccessStatusCode);
         Assert.Equal(NoContent, response.StatusCode);
-    }
-
-    public void Dispose()
-    {
-        using (var cleanUpScope = _factory.Services.CreateScope())
-        {
-            var context = cleanUpScope.ServiceProvider.GetService<MinitwitContext>();
-
-            if (context is null)
-                return;
-
-            var commandIds = new List<int> { 1, 5, 6 };
-            var latestCommand = context.Latests.Where(x => commandIds.Contains(x.CommandId));
-
-            if (latestCommand is not null)
-                context.Latests.RemoveRange(latestCommand);
-
-            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith(USERNAME_PREFIX)));
-            context.SaveChanges();
-        }
     }
 }

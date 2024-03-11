@@ -2,19 +2,22 @@ using static System.Net.HttpStatusCode;
 using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;
 using System.Net.Http.Headers;
+using Xunit.Abstractions;
 
 namespace Minitwit.Simulator.Api.Tests.Controllers;
 
-[Collection("SimulatorTest_Sequential")]
-public class TimelineControllerTests : IClassFixture<MinitwitSimulatorApiApplicationFactory<Program>>, IDisposable
+[Collection(nameof(SequentialControllerTestCollectionDefinition))]
+public class TimelineControllerTests
 {
     private const string USERNAME_PREFIX = "TimelineApi";
 
     private readonly MinitwitSimulatorApiApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public TimelineControllerTests(MinitwitSimulatorApiApplicationFactory<Program> factory)
+    public TimelineControllerTests(ITestOutputHelper testOutputHelper, MinitwitSimulatorApiApplicationFactory<Program> factory)
     {
+        _output = testOutputHelper;
         _factory = factory;
         _client = _factory.CreateClient();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "c2ltdWxhdG9yOnN1cGVyX3NhZmUh");
@@ -88,17 +91,27 @@ public class TimelineControllerTests : IClassFixture<MinitwitSimulatorApiApplica
     [Fact]
     public async Task FollowUser_FollowsUserGetMessages_ReturnPositiveCodesAndFollowsUser()
     {
+        var userqResponse = await _client.RegisterUserAsync($"{USERNAME_PREFIX}q", "q@a.a", "q", 1007);
+        var userwResponse = await _client.RegisterUserAsync($"{USERNAME_PREFIX}w", "w@a.a", "w", 1008);
 
-        _client.RegisterUserAsync($"{USERNAME_PREFIX}b", "b@a.a", "b", 1007).Wait();
-        _client.RegisterUserAsync($"{USERNAME_PREFIX}c", "c@a.a", "c", 1008).Wait();
+
+        Assert.True(userqResponse.IsSuccessStatusCode);
+        Assert.True(userwResponse.IsSuccessStatusCode);
+
 
         // A follows b and c
-        var followResponse = await _client.FollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}b", 1009);
+        var followResponse = await _client.FollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}q", 1009);
+
+        _output.WriteLine(await followResponse.Content.ReadAsStringAsync());
+        _output.WriteLine(followResponse.StatusCode.ToString());
 
         Assert.True(followResponse.IsSuccessStatusCode);
         Assert.Equal(NoContent, followResponse.StatusCode);
 
-        followResponse = await _client.FollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}c", 1010);
+        followResponse = await _client.FollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}w", 1010);
+
+        _output.WriteLine(await followResponse.Content.ReadAsStringAsync());
+        _output.WriteLine(followResponse.StatusCode.ToString());
 
         Assert.True(followResponse.IsSuccessStatusCode);
         Assert.Equal(NoContent, followResponse.StatusCode);
@@ -113,8 +126,8 @@ public class TimelineControllerTests : IClassFixture<MinitwitSimulatorApiApplica
         if (followers is null)
             Assert.Fail("Could not get followers");
 
-        Assert.Contains($"{USERNAME_PREFIX}b", followers.Follows);
-        Assert.Contains($"{USERNAME_PREFIX}c", followers.Follows);
+        Assert.Contains($"{USERNAME_PREFIX}q", followers.Follows);
+        Assert.Contains($"{USERNAME_PREFIX}w", followers.Follows);
 
         var latestResponse = await _client.GetFromJsonAsync<LatestDTO>("/latest");
         if (latestResponse is null)
@@ -126,10 +139,12 @@ public class TimelineControllerTests : IClassFixture<MinitwitSimulatorApiApplica
     [Fact]
     public async Task UnfollowUser_UnfollowUsersRemoveThemFromTheirList_ReturnsCorrectStatusCode()
     {
-        await _client.RegisterUserAsync($"{USERNAME_PREFIX}b", "b@a.a", "b", 1012);
-        await _client.FollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}b", 1013);
+        await _client.RegisterUserAsync($"{USERNAME_PREFIX}a", "a@a.a", "a", 1001);
+        await _client.RegisterUserAsync($"{USERNAME_PREFIX}z", "z@a.a", "z", 1012);
 
-        var unfollowResponse = await _client.UnfollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}b", 1014);
+        await _client.FollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}z", 1013);
+
+        var unfollowResponse = await _client.UnfollowUserAsync($"{USERNAME_PREFIX}a", $"{USERNAME_PREFIX}z", 1014);
 
         Assert.True(unfollowResponse.IsSuccessStatusCode);
         Assert.Equal(NoContent, unfollowResponse.StatusCode);
@@ -144,44 +159,12 @@ public class TimelineControllerTests : IClassFixture<MinitwitSimulatorApiApplica
         if (followers is null)
             Assert.Fail("Could not get followers");
 
-        Assert.DoesNotContain($"{USERNAME_PREFIX}b", followers.Follows);
+        Assert.DoesNotContain($"{USERNAME_PREFIX}z", followers.Follows);
 
         var latestResponse = await _client.GetFromJsonAsync<LatestDTO>("/latest");
         if (latestResponse is null)
             Assert.Fail("Could not get latest response");
 
         Assert.Equal(1015, latestResponse.Latest);
-    }
-
-    public void Dispose()
-    {
-        using (var cleanUpScope = _factory.Services.CreateScope())
-        {
-            var context = cleanUpScope.ServiceProvider.GetService<MinitwitContext>();
-
-            if (context is null)
-                return;
-
-            var commandIds = new List<int> { 1001, 1002, 1003, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015 };
-            var latestCommand = context.Latests.Where(x => commandIds.Contains(x.CommandId));
-
-            if (latestCommand is not null)
-                context.Latests.RemoveRange(latestCommand);
-
-            var testMessages = context.Users.Join(context.Messages, x => x.UserId, x => x.AuthorId, (user, message) => new { user.Username, Message = message })
-                                            .Where(x => x.Username.StartsWith(USERNAME_PREFIX))
-                                            .Select(x => x.Message);
-
-            context.Messages.RemoveRange(testMessages);
-
-            var testFollowers = context.Users.Join(context.Followers, x => x.UserId, x => x.WhomId, (user, follower) => new { user.Username, Follower = follower })
-                                            .Where(x => x.Username.StartsWith(USERNAME_PREFIX))
-                                            .Select(x => x.Follower);
-
-            context.Followers.RemoveRange(testFollowers);
-
-            context.Users.RemoveRange(context.Users.Where(x => x.Username.StartsWith(USERNAME_PREFIX)));
-            context.SaveChanges();
-        }
     }
 }
