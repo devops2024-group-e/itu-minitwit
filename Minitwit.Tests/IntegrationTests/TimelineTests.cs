@@ -7,7 +7,7 @@ namespace Minitwit.Tests.IntegrationTests;
 /// </summary>
 public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
-    private const string USERNAME_PREFIX = "Timeline";
+    private const string USERNAME_PREFIX = "TimelineUi";
 
     private readonly MinitwitApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
@@ -62,7 +62,7 @@ public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>,
 
         // Let bar follow foo
         var afterFollowContent = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo/follow");
-        Assert.Contains("You are now following &quot;TimelineFoo&quot;", afterFollowContent);
+        Assert.Contains("You are now following &quot;TimelineUiFoo&quot;", afterFollowContent);
 
         // Foo's message should be visible in bars homepage
         barPublicTimeline = await _client.GetPageAsync();
@@ -80,7 +80,7 @@ public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>,
 
         // Unfollow and see that foo is no longer present in bar's timeline feed
         var unfollowResponse = await _client.GetPageAsync($"{USERNAME_PREFIX}Foo/unfollow");
-        Assert.Contains("You are no longer following &quot;TimelineFoo&quot;", unfollowResponse);
+        Assert.Contains("You are no longer following &quot;TimelineUiFoo&quot;", unfollowResponse);
 
         var timelineContent = await _client.GetPageAsync();
         Assert.DoesNotContain(messageFoo, timelineContent);
