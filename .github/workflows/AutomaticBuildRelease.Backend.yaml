@@ -4,11 +4,14 @@ name: Automatic Build Release Backend
 
 # Controls when the workflow will run
 on:
+  workflow_dispatch:
+    manual: true
   push:
       branches:
         - main
       paths:
         - 'MinitwitSimulatorAPI/**'
+        - '!MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj'
 
 jobs:
   build:
@@ -21,7 +24,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         with:
-          ${{ sectrets.BOT_ACCESS_TOKEN }}
+          token: ${{ secrets.BOT_ACCESS_TOKEN }}
       
       - name: Install .NET 7
         uses: actions/setup-dotnet@v3

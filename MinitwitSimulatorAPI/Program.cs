@@ -3,6 +3,8 @@ using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI;
 using Minitwit.Infrastructure.Repositories;
 using Minitwit.Infrastructure;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +38,13 @@ builder.Services.AddDistributedMemoryCache();
 // Add dependencies to dependency injection
 builder.Services.AddScoped<ILatestRepository, LatestRepository>();
 builder.Services.AddScoped<IFollowerRepository,FollowerRepository>();
+builder.Services.AddOpenTelemetry()
+  .WithMetrics(b => b.AddAspNetCoreInstrumentation()
+                     .AddPrometheusExporter());
 
 var app = builder.Build();
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
