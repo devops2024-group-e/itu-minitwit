@@ -1,14 +1,5 @@
 #!/bin/bash
 
-if [ "$1" = "init" ]; then
-
-    if [ -f "./test-tmp/minitwit.db" ]; then
-        echo "Database already exists."
-        exit 1
-    fi
-    echo "Putting a database to ./test-tmp/minitwit.db..."
-    (cd Minitwit && dotnet ef database update)
-
 elif [ "$1" = "start" ]; then
     echo "Starting minitwit..."
     nohup "$(which python3)" minitwit.py > /tmp/out.log 2>&1 &
