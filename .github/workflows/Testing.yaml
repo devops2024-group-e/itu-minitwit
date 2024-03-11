@@ -35,7 +35,7 @@ jobs:
       
       - name: Test
         run: dotnet test Minitwit.Tests/Minitwit.Tests.csproj --filter FullyQualifiedName~Minitwit.Tests.IntegrationTests.LoginAndLogoutTests
-
+        
   IntegrationTests-Register:
     runs-on: ubuntu-latest
 

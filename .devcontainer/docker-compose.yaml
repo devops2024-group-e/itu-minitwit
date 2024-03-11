@@ -1,0 +1,27 @@
+version: '3.5'
+
+networks:
+  main:
+    name: minitwit-dev-network
+
+services:
+  dotnet-dev:
+    image: mcr.microsoft.com/devcontainers/dotnet:7.0
+    volumes:
+      # Mount the root folder that contains .git
+      - ../:/workspace
+    command: sleep infinity
+    networks:
+      - main
+    environment:
+      - Minitwit_ConnectionStrings__MinitwitDatabase=Host=minitwit-dev-database;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit
+
+  minitwit-db:
+    build:
+      context: ./..
+      dockerfile: Dockerfile.database
+    container_name: minitwit-dev-database
+    networks:
+      - main
+    ports:
+      - '5432:5432'
