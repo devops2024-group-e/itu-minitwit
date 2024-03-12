@@ -58,7 +58,7 @@ public class TimelineController : Controller
     public async Task<IActionResult> FollowUnfollowUser([FromQuery] int latest, string username)
     {
 
-        LatestDBUtils.UpdateLatest(_latestRepository, latest);
+        _latestRepository.AddLatest(latest);
 
         var user = GetUser(username);
         if (user is null)
@@ -102,7 +102,7 @@ public class TimelineController : Controller
     public async Task<IActionResult> AddMessage([FromQuery] int latest, string username)
     {
 
-        LatestDBUtils.UpdateLatest(_latestRepository, latest);
+        _latestRepository.AddLatest(latest);
 
         if (!IsLoggedIn()) { return Forbid(); }
         string text = "";
@@ -126,7 +126,7 @@ public class TimelineController : Controller
     [HttpGet("/msgs/{username}")]
     public IActionResult GetMessages([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        LatestDBUtils.UpdateLatest(_latestRepository, latest);
+        _latestRepository.AddLatest(latest);
 
         User? profileUser = GetUser(username);
         if (profileUser is null)
@@ -150,15 +150,11 @@ public class TimelineController : Controller
     [HttpGet("/msgs")]
     public IActionResult GetAllMessages([FromQuery] int latest, [FromQuery] int no = 100)
     {
-        LatestDBUtils.UpdateLatest(_latestRepository, latest);
+        _latestRepository.AddLatest(latest);
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = new List<MessageDTO>();
-        foreach (var messageAuthor in _messageRepository.GetMessages(no))
-        {
-           messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
-        }
+        var messages = _messageRepository.GetMessages(no).Select(x => new MessageDTO(x.Message.Text, x.Message.PubDate.Value, x.Author.Username));
 
         return Ok(messages);
     }
@@ -171,13 +167,13 @@ public class TimelineController : Controller
     [HttpGet("fllws/{username}")]
     public IActionResult GetFollows([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        LatestDBUtils.UpdateLatest(_latestRepository, latest);
+        _latestRepository.AddLatest(latest);
 
         User? profileUser = GetUser(username);
         if (profileUser is null)
             return NotFound();
 
-        if (!IsLoggedIn()) { return Forbid(); } // maybe should be Unauthorized();
+        if (!IsLoggedIn()) { return Forbid(); }
 
         var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);
 

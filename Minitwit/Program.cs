@@ -13,9 +13,6 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables(prefix: "Minitwit_");
 
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MinitwitContext>(options =>
@@ -25,6 +22,8 @@ builder.Services.AddDbContext<MinitwitContext>(options =>
 
 // Add dependencies to dependency injection
 builder.Services.AddScoped<IFollowerRepository,FollowerRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Add session settings
 builder.Services.AddSession(options =>

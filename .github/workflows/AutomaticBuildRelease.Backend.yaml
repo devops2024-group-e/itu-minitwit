@@ -12,6 +12,8 @@ on:
       paths:
         - 'MinitwitSimulatorAPI/**'
         - '!MinitwitSimulatorAPI/MinitwitSimulatorAPI.csproj'
+        - 'Minitwit.Infrastructure/**'
+        - 'Minitwit.Infrastructure.Tests/**'
 
 jobs:
   build:

@@ -32,7 +32,7 @@ public class RegisterController : Controller
     [HttpPost("/register")]
     public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
-        LatestDBUtils.UpdateLatest(_latestRepository, latest);
+        _latestRepository.AddLatest(latest);
 
         string errMessage = "";
 

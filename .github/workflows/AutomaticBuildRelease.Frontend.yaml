@@ -10,6 +10,8 @@ on:
       paths:
         - 'Minitwit/**'
         - '!Minitwit/Minitwit.csproj'
+        - 'Minitwit.Infrastructure/**'
+        - 'Minitwit.Infrastructure.Tests/**'
 
 jobs:
   build:
