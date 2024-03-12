@@ -27,4 +27,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Minitwit.Infrastructure\Minitwit.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

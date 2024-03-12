@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Minitwit;
-using Minitwit.Models;
+using Minitwit.Infrastructure.Repositories;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
 
@@ -9,12 +9,13 @@ using Minitwit.ViewModels;
 public class RegisterController : Controller
 {
     private readonly ILogger<RegisterController> _logger;
-    private readonly MinitwitContext _context;
 
-    public RegisterController(ILogger<RegisterController> logger, MinitwitContext context)
+    private readonly IUserRepository _userRepository;
+
+    public RegisterController(ILogger<RegisterController> logger, IUserRepository userRepository)
     {
         _logger = logger;
-        _context = context;
+        _userRepository = userRepository;
     }
 
     public IActionResult Index()
@@ -49,19 +50,11 @@ public class RegisterController : Controller
             errMessage = "You have to enter a password";
         else if (password != password2)
             errMessage = "The two passwords do not match";
-        else if (_context.Users.Any(x => x.Username == username))
+        else if (_userRepository.DoesUserExist(username))
             errMessage = "The username is already taken";
         else
         {
-            User user = new User // We should use another type to represent the model the database
-            {
-                Username = username,
-                Email = email,
-                PwHash = PasswordHash.Hash(password)
-            };
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            _userRepository.AddUser(username, email, PasswordHash.Hash(password));
 
             _logger.LogDebug("User registered: {Username}", username);
             TempData.QueueFlashMessage("You were successfully registered and can login now");

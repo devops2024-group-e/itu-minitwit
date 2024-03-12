@@ -1,5 +1,8 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Minitwit.Infrastructure;
+using Minitwit.Infrastructure.Models;
+using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
@@ -7,12 +10,15 @@ using MinitwitSimulatorAPI.ViewModels;
 public class RegisterController : Controller
 {
     private readonly ILogger<RegisterController> _logger;
-    private readonly MinitwitContext _context;
 
-    public RegisterController(ILogger<RegisterController> logger, MinitwitContext context)
+    private readonly ILatestRepository _latestRepository;
+    private readonly IUserRepository _userRepository;
+
+    public RegisterController(ILogger<RegisterController> logger, ILatestRepository latestRepository, IUserRepository userRepository)
     {
         _logger = logger;
-        _context = context;
+        _latestRepository = latestRepository;
+        _userRepository = userRepository;
     }
 
     /// <summary>
@@ -26,7 +32,7 @@ public class RegisterController : Controller
     [HttpPost("/register")]
     public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
-        LatestDBUtils.UpdateLatest(_context, latest);
+        _latestRepository.AddLatest(latest);
 
         string errMessage = "";
 
@@ -36,19 +42,11 @@ public class RegisterController : Controller
             errMessage = "You have to enter a valid email address";
         else if (string.IsNullOrEmpty(user.Pwd))
             errMessage = "You have to enter a password";
-        else if (_context.Users.Any(x => x.Username == user.Username))
+        else if (_userRepository.DoesUserExist(user.Username))
             errMessage = "The username is already taken";
         else
         {
-            User userRecord = new User // We should use another type to represent the model the database
-            {
-                Username = user.Username,
-                Email = user.Email,
-                PwHash = PasswordHash.Hash(user.Pwd)
-            };
-
-            _context.Users.Add(userRecord);
-            _context.SaveChanges();
+            _userRepository.AddUser(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
 
             _logger.LogDebug("User registered: {Username}", user.Username);
             //TempData.QueueFlashMessage("You were successfully registered and can login now");

@@ -1,4 +1,4 @@
-namespace Minitwit.Models;
+namespace Minitwit.Infrastructure.Models;
 
 public class MessageAuthor
 {

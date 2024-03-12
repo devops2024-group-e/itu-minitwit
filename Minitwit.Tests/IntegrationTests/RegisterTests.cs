@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Minitwit.Infrastructure;
 
 namespace Minitwit.Tests.IntegrationTests;
 

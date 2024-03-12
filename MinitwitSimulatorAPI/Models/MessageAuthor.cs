@@ -1,3 +1,5 @@
+using Minitwit.Infrastructure.Models;
+
 namespace MinitwitSimulatorAPI.Models;
 
 public class MessageAuthor

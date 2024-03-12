@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI;
+using Minitwit.Infrastructure.Repositories;
+using Minitwit.Infrastructure;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
@@ -30,6 +32,11 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddDistributedMemoryCache();
 
+// Add dependencies to dependency injection
+builder.Services.AddScoped<ILatestRepository, LatestRepository>();
+builder.Services.AddScoped<IFollowerRepository,FollowerRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddOpenTelemetry()
   .WithMetrics(b => b.AddAspNetCoreInstrumentation()
                      .AddPrometheusExporter());

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using MinitwitSimulatorAPI.Models;
+using Minitwit.Infrastructure.Models;
 
-namespace MinitwitSimulatorAPI; 
+namespace Minitwit.Infrastructure;
 
 public partial class MinitwitContext : DbContext
 {

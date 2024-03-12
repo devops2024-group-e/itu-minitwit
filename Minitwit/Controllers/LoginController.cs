@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Minitwit.Infrastructure.Repositories;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
 
@@ -8,12 +9,13 @@ namespace Minitwit.Controllers;
 public class LoginController : Controller
 {
     private readonly ILogger<LoginController> _logger;
-    private readonly MinitwitContext _context;
 
-    public LoginController(ILogger<LoginController> logger, MinitwitContext context)
+    private readonly IUserRepository _userRepository;
+
+    public LoginController(ILogger<LoginController> logger, IUserRepository userRepository)
     {
         _logger = logger;
-        _context = context;
+        _userRepository = userRepository;
     }
 
     public IActionResult Index()
@@ -35,7 +37,7 @@ public class LoginController : Controller
         if (is_authenticated)
             return RedirectToAction("Index", "Timeline"); // TODO: Change to '/Timeline' ??
 
-        var user = _context.Users.SingleOrDefault(x => x.Username == username);
+        var user = _userRepository.GetUser(username);
         if (user == null)
         {
             // NOTE: Potential security risk... not good to tell the username does not exist

@@ -9,6 +9,8 @@ on:
       - 'Minitwit.Tests/**'
       - 'MinitwitSimulatorAPI/**'
       - 'Minitwit.Simulator.Api.Tests/**'
+      - 'Minitwit.Infrastructure/**'
+      - 'Minitwit.Infrastructure.Tests/**'
   
 jobs:
   IntegrationTests-LoginAndLogout:

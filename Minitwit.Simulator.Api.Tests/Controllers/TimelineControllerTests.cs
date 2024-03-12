@@ -2,6 +2,7 @@ using static System.Net.HttpStatusCode;
 using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;
 using System.Net.Http.Headers;
+using Minitwit.Infrastructure;
 using Xunit.Abstractions;
 
 namespace Minitwit.Simulator.Api.Tests.Controllers;

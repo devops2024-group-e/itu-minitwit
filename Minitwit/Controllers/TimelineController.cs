@@ -1,21 +1,27 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Minitwit.Models;
+using Minitwit.Infrastructure;
+using Minitwit.Infrastructure.Models;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
+using Minitwit.Infrastructure.Repositories;
 
 namespace Minitwit.Controllers;
 
 public class TimelineController : Controller
 {
     private readonly ILogger<TimelineController> _logger;
-    private readonly MinitwitContext _context;
+    private readonly IMessageRepository _messageRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IFollowerRepository _followerRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context)
+    public TimelineController(ILogger<TimelineController> logger, IMessageRepository messageRepository, IUserRepository userRepository, IFollowerRepository followerRepository)
     {
         _logger = logger;
-        _context = context;
+        _messageRepository = messageRepository;
+        _userRepository = userRepository;
+        _followerRepository = followerRepository;
     }
 
     [Route("{username?}")]
@@ -49,11 +55,7 @@ public class TimelineController : Controller
     [Route("public")]
     public IActionResult Public()
     {
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where message.Flagged == 0
-                        orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+        var messages = _messageRepository.GetMessages(30);
 
         return View(new PublicTimelineViewModel { Messages = messages });
     }
@@ -67,15 +69,14 @@ public class TimelineController : Controller
             return Unauthorized();
         }
 
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        User? profileUser = _userRepository.GetUser(username);
         if (profileUser == null)
         {
             return NotFound();
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Add(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _followerRepository.AddFollower(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
@@ -92,15 +93,14 @@ public class TimelineController : Controller
             return Unauthorized();
         }
 
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        User? profileUser = _userRepository.GetUser(username);
         if (profileUser == null)
         {
             return NotFound();
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _context.Followers.Remove(new Follower { WhoId = ownUserID.Value, WhomId = profileUser.UserId });
-        _context.SaveChanges();
+        _followerRepository.RemoveFollower(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
@@ -115,15 +115,9 @@ public class TimelineController : Controller
         {
             return Unauthorized();
         }
-
-        _context.Messages.Add(new Message
-        {
-            AuthorId = (int)HttpContext.Session.GetInt32("user_id"),
-            Text = text,
-            PubDate = ((int)DateTime.Now.Ticks),
-            Flagged = 0
-        });
-        _context.SaveChanges();
+    
+        var authorId = (int)HttpContext.Session.GetInt32("user_id");
+        _messageRepository.AddMessage(text, authorId);
 
         TempData.QueueFlashMessage("Your message was recorded");
 
@@ -139,17 +133,13 @@ public class TimelineController : Controller
 
     private TimelineViewModel? GetUserTimelineModel(string username, bool is_loggedin)
     {
-        User? profileUser = _context.Users.SingleOrDefault(x => x.Username == username);
+        User? profileUser = _userRepository.GetUser(username);
         if (profileUser == null)
         {
             return null;
         }
 
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where user.UserId == profileUser.UserId
-                        orderby message.PubDate descending
-                        select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+        var messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
 
         TimelineViewModel model = new TimelineViewModel { Messages = messages };
         model.Profile = new Profile
@@ -164,32 +154,21 @@ public class TimelineController : Controller
         {
             int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
             model.Profile.IsMe = currentUserId == profileUser.UserId;
-            model.Profile.IsFollowing = _context.Followers
-                                .Any(x => x.WhoId == currentUserId && x.WhomId == profileUser.UserId);
-
-            model.CurrentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
+            model.Profile.IsFollowing = _followerRepository.IsFollowing(currentUserId, profileUser.UserId);
+            model.CurrentUsername = _userRepository.GetUser(currentUserId).Username;
         }
 
-        model.Messages = (from message in _context.Messages
-                          join user in _context.Users on message.AuthorId equals user.UserId
-                          where user.UserId == profileUser.UserId
-                          orderby message.PubDate descending
-                          select new MessageAuthor { Message = message, Author = user }).Take(30).ToList();
+        //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
+        model.Messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
 
         return model;
     }
 
     private TimelineViewModel GetCurrentUserTimelineModel(int currentUserId)
     {
-        var currentUsername = _context.Users.Single(x => x.UserId == currentUserId).Username;
+        var currentUsername = _userRepository.GetUser(currentUserId).Username;
 
-        var messages = (from user in _context.Users
-                        join msg in _context.Messages on user.UserId equals msg.AuthorId
-                        where msg.Flagged == 0 && (user.UserId == currentUserId || (from f in _context.Followers
-                                                                                    where f.WhoId == currentUserId
-                                                                                    select f.WhomId).Any(x => x == user.UserId))
-                        orderby msg.PubDate descending
-                        select new MessageAuthor { Author = user, Message = msg }).Take(30).ToList();
+        var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId, 30);
 
         return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
     }

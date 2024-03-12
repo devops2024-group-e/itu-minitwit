@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Minitwit\Minitwit.csproj" />
+    <ProjectReference Include="..\Minitwit.Infrastructure.Tests\Minitwit.Infrastructure.Tests.csproj" />
   </ItemGroup>
 
 </Project>

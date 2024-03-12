@@ -1,4 +1,4 @@
-using Minitwit.Models;
+using Minitwit.Infrastructure.Models;
 
 namespace Minitwit.ViewModels;
 

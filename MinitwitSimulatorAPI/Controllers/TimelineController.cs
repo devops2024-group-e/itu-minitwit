@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Minitwit.Infrastructure;
+using Minitwit.Infrastructure.Models;
+using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
 using MinitwitSimulatorAPI.ViewModels;
@@ -10,12 +13,20 @@ namespace MinitwitSimulatorAPI.Controllers;
 public class TimelineController : Controller
 {
     private readonly ILogger<TimelineController> _logger;
-    private readonly MinitwitContext _context;
+    private readonly ILatestRepository _latestRepository;
+    private readonly IFollowerRepository _followerRepository;
 
-    public TimelineController(ILogger<TimelineController> logger, MinitwitContext context)
+    private readonly IUserRepository _userRepository;
+    
+    private readonly IMessageRepository _messageRepository;
+
+    public TimelineController(ILogger<TimelineController> logger, ILatestRepository latestRepository, IFollowerRepository followerRepository, IUserRepository userRepository, IMessageRepository messageRepository)
     {
         _logger = logger;
-        _context = context;
+        _latestRepository = latestRepository;
+        _followerRepository = followerRepository;
+        _userRepository = userRepository;
+        _messageRepository = messageRepository;
     }
 
     /// <summary>
@@ -34,7 +45,7 @@ public class TimelineController : Controller
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
     private User? GetUser(string username)
     {
-        return _context.Users.SingleOrDefault(x => x.Username == username);
+        return _userRepository.GetUser(username);
     }
 
     /// <summary>
@@ -47,7 +58,7 @@ public class TimelineController : Controller
     public async Task<IActionResult> FollowUnfollowUser([FromQuery] int latest, string username)
     {
 
-        LatestDBUtils.UpdateLatest(_context, latest);
+        _latestRepository.AddLatest(latest);
 
         var user = GetUser(username);
         if (user is null)
@@ -75,11 +86,9 @@ public class TimelineController : Controller
             return NotFound();
 
         if (action == "unfollow")
-            _context.Followers.Remove(new Follower { WhoId = ownUserId, WhomId = otherUser.UserId });
+            _followerRepository.RemoveFollower(ownUserId, otherUser.UserId);
         else
-            _context.Followers.Add(new Follower { WhoId = ownUserId, WhomId = otherUser.UserId });
-
-        _context.SaveChanges();
+            _followerRepository.AddFollower(ownUserId, otherUser.UserId);
 
         return NoContent();
     }
@@ -93,7 +102,7 @@ public class TimelineController : Controller
     public async Task<IActionResult> AddMessage([FromQuery] int latest, string username)
     {
 
-        LatestDBUtils.UpdateLatest(_context, latest);
+        _latestRepository.AddLatest(latest);
 
         if (!IsLoggedIn()) { return Forbid(); }
         string text = "";
@@ -104,14 +113,7 @@ public class TimelineController : Controller
             text = dict["content"];
         }
 
-        _context.Messages.Add(new Message
-        {
-            AuthorId = GetUser(username).UserId,
-            Text = text,
-            PubDate = (int)DateTime.Now.Ticks,
-            Flagged = 0
-        });
-        _context.SaveChanges();
+        _messageRepository.AddMessage(text, GetUser(username).UserId);
 
         return NoContent();
     }
@@ -124,7 +126,7 @@ public class TimelineController : Controller
     [HttpGet("/msgs/{username}")]
     public IActionResult GetMessages([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        LatestDBUtils.UpdateLatest(_context, latest);
+        _latestRepository.AddLatest(latest);
 
         User? profileUser = GetUser(username);
         if (profileUser is null)
@@ -132,11 +134,11 @@ public class TimelineController : Controller
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where user.UserId == profileUser.UserId
-                        orderby message.PubDate descending
-                        select new MessageDTO(message.Text, message.PubDate.Value, user.Username)).Take(no).ToList();
+        var messages = new List<MessageDTO>();
+        foreach (var messageAuthor in _messageRepository.GetUserSpecificMessages(profileUser, no))
+        {
+           messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
+        }
 
         return Ok(messages);
     }
@@ -148,15 +150,11 @@ public class TimelineController : Controller
     [HttpGet("/msgs")]
     public IActionResult GetAllMessages([FromQuery] int latest, [FromQuery] int no = 100)
     {
-        LatestDBUtils.UpdateLatest(_context, latest);
+        _latestRepository.AddLatest(latest);
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = (from message in _context.Messages
-                        join user in _context.Users on message.AuthorId equals user.UserId
-                        where message.Flagged == 0
-                        orderby message.PubDate descending
-                        select new MessageDTO(message.Text, message.PubDate.Value, user.Username)).Take(no).ToList();
+        var messages = _messageRepository.GetMessages(no).Select(x => new MessageDTO(x.Message.Text, x.Message.PubDate.Value, x.Author.Username));
 
         return Ok(messages);
     }
@@ -169,7 +167,7 @@ public class TimelineController : Controller
     [HttpGet("fllws/{username}")]
     public IActionResult GetFollows([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        LatestDBUtils.UpdateLatest(_context, latest);
+        _latestRepository.AddLatest(latest);
 
         User? profileUser = GetUser(username);
         if (profileUser is null)
@@ -177,11 +175,7 @@ public class TimelineController : Controller
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var follows = (from user in _context.Users
-                       join follower in _context.Followers
-                       on user.UserId equals follower.WhomId
-                       where follower.WhoId == profileUser.UserId
-                       select user.Username).Take(no).ToList();
+        var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);
 
         return Ok(new FollowerDTO(follows));
     }
