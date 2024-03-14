@@ -10,5 +10,13 @@ public interface IUserRepository
 
     bool DoesUserExist(string username);
 
-    public bool AddUser(string username, string email, string password);
+    bool AddUser(string username, string email, string password);
+
+    Task<User?> GetUserAsync(string username);
+
+    Task<User?> GetUserAsync(int currentUserId);
+
+    Task<bool> DoesUserExistAsync(string username);
+
+    Task<bool> AddUserAsync(string username, string email, string password);
 }
