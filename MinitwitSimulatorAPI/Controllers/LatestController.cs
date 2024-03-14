@@ -1,12 +1,5 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MinitwitSimulatorAPI.Models;
-using MinitwitSimulatorAPI.Utils;
-using MinitwitSimulatorAPI.ViewModels;
 using Minitwit.Infrastructure.Repositories;
 
 namespace MinitwitSimulatorAPI.Controllers;
@@ -24,9 +17,9 @@ public class LatestController : Controller
     }
 
     [HttpGet("/latest")]
-    public IActionResult GetLatest()
+    public async Task<ActionResult<LatestDTO>> GetLatest()
     {
-        var content = _latestRepository.GetLatest();
+        var content = await _latestRepository.GetLatestAsync();
 
         return Ok(new LatestDTO(content));
     }
