@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Minitwit.Infrastructure;
 using Minitwit.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,9 @@ builder.Services.AddDbContext<MinitwitContext>(options =>
 builder.Services.AddScoped<IFollowerRepository,FollowerRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddOpenTelemetry()
+  .WithMetrics(b => b.AddAspNetCoreInstrumentation()
+                     .AddPrometheusExporter());
 
 // Add session settings
 builder.Services.AddSession(options =>
@@ -34,6 +40,8 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
