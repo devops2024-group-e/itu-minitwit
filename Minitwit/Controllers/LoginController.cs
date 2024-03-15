@@ -30,14 +30,14 @@ public class LoginController : Controller
     }
 
     [HttpPost()]
-    public IActionResult LoginNow(string username, string password)
+    public async Task<IActionResult> LoginNow(string username, string password)
     {
         _logger.LogInformation("Login attempt for user {username}", username);
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
             return RedirectToAction("Index", "Timeline"); // TODO: Change to '/Timeline' ??
 
-        var user = _userRepository.GetUser(username);
+        var user = await _userRepository.GetUserAsync(username);
         if (user == null)
         {
             // NOTE: Potential security risk... not good to tell the username does not exist
