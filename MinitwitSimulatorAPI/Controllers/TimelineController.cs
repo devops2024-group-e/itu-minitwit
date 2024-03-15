@@ -124,7 +124,7 @@ public class TimelineController : Controller
     {
 
         _latestRepository.AddLatest(latest);
-        _logger.LogDebug($"FollowUnfollowUser added latest: {latest}");
+        _logger.LogDebug($"AddMessage added latest: {latest}");
 
         if (!IsLoggedIn()) 
         { 
