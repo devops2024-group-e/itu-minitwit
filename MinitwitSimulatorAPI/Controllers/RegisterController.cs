@@ -1,12 +1,9 @@
 
 using Microsoft.AspNetCore.Mvc;
-using Minitwit.Infrastructure;
-using Minitwit.Infrastructure.Models;
 using Minitwit.Infrastructure.Repositories;
-using MinitwitSimulatorAPI;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
-using MinitwitSimulatorAPI.ViewModels;
+
 public class RegisterController : Controller
 {
     private readonly ILogger<RegisterController> _logger;
@@ -30,9 +27,9 @@ public class RegisterController : Controller
     /// <param name="password2">A repetition of the password of the new user.</param>
     /// <returns>Either http code 400 (BadRequest) or http code 204 (Nocontent)</returns>
     [HttpPost("/register")]
-    public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
+    public async Task<IActionResult> Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
 
         string errMessage = "";
 
@@ -42,11 +39,11 @@ public class RegisterController : Controller
             errMessage = "You have to enter a valid email address";
         else if (string.IsNullOrEmpty(user.Pwd))
             errMessage = "You have to enter a password";
-        else if (_userRepository.DoesUserExist(user.Username))
+        else if (await _userRepository.DoesUserExistAsync(user.Username))
             errMessage = "The username is already taken";
         else
         {
-            _userRepository.AddUser(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
+            await _userRepository.AddUserAsync(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
 
             _logger.LogDebug("User registered: {Username}", user.Username);
             //TempData.QueueFlashMessage("You were successfully registered and can login now");

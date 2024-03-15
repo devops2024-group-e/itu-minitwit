@@ -31,7 +31,7 @@ public class RegisterController : Controller
     }
 
     [HttpPost()]
-    public IActionResult Register(string username, string email, string password, string password2)
+    public async Task<IActionResult> Register(string username, string email, string password, string password2)
     {
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
@@ -54,7 +54,7 @@ public class RegisterController : Controller
             errMessage = "The username is already taken";
         else
         {
-            _userRepository.AddUser(username, email, PasswordHash.Hash(password));
+            await _userRepository.AddUserAsync(username, email, PasswordHash.Hash(password));
 
             _logger.LogDebug("User registered: {Username}", username);
             TempData.QueueFlashMessage("You were successfully registered and can login now");
