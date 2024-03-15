@@ -28,6 +28,8 @@ public class LatestController : Controller
     {
         var content = _latestRepository.GetLatest();
 
+        _logger.LogDebug($"GetLatest returns {content}");
+
         return Ok(new LatestDTO(content));
     }
 }

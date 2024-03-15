@@ -33,30 +33,44 @@ public class RegisterController : Controller
     public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
         _latestRepository.AddLatest(latest);
+        _logger.LogDebug($"Register added latest: {latest}");
 
         string errMessage = "";
 
         if (string.IsNullOrEmpty(user.Username))
+        {
             errMessage = "You have to enter a username";
+            _logger.LogDebug($"Username in register is empty");
+        }
         else if (string.IsNullOrEmpty(user.Email) || !user.Email.Contains("@"))
+        {
             errMessage = "You have to enter a valid email address";
+            _logger.LogDebug($"Email in register is not valid");
+        }
         else if (string.IsNullOrEmpty(user.Pwd))
+        {
             errMessage = "You have to enter a password";
+            _logger.LogDebug($"Password in register is empty");
+
+        }
         else if (_userRepository.DoesUserExist(user.Username))
+        {
             errMessage = "The username is already taken";
+            _logger.LogDebug($"Username provided for register already exists");
+        }
         else
         {
             _userRepository.AddUser(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
-
             _logger.LogDebug("User registered: {Username}", user.Username);
-            //TempData.QueueFlashMessage("You were successfully registered and can login now");
         }
         if (errMessage != "")
         {
+            _logger.LogDebug("Register returns BadRequest");
             return BadRequest(errMessage);
         }
         else
         {
+            _logger.LogDebug("Register returns 204 NoContent");
             return NoContent();
         }
     }
