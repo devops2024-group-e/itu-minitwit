@@ -23,7 +23,7 @@ public class RegisterController : Controller
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
         {
-            _logger.LogDebug("User is already authenticated... redirecting to timeline");
+            _logger.LogDebug("User is already authenticated. Redirecting to timeline");
             return RedirectToAction("Index", "Timeline");
         }
 
@@ -36,22 +36,37 @@ public class RegisterController : Controller
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
         {
-            _logger.LogDebug("User is already authenticated... redirecting to timeline");
+            _logger.LogDebug("User is already authenticated. Redirecting to timeline");
             return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
         }
 
         string errMessage = "";
 
         if (string.IsNullOrEmpty(username))
+        {
             errMessage = "You have to enter a username";
+            _logger.LogDebug($"Username in register is empty");
+        }
         else if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+        {
             errMessage = "You have to enter a valid email address";
+            _logger.LogDebug($"Email in register is not valid");
+        }
         else if (string.IsNullOrEmpty(password))
+        {
             errMessage = "You have to enter a password";
+            _logger.LogDebug($"Password in register is empty");
+        }         
         else if (password != password2)
+        {
             errMessage = "The two passwords do not match";
+            _logger.LogDebug($"Two passwords given to register do not match");
+        }
         else if (_userRepository.DoesUserExist(username))
+        {
             errMessage = "The username is already taken";
+            _logger.LogDebug($"Username provided for register already exists");
+        }
         else
         {
             _userRepository.AddUser(username, email, PasswordHash.Hash(password));
