@@ -25,13 +25,13 @@ public class TimelineController : Controller
     }
 
     [Route("{username?}")]
-    public IActionResult Index(string username)
+    public async Task<IActionResult> Index(string username)
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
 
         if (!string.IsNullOrEmpty(username))
         {
-            var model = GetUserTimelineModel(username, is_loggedin);
+            var model = await GetUserTimelineModelAsync(username, is_loggedin);
             if (model == null)
             {
                 return NotFound();
@@ -46,22 +46,22 @@ public class TimelineController : Controller
         }
         else
         {
-            var model = GetCurrentUserTimelineModel(HttpContext.Session.GetInt32("user_id").Value);
+            var model = await GetCurrentUserTimelineModelAsync(HttpContext.Session.GetInt32("user_id").Value);
 
             return View(model);
         }
     }
 
     [Route("public")]
-    public IActionResult Public()
+    public async Task<IActionResult> Public()
     {
-        var messages = _messageRepository.GetMessages(30);
+        var messages = await _messageRepository.GetMessagesAsync(30);
 
         return View(new PublicTimelineViewModel { Messages = messages });
     }
 
     [Route("{username}/follow")]
-    public IActionResult FollowUser(string username)
+    public async Task<IActionResult> FollowUser(string username)
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (!is_loggedin)
@@ -69,14 +69,14 @@ public class TimelineController : Controller
             return Unauthorized();
         }
 
-        User? profileUser = _userRepository.GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
             return NotFound();
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _followerRepository.AddFollower(ownUserID.Value, profileUser.UserId);
+        await _followerRepository.AddFollowerAsync(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
 
@@ -84,7 +84,7 @@ public class TimelineController : Controller
     }
 
     [Route("{username}/unfollow")]
-    public IActionResult UnfollowUser(string username)
+    public async Task<IActionResult> UnfollowUser(string username)
     {
 
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
@@ -93,14 +93,14 @@ public class TimelineController : Controller
             return Unauthorized();
         }
 
-        User? profileUser = _userRepository.GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
             return NotFound();
         }
 
         var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _followerRepository.RemoveFollower(ownUserID.Value, profileUser.UserId);
+        await _followerRepository.RemoveFollowerAsync(ownUserID.Value, profileUser.UserId);
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
 
@@ -108,16 +108,16 @@ public class TimelineController : Controller
     }
 
     [HttpPost("add_message")]
-    public IActionResult AddMessage(string text)
+    public async Task<IActionResult> AddMessage(string text)
     {
         bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (!is_loggedin)
         {
             return Unauthorized();
         }
-    
+
         var authorId = (int)HttpContext.Session.GetInt32("user_id");
-        _messageRepository.AddMessage(text, authorId);
+        await _messageRepository.AddMessageAsync(text, authorId);
 
         TempData.QueueFlashMessage("Your message was recorded");
 
@@ -131,15 +131,15 @@ public class TimelineController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    private TimelineViewModel? GetUserTimelineModel(string username, bool is_loggedin)
+    private async Task<TimelineViewModel?> GetUserTimelineModelAsync(string username, bool is_loggedin)
     {
-        User? profileUser = _userRepository.GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
             return null;
         }
 
-        var messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
+        var messages = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
 
         TimelineViewModel model = new TimelineViewModel { Messages = messages };
         model.Profile = new Profile
@@ -159,14 +159,14 @@ public class TimelineController : Controller
         }
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
-        model.Messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
+        model.Messages = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
 
         return model;
     }
 
-    private TimelineViewModel GetCurrentUserTimelineModel(int currentUserId)
+    private async Task<TimelineViewModel> GetCurrentUserTimelineModelAsync(int currentUserId)
     {
-        var currentUsername = _userRepository.GetUser(currentUserId).Username;
+        var currentUsername = (await _userRepository.GetUserAsync(currentUserId))?.Username;
 
         var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId, 30);
 

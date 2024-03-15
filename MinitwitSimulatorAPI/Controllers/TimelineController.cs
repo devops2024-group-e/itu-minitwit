@@ -1,12 +1,7 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Minitwit.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc;
 using Minitwit.Infrastructure.Models;
 using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI.Models;
-using MinitwitSimulatorAPI.Utils;
-using MinitwitSimulatorAPI.ViewModels;
 
 namespace MinitwitSimulatorAPI.Controllers;
 
@@ -17,7 +12,7 @@ public class TimelineController : Controller
     private readonly IFollowerRepository _followerRepository;
 
     private readonly IUserRepository _userRepository;
-    
+
     private readonly IMessageRepository _messageRepository;
 
     public TimelineController(ILogger<TimelineController> logger, ILatestRepository latestRepository, IFollowerRepository followerRepository, IUserRepository userRepository, IMessageRepository messageRepository)
@@ -39,16 +34,6 @@ public class TimelineController : Controller
     }
 
     /// <summary>
-    /// This method gets a user from the database by username.
-    /// </summary>
-    /// <param name="username">The username of the user.</param>
-    /// <returns>A <c>User</c> object of the user with the given username.</returns>
-    private User? GetUser(string username)
-    {
-        return _userRepository.GetUser(username);
-    }
-
-    /// <summary>
     /// The user currently logged in, follows or unfollows the user given in the json-body.
     /// </summary>
     /// <param name="ownUsername">The username of the user to be followed.</param>
@@ -58,9 +43,9 @@ public class TimelineController : Controller
     public async Task<IActionResult> FollowUnfollowUser([FromQuery] int latest, string username)
     {
 
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
 
-        var user = GetUser(username);
+        var user = await _userRepository.GetUserAsync(username);
         if (user is null)
             return NotFound();
 
@@ -80,15 +65,15 @@ public class TimelineController : Controller
             }
             otherUsername = dict[action];
         }
-        var otherUser = GetUser(otherUsername);
+        var otherUser = await _userRepository.GetUserAsync(otherUsername);
 
         if (otherUser is null)
             return NotFound();
 
         if (action == "unfollow")
-            _followerRepository.RemoveFollower(ownUserId, otherUser.UserId);
+            await _followerRepository.RemoveFollowerAsync(ownUserId, otherUser.UserId);
         else
-            _followerRepository.AddFollower(ownUserId, otherUser.UserId);
+            await _followerRepository.AddFollowerAsync(ownUserId, otherUser.UserId);
 
         return NoContent();
     }
@@ -102,7 +87,7 @@ public class TimelineController : Controller
     public async Task<IActionResult> AddMessage([FromQuery] int latest, string username)
     {
 
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
 
         if (!IsLoggedIn()) { return Forbid(); }
         string text = "";
@@ -113,7 +98,11 @@ public class TimelineController : Controller
             text = dict["content"];
         }
 
-        _messageRepository.AddMessage(text, GetUser(username).UserId);
+        var user = await _userRepository.GetUserAsync(username);
+        if (user is null)
+            return NotFound();
+
+        _messageRepository.AddMessage(text, user.UserId);
 
         return NoContent();
     }
@@ -124,21 +113,18 @@ public class TimelineController : Controller
     /// <param name="username">The username of the user, whose messages should be returned.</param>
     /// <returns>Either Http code 404 (NotFound) or Http code 200 (Ok)</returns>
     [HttpGet("/msgs/{username}")]
-    public IActionResult GetMessages([FromQuery] int latest, string username, [FromQuery] int no = 100)
+    public async Task<ActionResult<IEnumerable<MessageDTO>>> GetMessages([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
 
-        User? profileUser = GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser is null)
             return NotFound();
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = new List<MessageDTO>();
-        foreach (var messageAuthor in _messageRepository.GetUserSpecificMessages(profileUser, no))
-        {
-           messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
-        }
+        var messages = (await _messageRepository.GetUserSpecificMessagesAsync(profileUser, no))
+                        .Select(messageAuthor => new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.GetValueOrDefault(0), messageAuthor.Author.Username));
 
         return Ok(messages);
     }
@@ -148,13 +134,13 @@ public class TimelineController : Controller
     /// </summary>
     /// <returns>Http code 200 (Ok)</returns>
     [HttpGet("/msgs")]
-    public IActionResult GetAllMessages([FromQuery] int latest, [FromQuery] int no = 100)
+    public async Task<ActionResult<IEnumerable<MessageDTO>>> GetAllMessages([FromQuery] int latest, [FromQuery] int no = 100)
     {
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var messages = _messageRepository.GetMessages(no).Select(x => new MessageDTO(x.Message.Text, x.Message.PubDate.Value, x.Author.Username));
+        var messages = (await _messageRepository.GetMessagesAsync(no)).Select(x => new MessageDTO(x.Message.Text, x.Message.PubDate.GetValueOrDefault(0), x.Author.Username));
 
         return Ok(messages);
     }
@@ -165,17 +151,17 @@ public class TimelineController : Controller
     /// <param name="username">The username of the user, whose follows should be returned.</param>
     /// <returns>Either http code 404 (NotFound) or http code 200 (Ok)</returns>
     [HttpGet("fllws/{username}")]
-    public IActionResult GetFollows([FromQuery] int latest, string username, [FromQuery] int no = 100)
+    public async Task<ActionResult<FollowerDTO>> GetFollows([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
 
-        User? profileUser = GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser is null)
             return NotFound();
 
         if (!IsLoggedIn()) { return Forbid(); }
 
-        var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);
+        var follows = await _followerRepository.GetCurrentUserFollowsAsync(profileUser.UserId, no);
 
         return Ok(new FollowerDTO(follows));
     }
