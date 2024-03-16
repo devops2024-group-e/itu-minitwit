@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
+Vagrant.configure("1") do |config|
   config.vm.box = 'digital_ocean'
   config.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
   config.ssh.private_key_path = '~/.ssh/do_ssh_key'
@@ -21,6 +21,11 @@ Vagrant.configure("2") do |config|
     server.vm.hostname = "minitwit-conf-01"
     server.vm.synced_folder "./.infrastructure", "/config-management", type: "rsync"
 
+    server.vm.provision "shell", inline: 'echo "export DOCKER_USERNAME=' + "'" + ENV["DOCKER_USERNAME"] + "'" + '" >> ~/.bash_profile'
+    server.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + ENV["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
+
+    server.vm.provision "shell", inline: 'echo "export DIGITAL_OCEAN_TOKEN=' + "'" + ENV["DIGITAL_OCEAN_TOKEN"] + "'" + '" >> ~/.bash_profile'
+
     server.vm.provision "shell", inline: <<-SHELL
 
     sudo apt-get update
@@ -31,6 +36,11 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y software-properties-common
     sudo apt-add-repository ppa:ansible/ansible
     sudo apt-get install -y ansible
+    sudo apt-get install -y vagrant
+    sudo apt-get install -y vagrant-scp
+    sudo apt-get install -y vagrant-digital-ocean
+    sudo apt-get install -y vagrant-vbguest
+    sudo apt-get install -y vagrant-reload
 
 
     echo -e "\nVerifying correct download" 
