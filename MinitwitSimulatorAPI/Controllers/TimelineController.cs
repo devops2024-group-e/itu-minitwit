@@ -1,12 +1,7 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Minitwit.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc;
 using Minitwit.Infrastructure.Models;
 using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI.Models;
-using MinitwitSimulatorAPI.Utils;
-using MinitwitSimulatorAPI.ViewModels;
 
 namespace MinitwitSimulatorAPI.Controllers;
 
@@ -46,7 +41,7 @@ public class TimelineController : Controller
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
     private User? GetUser(string username)
     {
-        _logger.LogDebug($"GetUser return user with username {username}");
+        _logger.LogInformation($"GetUser return user with username {username}");
         return _userRepository.GetUser(username);
     }
 
@@ -66,14 +61,14 @@ public class TimelineController : Controller
         var user = GetUser(username);
         if (user is null)
         {
-            _logger.LogDebug($"FollowUnfollowUser returns NotFound for user {username}");
+            _logger.LogWarning($"FollowUnfollowUser returns NotFound for user {username}");
             return NotFound();
         }
 
         var ownUserId = user.UserId;
         if (!IsLoggedIn()) 
         {
-            _logger.LogDebug($"FollowUnfollowUser returns Forbid because user is not logged in");
+            _logger.LogWarning($"FollowUnfollowUser returns Forbid because user is not logged in");
             return Forbid(); 
         }
 
@@ -94,7 +89,7 @@ public class TimelineController : Controller
 
         if (otherUser is null)
         {
-            _logger.LogDebug($"FollowUnfollowUser returns NotFound because other user {otherUsername} does not exist");
+            _logger.LogWarning($"FollowUnfollowUser returns NotFound because other user {otherUsername} does not exist");
             return NotFound();
         }
 
@@ -102,15 +97,15 @@ public class TimelineController : Controller
         if (action == "unfollow")
         { 
             _followerRepository.RemoveFollower(ownUserId, otherUserId);
-            _logger.LogDebug($"FollowUnfollowUser user {ownUserId} unfollows {otherUserId}");
+            _logger.LogInformation($"FollowUnfollowUser user {ownUserId} unfollows {otherUserId}");
         }
         else
         {
             _followerRepository.AddFollower(ownUserId, otherUserId);
-            _logger.LogDebug($"FollowUnfollowUser user {ownUserId} follows {otherUserId}");
+            _logger.LogInformation($"FollowUnfollowUser user {ownUserId} follows {otherUserId}");
         }
 
-        _logger.LogDebug($"FollowUnfollowUser returns NoContent");
+        _logger.LogWarning($"FollowUnfollowUser returns NoContent");
         return NoContent();
     }
 
@@ -128,7 +123,7 @@ public class TimelineController : Controller
 
         if (!IsLoggedIn()) 
         { 
-            _logger.LogDebug($"AddMessage returns Forbid because user {username} is not logged in");
+            _logger.LogWarning($"AddMessage returns Forbid because user {username} is not logged in");
             return Forbid(); 
         }
         string text = "";
@@ -140,9 +135,9 @@ public class TimelineController : Controller
         }
 
         _messageRepository.AddMessage(text, GetUser(username).UserId);
-        _logger.LogDebug($"AddMessage added message for user {username} with text {text}");
+        _logger.LogInformation($"AddMessage added message for user {username} with text {text}");
 
-        _logger.LogDebug($"AddMessage returns NoContent");
+        _logger.LogWarning($"AddMessage returns NoContent");
         return NoContent();
     }
 
@@ -160,13 +155,13 @@ public class TimelineController : Controller
         User? profileUser = GetUser(username);
         if (profileUser is null)
         {
-            _logger.LogDebug($"GetMessages returns NotFound for user {username}");
+            _logger.LogWarning($"GetMessages returns NotFound for user {username}");
             return NotFound();
         }
 
         if (!IsLoggedIn()) 
         { 
-            _logger.LogDebug($"GetMessages returns Forbid as user {username} is not logged in");
+            _logger.LogWarning($"GetMessages returns Forbid as user {username} is not logged in");
             return Forbid(); 
         }
 
@@ -175,7 +170,7 @@ public class TimelineController : Controller
         {
            messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
         }
-        _logger.LogDebug($"GetMessages returns all user specific messages for user {username}");
+        _logger.LogInformation($"GetMessages returns all user specific messages for user {username}");
         return Ok(messages);
     }
 
@@ -191,13 +186,13 @@ public class TimelineController : Controller
 
         if (!IsLoggedIn()) 
         {
-            _logger.LogDebug($"GetAllMessages returns Forbid because user is not logged in");
+            _logger.LogWarning($"GetAllMessages returns Forbid because user is not logged in");
             return Forbid(); 
         }
 
         var messages = _messageRepository.GetMessages(no).Select(x => new MessageDTO(x.Message.Text, x.Message.PubDate.Value, x.Author.Username));
 
-        _logger.LogDebug($"GetAllMessages returns all messages");
+        _logger.LogInformation($"GetAllMessages returns all messages");
         return Ok(messages);
     }
 
@@ -215,19 +210,19 @@ public class TimelineController : Controller
         User? profileUser = GetUser(username);
         if (profileUser is null)
         {
-            _logger.LogDebug($"GetFollows returns NotFound for username: {username}");
+            _logger.LogWarning($"GetFollows returns NotFound for username: {username}");
             return NotFound();
         }
 
         if (!IsLoggedIn()) 
         { 
-            _logger.LogDebug($"GetFollows returns Forbid as user is not logged in");
+            _logger.LogWarning($"GetFollows returns Forbid as user is not logged in");
             return Forbid(); 
         }
 
         var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);
 
-        _logger.LogDebug($"GetFollows returns followers for username {username}");
+        _logger.LogInformation($"GetFollows returns followers for username {username}");
         return Ok(new FollowerDTO(follows));
     }
 }
