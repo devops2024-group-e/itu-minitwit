@@ -27,7 +27,7 @@ public class LoginController : Controller
             return RedirectToAction("Index", "Timeline");
         }
 
-        _logger.LogDebug("Login page requested");
+        _logger.LogInformation("Login page requested");
 
         return View(new LoginViewModel());
     }
@@ -35,7 +35,7 @@ public class LoginController : Controller
     [HttpPost()]
     public IActionResult LoginNow(string username, string password)
     {
-        _logger.LogDebug("Login attempt for user {username}", username);
+        _logger.LogInformation("Login attempt for user {username}", username);
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
         {
@@ -47,7 +47,7 @@ public class LoginController : Controller
         if (user == null)
         {
             // NOTE: Potential security risk... not good to tell the username does not exist
-            _logger.LogDebug("User does not exist");
+            _logger.LogWarning("User does not exist");
             return View("Index", new LoginViewModel() { ErrorMessage = "Invalid username" });
         }
 
@@ -56,14 +56,14 @@ public class LoginController : Controller
             HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
             TempData.QueueFlashMessage("You were logged in");
 
-            _logger.LogDebug($"User with username {username} was logged in and redirected to Timeline");
+            _logger.LogInformation($"User with username {username} was logged in and redirected to Timeline");
 
             return RedirectToAction("Index", "Timeline");
         }
         else
         {
             // NOTE: Potential security risk... not good to tell the password is incorrect
-            _logger.LogDebug($"User with username {username} provided wrong password and was redirected to Login page");
+            _logger.LogInformation($"User with username {username} provided wrong password and was redirected to Login page");
             return View("Index", new LoginViewModel() { ErrorMessage = "Invalid password" });
         }
     }

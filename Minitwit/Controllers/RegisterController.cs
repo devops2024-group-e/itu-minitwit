@@ -1,6 +1,4 @@
-
 using Microsoft.AspNetCore.Mvc;
-using Minitwit;
 using Minitwit.Infrastructure.Repositories;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
@@ -23,7 +21,7 @@ public class RegisterController : Controller
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
         {
-            _logger.LogDebug("User is already authenticated. Redirecting to timeline");
+            _logger.LogInformation("User is already authenticated. Redirecting to timeline");
             return RedirectToAction("Index", "Timeline");
         }
 
@@ -36,42 +34,42 @@ public class RegisterController : Controller
         bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
         if (is_authenticated)
         {
-            _logger.LogDebug("User is already authenticated. Redirecting to timeline");
+            _logger.LogInformation("User is already authenticated. Redirecting to timeline");
             return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
         }
 
-        string errMessage = "";
+        string errMessage;
 
         if (string.IsNullOrEmpty(username))
         {
             errMessage = "You have to enter a username";
-            _logger.LogDebug($"Username in register is empty");
+            _logger.LogWarning($"Username in register is empty");
         }
         else if (string.IsNullOrEmpty(email) || !email.Contains("@"))
         {
             errMessage = "You have to enter a valid email address";
-            _logger.LogDebug($"Email in register is not valid");
+            _logger.LogWarning($"Email in register is not valid");
         }
         else if (string.IsNullOrEmpty(password))
         {
             errMessage = "You have to enter a password";
-            _logger.LogDebug($"Password in register is empty");
+            _logger.LogWarning($"Password in register is empty");
         }         
         else if (password != password2)
         {
             errMessage = "The two passwords do not match";
-            _logger.LogDebug($"Two passwords given to register do not match");
+            _logger.LogWarning($"Two passwords given to register do not match");
         }
         else if (_userRepository.DoesUserExist(username))
         {
             errMessage = "The username is already taken";
-            _logger.LogDebug($"Username provided for register already exists");
+            _logger.LogWarning($"Username provided for register already exists");
         }
         else
         {
             _userRepository.AddUser(username, email, PasswordHash.Hash(password));
 
-            _logger.LogDebug("User registered: {Username}", username);
+            _logger.LogInformation("User registered: {Username}", username);
             TempData.QueueFlashMessage("You were successfully registered and can login now");
 
             return RedirectToAction("Index", "Login");

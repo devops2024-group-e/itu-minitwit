@@ -17,7 +17,7 @@ public class LogoutController : Controller
     {
         HttpContext.Session.Remove("user_id");
         TempData.QueueFlashMessage("You were logged out");
-        _logger.LogDebug("User is logged out and redirected to timeline");
+        _logger.LogInformation("User is logged out and redirected to timeline");
         return RedirectToAction("Index", "Timeline");
     }
 }
