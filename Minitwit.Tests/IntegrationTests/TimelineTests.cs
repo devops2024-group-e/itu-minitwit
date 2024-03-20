@@ -6,6 +6,7 @@ namespace Minitwit.Tests.IntegrationTests;
 /// <summary>
 /// Implements tests regarding the timeline. This mostly involves the TimelineController
 /// </summary>
+[Collection(nameof(SequentialControllerTestDefinition))]
 public class TimelineTests : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
     private const string USERNAME_PREFIX = "TimelineUi";

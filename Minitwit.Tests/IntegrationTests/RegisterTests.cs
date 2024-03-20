@@ -3,6 +3,7 @@ using Minitwit.Infrastructure;
 
 namespace Minitwit.Tests.IntegrationTests;
 
+[Collection(nameof(SequentialControllerTestDefinition))]
 public class RegisterTests : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
 
