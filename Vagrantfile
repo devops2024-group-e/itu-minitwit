@@ -54,8 +54,10 @@ Vagrant.configure("2") do |config|
     echo -e "\nSelecting Minitwit Folder as default folder when you ssh into the server...\n"
     echo "cd /config-management" >> ~/.bash_profile
 
-    echo -e "\nCreating sshkey"
+    echo -e "\nGenerating sshkey"
     ssh-keygen -f ~/.ssh/do_ssh_key -N ""
+
+    echo -e "\nSetting up "
 
     echo -e "\nVagrant setup done ..."
     SHELL
