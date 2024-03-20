@@ -47,7 +47,7 @@ public class LoginController : Controller
         if (user == null)
         {
             // NOTE: Potential security risk... not good to tell the username does not exist
-            _logger.LogWarning("User does not exist");
+            _logger.LogWarning($"User {username} does not exist");
             return View("Index", new LoginViewModel() { ErrorMessage = "Invalid username" });
         }
 
