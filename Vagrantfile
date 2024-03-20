@@ -25,6 +25,7 @@ Vagrant.configure("2") do |config|
     server.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + ENV["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
 
     server.vm.provision "shell", inline: 'echo "export DIGITAL_OCEAN_TOKEN=' + "'" + ENV["DIGITAL_OCEAN_TOKEN"] + "'" + '" >> ~/.bash_profile'
+    server.vm.provision "shell", inline: 'echo "export CONF_DO_TOKEN=' + "'" + ENV["CONF_DO_TOKEN"] + "'" + '" >> ~/.bash_profile'
 
     server.vm.provision "shell", inline: <<-SHELL
 
@@ -33,17 +34,26 @@ Vagrant.configure("2") do |config|
     sudo rm /var/lib/dpkg/lock-frontend
     sudo apt-get update
 
+    mkdir ~/.config
+
     sudo apt-get install -y software-properties-common
     sudo apt-add-repository ppa:ansible/ansible
     sudo apt-get install -y ansible
+
+    echo -e "\nInstalling Vagrant and extensions" 
     sudo apt-get install -y vagrant
     sudo apt-get install -y vagrant-scp
     sudo apt-get install -y vagrant-digital-ocean
     sudo apt-get install -y vagrant-vbguest
     sudo apt-get install -y vagrant-reload
 
+    echo -e "\nInstalling Snapd"
+    sudo apt-get install -y snapd
 
-    echo -e "\nVerifying correct download" 
+    echo -e "\nInstalling DigitalOcean command-line tool" 
+    sudo snap install doctl
+
+    echo -e "\nVerifying correct download - Ansible" 
     ansible --version
 
     echo ". $HOME/.bashrc" >> $HOME/.bash_profile
@@ -57,7 +67,23 @@ Vagrant.configure("2") do |config|
     echo -e "\nGenerating sshkey"
     ssh-keygen -f ~/.ssh/do_ssh_key -N ""
 
-    echo -e "\nSetting up "
+    echo -e "\nAuthenticating on Digital Ocean"
+    sudo doctl auth init --access-token $CONF_DO_TOKEN
+
+    echo "Checks whether the ssh-key already exists"
+    ssh_key_id=$(doctl compute ssh-key list --format "ID,Name" --no-header | grep "ConfigManagement" | awk '{print $1}')
+
+    if [ -n "$ssh_key_id" ]; then
+        echo "SSH key ID for 'ConfigManagement': $ssh_key_id"
+        echo "Removing key"
+        doctl compute ssh-key delete $ssh_key_id -f
+
+    else
+        echo "SSH key with the name 'ConfigManagement' not found."
+    fi
+
+    echo -e "\nAdd SSHKey to Digital Ocean"
+    doctl compute ssh-key create ConfigManagement --public-key "$(cat ~/.ssh/do_ssh_key.pub)"
 
     echo -e "\nVagrant setup done ..."
     SHELL
