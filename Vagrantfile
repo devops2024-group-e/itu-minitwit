@@ -26,6 +26,7 @@ Vagrant.configure("2") do |config|
 
     server.vm.provision "shell", inline: 'echo "export DIGITAL_OCEAN_TOKEN=' + "'" + ENV["DIGITAL_OCEAN_TOKEN"] + "'" + '" >> ~/.bash_profile'
     server.vm.provision "shell", inline: 'echo "export CONF_DO_TOKEN=' + "'" + ENV["CONF_DO_TOKEN"] + "'" + '" >> ~/.bash_profile'
+    server.vm.provision "shell", inline: 'echo "export DIGITAL_OCEAN_SSH_KEY_NAME=ConfigManagement" >> ~/.bash_profile'
 
     server.vm.provision "shell", inline: <<-SHELL
 
@@ -71,19 +72,19 @@ Vagrant.configure("2") do |config|
     sudo doctl auth init --access-token $CONF_DO_TOKEN
 
     echo "Checks whether the ssh-key already exists"
-    ssh_key_id=$(doctl compute ssh-key list --format "ID,Name" --no-header | grep "ConfigManagement" | awk '{print $1}')
+    ssh_key_id=$(doctl compute ssh-key list --format "ID,Name" --no-header | grep $DIGITAL_OCEAN_SSH_KEY_NAME | awk '{print $1}')
 
     if [ -n "$ssh_key_id" ]; then
-        echo "SSH key ID for 'ConfigManagement': $ssh_key_id"
+        echo "SSH key ID for $DIGITAL_OCEAN_SSH_KEY_NAME: $ssh_key_id"
         echo "Removing key"
         doctl compute ssh-key delete $ssh_key_id -f
 
     else
-        echo "SSH key with the name 'ConfigManagement' not found."
+        echo "SSH key with the name $DIGITAL_OCEAN_SSH_KEY_NAME not found."
     fi
 
     echo -e "\nAdd SSHKey to Digital Ocean"
-    doctl compute ssh-key create ConfigManagement --public-key "$(cat ~/.ssh/do_ssh_key.pub)"
+    doctl compute ssh-key create $DIGITAL_OCEAN_SSH_KEY_NAME --public-key "$(cat ~/.ssh/do_ssh_key.pub)"
 
     echo -e "\nVagrant setup done ..."
     SHELL
