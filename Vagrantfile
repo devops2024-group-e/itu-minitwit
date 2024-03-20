@@ -48,11 +48,11 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y vagrant-vbguest
     sudo apt-get install -y vagrant-reload
 
-    echo -e "\nInstalling Snapd"
-    sudo apt-get install -y snapd
-
-    echo -e "\nInstalling DigitalOcean command-line tool" 
-    sudo snap install doctl
+    echo -e "\nInstalling DigitalOcean command-line tool"
+    cd ~
+    wget https://github.com/digitalocean/doctl/releases/download/v1.101.0/doctl-1.101.0-linux-amd64.tar.gz
+    tar xf ~/doctl-1.101.0-linux-amd64.tar.gz
+    sudo mv ~/doctl /usr/local/bin
 
     echo -e "\nVerifying correct download - Ansible" 
     ansible --version
