@@ -5,6 +5,28 @@ networks:
     name: monitoring-network
 
 services:
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    container_name: loki
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
+    networks:
+      - minitwit-ops-network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    networks:
+      - minitwit-ops-network
+
   grafana:
     image: grafana/grafana-oss
     container_name: grafana
