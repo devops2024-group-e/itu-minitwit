@@ -21,7 +21,7 @@ services:
     image: grafana/promtail:latest
     container_name: promtail
     volumes:
-      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers
       - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
     command: -config.file=/etc/promtail/promtail-config.yaml
     networks:
