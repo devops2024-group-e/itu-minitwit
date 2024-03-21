@@ -35,8 +35,6 @@ Vagrant.configure("2") do |config|
     sudo rm /var/lib/dpkg/lock-frontend
     sudo apt-get update
 
-    mkdir ~/.config
-
     sudo apt-get install -y software-properties-common
     sudo apt-add-repository ppa:ansible/ansible
     sudo apt-get install -y ansible
