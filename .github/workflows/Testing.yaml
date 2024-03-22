@@ -13,12 +13,20 @@ on:
       - 'Minitwit.Infrastructure.Tests/**'
 
 jobs:
+  Pre-commit-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
+      - uses: pre-commit/action@v3.0.1
+
   Minitwit-Infrastructure-Tests:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
@@ -39,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
@@ -63,7 +71,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
