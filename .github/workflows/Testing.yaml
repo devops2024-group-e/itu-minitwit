@@ -23,6 +23,7 @@ jobs:
 
   Minitwit-Infrastructure-Tests:
     runs-on: ubuntu-latest
+    needs: Pre-commit-check
 
     steps:
       - name: Checkout
@@ -44,6 +45,7 @@ jobs:
 
   Backend-Tests:
     runs-on: ubuntu-latest
+    needs: Pre-commit-check
 
     steps:
       - name: Checkout
@@ -68,6 +70,7 @@ jobs:
 
   Frontend-Tests:
     runs-on: ubuntu-latest
+    needs: Pre-commit-check
 
     steps:
       - name: Checkout
