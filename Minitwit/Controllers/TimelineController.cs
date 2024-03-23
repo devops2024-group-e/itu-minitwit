@@ -166,8 +166,8 @@ public class TimelineController : Controller
         {
             int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
             model.Profile.IsMe = currentUserId == profileUser.UserId;
-            model.Profile.IsFollowing = _followerRepository.IsFollowing(currentUserId, profileUser.UserId);
-            model.CurrentUsername = _userRepository.GetUser(currentUserId).Username;
+            model.Profile.IsFollowing = await _followerRepository.IsFollowingAsync(currentUserId, profileUser.UserId);
+            model.CurrentUsername = (await _userRepository.GetUserAsync(currentUserId)).Username;
         }
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
@@ -181,7 +181,7 @@ public class TimelineController : Controller
     {
         var currentUsername = (await _userRepository.GetUserAsync(currentUserId))?.Username;
 
-        var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId, 30);
+        var messages = await _messageRepository.GetCurrentUserSpecificMessagesAsync(currentUserId, 30);
 
         _logger.LogInformation($"GetCurrentUserTimelineModel returns the Timeline relevant for the current user");
 
