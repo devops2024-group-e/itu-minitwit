@@ -1,8 +1,9 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Minitwit.Infrastructure.Repositories;
 using MinitwitSimulatorAPI.Models;
 using MinitwitSimulatorAPI.Utils;
+
+namespace MinitwitSimulatorAPI.Controllers;
 
 public class RegisterController : Controller
 {
@@ -30,30 +31,44 @@ public class RegisterController : Controller
     public async Task<IActionResult> Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
         await _latestRepository.AddLatestAsync(latest);
+        _logger.LogDebug($"Register added latest: {latest}");
 
         string errMessage = "";
 
         if (string.IsNullOrEmpty(user.Username))
+        {
             errMessage = "You have to enter a username";
+            _logger.LogWarning($"Username in register is empty");
+        }
         else if (string.IsNullOrEmpty(user.Email) || !user.Email.Contains("@"))
+        {
             errMessage = "You have to enter a valid email address";
+            _logger.LogWarning($"Email in register is not valid");
+        }
         else if (string.IsNullOrEmpty(user.Pwd))
+        {
             errMessage = "You have to enter a password";
+            _logger.LogWarning($"Password in register is empty");
+
+        }
         else if (await _userRepository.DoesUserExistAsync(user.Username))
+        {
             errMessage = "The username is already taken";
+            _logger.LogWarning($"Username provided for register already exists");
+        }
         else
         {
             await _userRepository.AddUserAsync(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
-
-            _logger.LogDebug("User registered: {Username}", user.Username);
-            //TempData.QueueFlashMessage("You were successfully registered and can login now");
+            _logger.LogInformation("User registered: {Username}", user.Username);
         }
         if (errMessage != "")
         {
+            _logger.LogDebug("Register returns BadRequest");
             return BadRequest(errMessage);
         }
         else
         {
+            _logger.LogDebug("Register returns 204 NoContent");
             return NoContent();
         }
     }

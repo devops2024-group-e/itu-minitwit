@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
-  config.vm.define "minitwit", primary: true do |server|
+  config.vm.define "minitwit-conf", primary: true do |server|
 
     server.vm.provider :digital_ocean do |provider|
       provider.ssh_key_name = ENV["DIGITAL_OCEAN_SSH_KEY_NAME"]
@@ -18,101 +18,71 @@ Vagrant.configure("2") do |config|
       provider.size = 's-1vcpu-1gb'
     end
 
-    server.vm.hostname = "minitwit-web-01"
-    server.vm.synced_folder "./.infrastructure/remote-server", "/minitwit", type: "rsync"
+    server.vm.hostname = "minitwit-conf-01"
+    server.vm.synced_folder "./.infrastructure", "/config-management", type: "rsync"
 
     server.vm.provision "shell", inline: 'echo "export DOCKER_USERNAME=' + "'" + ENV["DOCKER_USERNAME"] + "'" + '" >> ~/.bash_profile'
     server.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + ENV["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
 
+    server.vm.provision "shell", inline: 'echo "export DIGITAL_OCEAN_TOKEN=' + "'" + ENV["DIGITAL_OCEAN_TOKEN"] + "'" + '" >> ~/.bash_profile'
+    server.vm.provision "shell", inline: 'echo "export CONF_DO_TOKEN=' + "'" + ENV["CONF_DO_TOKEN"] + "'" + '" >> ~/.bash_profile'
+    server.vm.provision "shell", inline: 'echo "export DIGITAL_OCEAN_SSH_KEY_NAME=ConfigManagement" >> ~/.bash_profile'
+
     server.vm.provision "shell", inline: <<-SHELL
 
-    cp ./daemon.json /etc/docker/daemon.json
-
     sudo apt-get update
-
-    # The following address an issue in DO's Ubuntu images, which still contain a lock file
     #sudo killall apt apt-get
     sudo rm /var/lib/dpkg/lock-frontend
+    sudo apt-get update
 
-    # Install docker and docker compose
-    sudo apt-get install -y docker.io docker-compose-v2
+    sudo apt-get install -y software-properties-common
+    sudo apt-add-repository ppa:ansible/ansible
+    sudo apt-get install -y ansible
 
-    sudo systemctl status docker
-    # sudo usermod -aG docker ${USER}
+    echo -e "\nInstalling Vagrant and extensions" 
+    sudo apt-get install -y vagrant
+    sudo apt-get install -y vagrant-scp
+    sudo apt-get install -y vagrant-digital-ocean
+    sudo apt-get install -y vagrant-vbguest
+    sudo apt-get install -y vagrant-reload
 
-    echo -e "\nVerifying that docker works ...\n"
-    docker run --rm hello-world
-    docker rmi hello-world
+    echo -e "\nInstalling DigitalOcean command-line tool"
+    cd ~
+    wget https://github.com/digitalocean/doctl/releases/download/v1.101.0/doctl-1.101.0-linux-amd64.tar.gz
+    tar xf ~/doctl-1.101.0-linux-amd64.tar.gz
+    sudo mv ~/doctl /usr/local/bin
 
-    echo -e "\nOpening port for minitwit ...\n"
-    ufw allow 80 && \
-    ufw allow 22/tcp && \
-    ufw allow 8080 && \
-    ufw allow in on eth1 to any port 9323 && \
-    ufw enable
+    echo -e "\nVerifying correct download - Ansible" 
+    ansible --version
 
     echo ". $HOME/.bashrc" >> $HOME/.bash_profile
 
     echo -e "\nConfiguring credentials as environment variables...\n"
-
     source $HOME/.bash_profile
 
     echo -e "\nSelecting Minitwit Folder as default folder when you ssh into the server...\n"
-    echo "cd /minitwit" >> ~/.bash_profile
+    echo "cd /config-management" >> ~/.bash_profile
 
-    chmod +x /minitwit/deploy.sh
-    chmod +x /minitwit/init.sh
+    echo -e "\nGenerating sshkey"
+    ssh-keygen -f ~/.ssh/do_ssh_key -N ""
 
-    echo -e "\nVagrant setup done ..."
-    echo -e "minitwit will later be accessible at http://$(hostname -I | awk '{print $1}'):80"
-    echo -e "The postgres sql database needs a minute to initialize, if the landing page shows an error stack-trace ..."
-    SHELL
-  end
-  config.vm.define "minitwit-monitoring", primary: true do |server|
+    echo -e "\nAuthenticating on Digital Ocean"
+    sudo doctl auth init --access-token $CONF_DO_TOKEN
 
-    server.vm.provider :digital_ocean do |provider|
-      provider.ssh_key_name = ENV["DIGITAL_OCEAN_SSH_KEY_NAME"]
-      provider.token = ENV["DIGITAL_OCEAN_TOKEN"]
-      provider.image = 'ubuntu-22-04-x64'
-      provider.region = 'fra1'
-      provider.size = 's-1vcpu-1gb'
-    end
+    echo "Checks whether the ssh-key already exists"
+    ssh_key_id=$(doctl compute ssh-key list --format "ID,Name" --no-header | grep $DIGITAL_OCEAN_SSH_KEY_NAME | awk '{print $1}')
 
-    server.vm.hostname = "minitwit-ops-01"
-    server.vm.synced_folder "./.infrastructure/monitor-server", "/minitwit-monitoring", type: "rsync"
+    if [ -n "$ssh_key_id" ]; then
+        echo "SSH key ID for $DIGITAL_OCEAN_SSH_KEY_NAME: $ssh_key_id"
+        echo "Removing key"
+        doctl compute ssh-key delete $ssh_key_id -f
 
-    server.vm.provision "shell", inline: <<-SHELL
+    else
+        echo "SSH key with the name $DIGITAL_OCEAN_SSH_KEY_NAME not found."
+    fi
 
-    sudo apt-get update
-
-    # The following address an issue in DO's Ubuntu images, which still contain a lock file
-    sudo killall apt-get
-    sudo rm /var/lib/dpkg/lock-frontend
-    sudo apt-get update
-
-    # Install docker and docker compose
-    sudo apt-get install -y docker.io docker-compose-v2
-
-    sudo systemctl status docker
-
-    echo -e "\nVerifying that docker works ...\n"
-    docker run --rm hello-world
-    docker rmi hello-world
-
-    echo -e "\nOpening port for minitwit-monitor ...\n"
-    ufw allow 80 && \
-    ufw allow 22/tcp && \
-    ufw allow  8080 && \
-    ufw enable
-
-    echo ". $HOME/.bashrc" >> $HOME/.bash_profile
-
-    echo -e "\nConfiguring credentials as environment variables...\n"
-
-    source $HOME/.bash_profile
-
-    echo -e "\nSelecting Minitwit Folder as default folder when you ssh into the server...\n"
-    echo "cd /minitwit-monitoring" >> ~/.bash_profile
+    echo -e "\nAdd SSHKey to Digital Ocean"
+    doctl compute ssh-key create $DIGITAL_OCEAN_SSH_KEY_NAME --public-key "$(cat ~/.ssh/do_ssh_key.pub)"
 
     echo -e "\nVagrant setup done ..."
     SHELL

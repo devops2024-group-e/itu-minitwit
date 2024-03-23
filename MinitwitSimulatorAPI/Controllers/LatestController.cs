@@ -21,6 +21,8 @@ public class LatestController : Controller
     {
         var content = await _latestRepository.GetLatestAsync();
 
+        _logger.LogDebug($"GetLatest returns {content}");
+
         return Ok(new LatestDTO(content));
     }
 }
