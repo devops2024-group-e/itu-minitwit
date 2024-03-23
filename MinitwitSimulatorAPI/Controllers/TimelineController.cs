@@ -136,7 +136,7 @@ public class TimelineController : Controller
         if (user is null)
             return NotFound();
 
-        _messageRepository.AddMessage(text, user.UserId);
+        await _messageRepository.AddMessageAsync(text, user.UserId);
         _logger.LogInformation($"AddMessage added message for user {username} with text {text}");
 
         _logger.LogWarning($"AddMessage returns NoContent");
