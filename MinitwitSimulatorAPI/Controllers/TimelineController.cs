@@ -10,9 +10,7 @@ public class TimelineController : Controller
     private readonly ILogger<TimelineController> _logger;
     private readonly ILatestRepository _latestRepository;
     private readonly IFollowerRepository _followerRepository;
-
     private readonly IUserRepository _userRepository;
-
     private readonly IMessageRepository _messageRepository;
 
     public TimelineController(ILogger<TimelineController> logger, ILatestRepository latestRepository, IFollowerRepository followerRepository, IUserRepository userRepository, IMessageRepository messageRepository)
@@ -39,10 +37,10 @@ public class TimelineController : Controller
     /// </summary>
     /// <param name="username">The username of the user.</param>
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
-    private User? GetUser(string username)
+    private async Task<User?> GetUserAsync(string username)
     {
         _logger.LogInformation($"GetUser return user with username {username}");
-        return _userRepository.GetUser(username);
+        return await _userRepository.GetUserAsync(username);
     }
 
     /// <summary>
@@ -58,7 +56,7 @@ public class TimelineController : Controller
         await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"FollowUnfollowUser added latest: {latest}");
 
-        var user = await _userRepository.GetUserAsync(username);
+        var user = await this.GetUserAsync(username);
         if (user is null)
         {
             _logger.LogWarning($"FollowUnfollowUser returns NotFound for user {username}");
@@ -85,7 +83,7 @@ public class TimelineController : Controller
             }
             otherUsername = dict[action];
         }
-        var otherUser = await _userRepository.GetUserAsync(otherUsername);
+        var otherUser = await this.GetUserAsync(otherUsername);
 
         if (otherUser is null)
         {
@@ -134,7 +132,7 @@ public class TimelineController : Controller
             text = dict["content"];
         }
 
-        var user = await _userRepository.GetUserAsync(username);
+        var user = await this.GetUserAsync(username);
         if (user is null)
             return NotFound();
 
@@ -156,7 +154,7 @@ public class TimelineController : Controller
         await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"GetMessages added latest: {latest}");
 
-        User? profileUser = await _userRepository.GetUserAsync(username);
+        User? profileUser = await this.GetUserAsync(username);
         if (profileUser is null)
         {
             _logger.LogWarning($"GetMessages returns NotFound for user {username}");
@@ -208,7 +206,7 @@ public class TimelineController : Controller
         await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"GetFollows added latest: {latest}");
 
-        User? profileUser = await _userRepository.GetUserAsync(username);
+        User? profileUser = await this.GetUserAsync(username);
         if (profileUser is null)
         {
             _logger.LogWarning($"GetFollows returns NotFound for username: {username}");
