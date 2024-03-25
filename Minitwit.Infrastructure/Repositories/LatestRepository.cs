@@ -11,14 +11,6 @@ public class LatestRepository : ILatestRepository
         _context = context;
     }
 
-    public bool AddLatest(int CommandId)
-    {
-        Task<bool> addingLatest = this.AddLatestAsync(CommandId);
-        addingLatest.Wait();
-
-        return addingLatest.Result;
-    }
-
     public async Task<bool> AddLatestAsync(int commandId)
     {
         _context.Latests.Add(new Latest

@@ -12,46 +12,6 @@ public class FollowerRepository : IFollowerRepository
         _context = context;
     }
 
-    public bool AddFollower(int whoId, int whomId)
-    {
-        Task<bool> addingFollower = this.AddFollowerAsync(whoId, whomId);
-
-        addingFollower.Wait(); // Wait for the result to get back
-        bool followerIsAdded = addingFollower.Result;
-
-        return followerIsAdded;
-    }
-
-    public bool RemoveFollower(int whoId, int whomId)
-    {
-        Task<bool> removingFollower = this.RemoveFollowerAsync(whoId, whomId);
-
-        removingFollower.Wait();
-        bool followerIsRemoved = removingFollower.Result;
-
-        return followerIsRemoved;
-    }
-
-
-    public bool IsFollowing(int whoId, int whomId)
-    {
-        Task<bool> gettingIsFollowing = this.IsFollowingAsync(whoId, whomId);
-
-        gettingIsFollowing.Wait();
-        bool isFollowing = gettingIsFollowing.Result;
-
-        return isFollowing;
-    }
-
-    public List<string> GetCurrentUserFollows(int whoId, int no)
-    {
-        Task<List<string>> gettingCurrentUserFollowers = this.GetCurrentUserFollowsAsync(whoId, count: no);
-
-        gettingCurrentUserFollowers.Wait();
-
-        return gettingCurrentUserFollowers.Result;
-    }
-
     public async Task<bool> AddFollowerAsync(int whoId, int whomId)
     {
         _context.Followers.Add(new Follower

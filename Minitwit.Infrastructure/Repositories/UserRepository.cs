@@ -12,42 +12,6 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public User? GetUser(string username)
-    {
-        return _context.Users.SingleOrDefault(x => x.Username == username);
-    }
-
-    public User GetUser(int currentUserId)
-    {
-        return _context.Users.Single(x => x.UserId == currentUserId);
-    }
-
-    public bool DoesUserExist(string username)
-    {
-        return _context.Users.Any(x => x.Username == username);
-    }
-
-    public bool AddUser(string username, string email, string password)
-    {
-        User user = new User // We should use another type to represent the model the database
-        {
-            Username = username,
-            Email = email,
-            PwHash = password
-        };
-
-        _context.Users.Add(user);
-        try
-        {
-            _context.SaveChanges();
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-        return true;
-    }
-
     public async Task<User?> GetUserAsync(string username)
         => await _context.Users.SingleOrDefaultAsync(x => x.Username == username);
 

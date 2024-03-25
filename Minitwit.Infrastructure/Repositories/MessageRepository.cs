@@ -11,38 +11,6 @@ public class MessageRepository : IMessageRepository
         _context = context;
     }
 
-    public bool AddMessage(string text, int authorId)
-    {
-        Task<bool> addingMessage = this.AddMessageAsync(text, authorId);
-        addingMessage.Wait();
-
-        return addingMessage.Result;
-    }
-
-    public List<MessageAuthor> GetMessages(int no)
-    {
-        Task<List<MessageAuthor>> gettingMessage = this.GetMessagesAsync(no);
-        gettingMessage.Wait();
-
-        return gettingMessage.Result;
-    }
-
-    public List<MessageAuthor> GetUserSpecificMessages(User profileUser, int no)
-    {
-        Task<List<MessageAuthor>> gettingMessage = this.GetUserSpecificMessagesAsync(profileUser, no);
-        gettingMessage.Wait();
-
-        return gettingMessage.Result;
-    }
-
-    public List<MessageAuthor> GetCurrentUserSpecificMessages(int currentUserId, int no)
-    {
-        Task<List<MessageAuthor>> gettingMessage = this.GetCurrentUserSpecificMessagesAsync(currentUserId, no);
-        gettingMessage.Wait();
-
-        return gettingMessage.Result;
-    }
-
     public async Task<bool> AddMessageAsync(string text, int authorId)
     {
         _context.Messages.Add(new Message
