@@ -73,7 +73,7 @@ internal record DOVirtualMachine : IVirtualMachine
             Name = name,
             Region = region,
             Size = "s-1vcpu-1gb",
-            SshKeys = sshKeys
+            SshKeys = sshKeys,
         });
 
         _networkInterfaces = new Dictionary<string, Output<string>>
