@@ -77,8 +77,7 @@ public class FollowerRepository : IFollowerRepository
         var follower = await _context.Followers.FirstOrDefaultAsync(x => x.WhoId == whoId && x.WhomId == whomId);
 
         if (follower is null)
-            return true;
-
+            return true; // We return true to signal that the relation is not in the database
         _context.Followers.Remove(follower);
 
         try
