@@ -21,7 +21,8 @@ public class FollowerRepository : IFollowerRepository
         try
         {
             _context.SaveChanges();
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }
@@ -31,11 +32,14 @@ public class FollowerRepository : IFollowerRepository
     public bool RemoveFollower(int whoId, int whomId)
     {
         var follower = _context.Followers.FirstOrDefault(x => x.WhoId == whoId && x.WhomId == whomId);
+        if (follower is null)
+            return true; // We return true to signal that the relation is not in the database
         _context.Followers.Remove(follower);
         try
         {
             _context.SaveChanges();
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }
@@ -56,7 +60,7 @@ public class FollowerRepository : IFollowerRepository
                        on user.UserId equals follower.WhomId
                        where follower.WhoId == whoId
                        select user.Username).Take(no).ToList();
-        
+
         return follows;
     }
 }
