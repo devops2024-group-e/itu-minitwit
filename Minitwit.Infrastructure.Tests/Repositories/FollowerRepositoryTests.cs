@@ -50,7 +50,7 @@ public class FollowerRepositoryTests : IDisposable
     /// When we remove a follower relation that does not exist then it should return true because it is not present anymore anyway
     /// </summary>
     [Fact]
-    public void RemoveFollower_FollowerRelationDoesNotExistInDB_ReturnsTrue()
+    public async Task RemoveFollower_FollowerRelationDoesNotExistInDB_ReturnsTrue()
     {
         // Try to remove a follower relation that does not exist
         var result = await _followerRepository.RemoveFollowerAsync(10020, 1111);
