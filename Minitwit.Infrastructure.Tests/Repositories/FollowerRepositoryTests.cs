@@ -26,21 +26,21 @@ public class FollowerRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void AddFollower_SuccesfullyAddsFollower_ReturnsTrue()
+    public async Task AddFollowerAsync_SuccesfullyAddsFollower_ReturnsTrue()
     {
-        var result = _followerRepository.AddFollower(1, 2);
+        var result = await _followerRepository.AddFollowerAsync(1, 2);
 
         Assert.True(result);
     }
 
     [Fact]
-    public void RemoveFollower_RemovesFollower_ReturnsTrue()
+    public async Task RemoveFollowerAsync_RemovesFollower_ReturnsTrue()
     {
         // Arrange
-        _followerRepository.AddFollower(1, 2);
+        await _followerRepository.AddFollowerAsync(1, 2);
 
         // Act
-        var result = _followerRepository.RemoveFollower(1, 2);
+        var result = await _followerRepository.RemoveFollowerAsync(1, 2);
 
         // Assert
         Assert.True(result);
@@ -50,23 +50,23 @@ public class FollowerRepositoryTests : IDisposable
     /// When we remove a follower relation that does not exist then it should return true because it is not present anymore anyway
     /// </summary>
     [Fact]
-    public void RemoveFollower_FollwerRelationDoesNotExistInDB_ReturnsTrue()
+    public async Task RemoveFollower_FollwerRelationDoesNotExistInDB_ReturnsTrue()
     {
         // Try to remove a follower relation that does not exist
-        var result = _followerRepository.RemoveFollower(10020, 1111);
+        var result = await _followerRepository.RemoveFollowerAsync(10020, 1111);
 
         Assert.True(result);
     }
 
     [Fact]
-    public void RemoveFollower_SuccesfullyRemovesFollower_ReturnsTrue()
+    public async Task RemoveFollowerAsync_SuccesfullyRemovesFollower_ReturnsTrue()
     {
         // Arrange
-        _followerRepository.AddFollower(1, 2);
+        await _followerRepository.AddFollowerAsync(1, 2);
 
         // Act
-        var removeResult = _followerRepository.RemoveFollower(1, 2);
-        var isFollowingResult = _followerRepository.IsFollowing(1, 2);
+        var removeResult = await _followerRepository.RemoveFollowerAsync(1, 2);
+        var isFollowingResult = await _followerRepository.IsFollowingAsync(1, 2);
 
         // Assert
         Assert.Multiple(
@@ -77,50 +77,50 @@ public class FollowerRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void IsFollowing_SuccesfullyChecksFollowing_ReturnsTrue()
+    public async Task IsFollowing_SuccesfullyChecksFollowing_ReturnsTrue()
     {
         // Arrange
-        _followerRepository.AddFollower(1, 2);
+        await _followerRepository.AddFollowerAsync(1, 2);
 
         // Act
-        var result = _followerRepository.IsFollowing(1, 2);
+        var result = await _followerRepository.IsFollowingAsync(1, 2);
 
         // Assert
         Assert.True(result);
     }
 
     [Fact]
-    public void IsFollowing_ChecksFalseFollowing_ReturnsFalse()
+    public async Task IsFollowing_ChecksFalseFollowing_ReturnsFalse()
     {
-        var result = _followerRepository.IsFollowing(1, 3);
+        var result = await _followerRepository.IsFollowingAsync(1, 3);
 
         Assert.False(result);
     }
 
 
     [Fact]
-    public void GetCurrentUserFollows_SuccesfullyReturnsFollows_ReturnsUsername()
+    public async Task GetCurrentUserFollows_SuccesfullyReturnsFollows_ReturnsUsername()
     {
         //Arrange
-        _followerRepository.AddFollower(1, 2);
+        await _followerRepository.AddFollowerAsync(1, 2);
 
         //Act
-        var result = _followerRepository.GetCurrentUserFollows(1, 1);
+        var result = await _followerRepository.GetCurrentUserFollowsAsync(1, 1);
 
         //Assert
         Assert.Equal(new List<string> { "Bob" }, result);
     }
 
     [Fact]
-    public void GetCurrentUserFollows_SuccesfullyReturnsMultipleFollows_ReturnsListOfUsernames()
+    public async Task GetCurrentUserFollows_SuccesfullyReturnsMultipleFollows_ReturnsListOfUsernames()
     {
         //Arrange
-        _followerRepository.AddFollower(1, 2);
-        _followerRepository.AddFollower(1, 3);
-        _followerRepository.AddFollower(1, 4);
+        await _followerRepository.AddFollowerAsync(1, 2);
+        await _followerRepository.AddFollowerAsync(1, 3);
+        await _followerRepository.AddFollowerAsync(1, 4);
 
         //Act
-        var result = _followerRepository.GetCurrentUserFollows(1, 10);
+        var result = await _followerRepository.GetCurrentUserFollowsAsync(1, 10);
 
         //Assert
         Assert.Equal(new List<string> { "Bob", "Charlie", "Dante" }, result);
