@@ -4,6 +4,7 @@ using Minitwit.Tests.Utils;
 
 namespace Minitwit.Tests.IntegrationTests;
 
+[Collection(nameof(SequentialControllerTestDefinition))]
 public class LoginAndLogoutTests : IClassFixture<MinitwitApplicationFactory<Program>>, IDisposable
 {
     private readonly MinitwitApplicationFactory<Program> _factory;
