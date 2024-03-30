@@ -79,7 +79,7 @@
 
   - name: Synchronization of configuration files from web-server to server minitwit dir
     ansible.posix.synchronize:
-      src: web-server/
+      src: remote-server/
       dest: /minitwit
       checksum: true
 
