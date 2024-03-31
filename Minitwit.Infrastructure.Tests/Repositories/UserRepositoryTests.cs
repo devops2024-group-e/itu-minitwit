@@ -15,9 +15,9 @@ public class UserRepositoryTests : IDisposable
         _context = new MinitwitContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        _context.Users.Add(new Models.User{Email = "1@g.dk", Username = "m_user1", PwHash = "abcd"});
-        _context.Users.Add(new Models.User{Email = "2@g.dk", Username = "m_user2", PwHash = "efgh"});
-        _context.Users.Add(new Models.User{Email = "3@g.dk", Username = "m_user3", PwHash = "ijkl"});
+        _context.Users.Add(new Models.User { Email = "1@g.dk", Username = "m_user1", PwHash = "abcd" });
+        _context.Users.Add(new Models.User { Email = "2@g.dk", Username = "m_user2", PwHash = "efgh" });
+        _context.Users.Add(new Models.User { Email = "3@g.dk", Username = "m_user3", PwHash = "ijkl" });
 
         _userRepo = new UserRepository(_context);
 

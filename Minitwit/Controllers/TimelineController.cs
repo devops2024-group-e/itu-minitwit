@@ -124,7 +124,7 @@ public class TimelineController : Controller
             _logger.LogWarning($"AddMessage returns Unauthorized because user is not logged in");
             return Unauthorized();
         }
-    
+
         var authorId = (int)HttpContext.Session.GetInt32("user_id");
         _messageRepository.AddMessage(text, authorId);
         _logger.LogInformation($"AddMessage added message for user with id {authorId} and text {text}");

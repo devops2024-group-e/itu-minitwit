@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
     sudo apt-add-repository ppa:ansible/ansible
     sudo apt-get install -y ansible
 
-    echo -e "\nInstalling Vagrant and extensions" 
+    echo -e "\nInstalling Vagrant and extensions"
     sudo apt-get install -y vagrant
     sudo apt-get install -y vagrant-scp
     sudo apt-get install -y vagrant-digital-ocean
@@ -52,7 +52,7 @@ Vagrant.configure("2") do |config|
     tar xf ~/doctl-1.101.0-linux-amd64.tar.gz
     sudo mv ~/doctl /usr/local/bin
 
-    echo -e "\nVerifying correct download - Ansible" 
+    echo -e "\nVerifying correct download - Ansible"
     ansible --version
 
     echo ". $HOME/.bashrc" >> $HOME/.bash_profile

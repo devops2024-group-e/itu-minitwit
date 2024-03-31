@@ -12,11 +12,11 @@
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
       state: present
-    
+
   - name: Add Docker Repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu focal stable
+      state: present
 
   - name: Update apt and install docker-ce
     apt:
@@ -27,7 +27,7 @@
   - name: Standard Deny all
     comunity.general.ufw:
       policy: deny
-  
+
   - name: Allow port 80 for HTTP
     community.general.ufw:
       rule: allow
@@ -38,7 +38,7 @@
       rule: allow
       port: '8080'
 
-  - name: Allow SSH 
+  - name: Allow SSH
     community.general.ufw:
       rule: allow
       proto: tcp
@@ -53,12 +53,12 @@
 
   - name: Set bash_profile to source
     ansible.builtin.command: source $HOME/.bash_profile
-  
+
   - name: Set /minitwit as home dir
     ansible.builtin.command: echo "cd /minitwit-monitoring" >> ~/.bash_profile
 
   - name: Run `docker-compose up` again
-      community.docker.docker_compose:
-        project_src: /minitwit-monitoring
-        build: true
-      register: output
+    community.docker.docker_compose:
+      project_src: /minitwit-monitoring
+      build: true
+    register: output

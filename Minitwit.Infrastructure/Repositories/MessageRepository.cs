@@ -22,7 +22,8 @@ public class MessageRepository : IMessageRepository
         try
         {
             _context.SaveChanges();
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }
@@ -62,5 +63,5 @@ public class MessageRepository : IMessageRepository
                         select new MessageAuthor { Author = user, Message = msg }).Take(no).ToList();
 
         return messages;
-    }      
+    }
 }

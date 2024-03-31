@@ -54,7 +54,7 @@ public class RegisterController : Controller
         {
             errMessage = "You have to enter a password";
             _logger.LogWarning($"Password in register is empty");
-        }         
+        }
         else if (password != password2)
         {
             errMessage = "The two passwords do not match";

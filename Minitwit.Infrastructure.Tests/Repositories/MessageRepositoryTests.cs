@@ -17,9 +17,9 @@ public class MessageRepositoryTests : IDisposable
         _context = new MinitwitContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        _user1 = new User{Email = "1@g.dk", Username = "user1", PwHash = "abcd"};
-        User _user2 = new User{Email = "2@g.dk", Username = "user2", PwHash = "efgh"};
-        User _user3 = new User{Email = "3@g.dk", Username = "user3", PwHash = "ijkl"};
+        _user1 = new User { Email = "1@g.dk", Username = "user1", PwHash = "abcd" };
+        User _user2 = new User { Email = "2@g.dk", Username = "user2", PwHash = "efgh" };
+        User _user3 = new User { Email = "3@g.dk", Username = "user3", PwHash = "ijkl" };
         _context.Users.Add(_user1);
         _context.Users.Add(_user2);
         _context.Users.Add(_user3);
@@ -30,9 +30,9 @@ public class MessageRepositoryTests : IDisposable
         var us2 = _context.Users.Single(x => x.Username == "user2");
         var us3 = _context.Users.Single(x => x.Username == "user3");
 
-        _context.Messages.Add(new Message{AuthorId = us1.UserId, Text = "hello guys", PubDate = 1, Flagged = 0});
-        _context.Messages.Add(new Message{AuthorId = us2.UserId, Text = "Nice weather today.", PubDate = 2, Flagged = 0});
-        _context.Messages.Add(new Message{AuthorId = us3.UserId, Text = "I am nice", PubDate = 3, Flagged = 0});
+        _context.Messages.Add(new Message { AuthorId = us1.UserId, Text = "hello guys", PubDate = 1, Flagged = 0 });
+        _context.Messages.Add(new Message { AuthorId = us2.UserId, Text = "Nice weather today.", PubDate = 2, Flagged = 0 });
+        _context.Messages.Add(new Message { AuthorId = us3.UserId, Text = "I am nice", PubDate = 3, Flagged = 0 });
 
         _messageRepo = new MessageRepository(_context);
 
@@ -60,7 +60,7 @@ public class MessageRepositoryTests : IDisposable
     {
         var response = _messageRepo.GetUserSpecificMessages(_user1, 30);
 
-        Assert.Equal(1, response.Count);
+        Assert.Single(response);
         Assert.Equal("hello guys", response[0].Message.Text);
     }
 
@@ -69,7 +69,7 @@ public class MessageRepositoryTests : IDisposable
     {
         var response = _messageRepo.GetCurrentUserSpecificMessages(_context.Users.Single(x => x.Username == "user1").UserId, 30);
 
-        Assert.Equal(1, response.Count);
+        Assert.Single(response);
         Assert.Equal("hello guys", response[0].Message.Text);
     }
 

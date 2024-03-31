@@ -2,8 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 WORKDIR /src
 COPY . ./
-RUN cd ./MinitwitSimulatorAPI && dotnet build -c release
-RUN cd ./MinitwitSimulatorAPI && dotnet publish -c release -o out
+WORKDIR /src/MinitwitSimulatorAPI
+RUN dotnet build -c releasen && dotnet publish -c release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 ARG DB_CONN=""

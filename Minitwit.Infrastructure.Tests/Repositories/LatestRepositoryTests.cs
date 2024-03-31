@@ -16,10 +16,10 @@ public class LatestRepositoryTests : IDisposable
         _context = new MinitwitContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        _context.Latests.Add(new Latest{Id = 1, CommandId = 11});
-        _context.Latests.Add(new Latest{Id = 2, CommandId = 22});
-        _context.Latests.Add(new Latest{Id = 3, CommandId = 33});
-        _context.Latests.Add(new Latest{Id = 4, CommandId = 44});
+        _context.Latests.Add(new Latest { Id = 1, CommandId = 11 });
+        _context.Latests.Add(new Latest { Id = 2, CommandId = 22 });
+        _context.Latests.Add(new Latest { Id = 3, CommandId = 33 });
+        _context.Latests.Add(new Latest { Id = 4, CommandId = 44 });
         _context.SaveChanges();
 
         _latestRepository = new LatestRepository(_context);
@@ -46,7 +46,7 @@ public class LatestRepositoryTests : IDisposable
     {
         // Arrange
         _latestRepository.AddLatest(55);
-        
+
         // Act
         var result = _latestRepository.GetLatest();
 

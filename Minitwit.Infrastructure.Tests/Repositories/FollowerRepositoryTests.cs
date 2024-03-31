@@ -16,10 +16,10 @@ public class FollowerRepositoryTests : IDisposable
         _context = new MinitwitContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        _context.Users.Add(new User{UserId = 1, Username = "Alice", Email = "example@mail.com", PwHash = "qwerty"});
-        _context.Users.Add(new User{UserId = 2, Username = "Bob", Email = "example@mail.com", PwHash = "qwerty"});
-        _context.Users.Add(new User{UserId = 3, Username = "Charlie", Email = "example@mail.com", PwHash = "qwerty"});
-        _context.Users.Add(new User{UserId = 4, Username = "Dante", Email = "example@mail.com", PwHash = "qwerty"});
+        _context.Users.Add(new User { UserId = 1, Username = "Alice", Email = "example@mail.com", PwHash = "qwerty" });
+        _context.Users.Add(new User { UserId = 2, Username = "Bob", Email = "example@mail.com", PwHash = "qwerty" });
+        _context.Users.Add(new User { UserId = 3, Username = "Charlie", Email = "example@mail.com", PwHash = "qwerty" });
+        _context.Users.Add(new User { UserId = 4, Username = "Dante", Email = "example@mail.com", PwHash = "qwerty" });
         _context.SaveChanges();
 
         _followerRepository = new FollowerRepository(_context);
@@ -61,7 +61,7 @@ public class FollowerRepositoryTests : IDisposable
             () => Assert.True(removeResult),
             () => Assert.False(isFollowingResult)
         );
-        
+
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class FollowerRepositoryTests : IDisposable
         Assert.False(result);
     }
 
-    
+
     [Fact]
     public void GetCurrentUserFollows_SuccesfullyReturnsFollows_ReturnsUsername()
     {
@@ -96,7 +96,7 @@ public class FollowerRepositoryTests : IDisposable
         var result = _followerRepository.GetCurrentUserFollows(1, 1);
 
         //Assert
-        Assert.Equal(new List<string>{"Bob"}, result);
+        Assert.Equal(new List<string> { "Bob" }, result);
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public class FollowerRepositoryTests : IDisposable
         var result = _followerRepository.GetCurrentUserFollows(1, 10);
 
         //Assert
-        Assert.Equal(new List<string>{"Bob", "Charlie", "Dante"}, result);
+        Assert.Equal(new List<string> { "Bob", "Charlie", "Dante" }, result);
     }
 
     public void Dispose()

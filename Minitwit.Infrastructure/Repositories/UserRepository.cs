@@ -30,21 +30,22 @@ public class UserRepository : IUserRepository
     public bool AddUser(string username, string email, string password)
     {
         User user = new User // We should use another type to represent the model the database
-            {
-                Username = username,
-                Email = email,
-                PwHash = password
-            };
+        {
+            Username = username,
+            Email = email,
+            PwHash = password
+        };
 
         _context.Users.Add(user);
         try
         {
             _context.SaveChanges();
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }
-        return true;  
+        return true;
     }
 
 }

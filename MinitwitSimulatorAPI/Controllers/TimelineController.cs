@@ -12,7 +12,7 @@ public class TimelineController : Controller
     private readonly IFollowerRepository _followerRepository;
 
     private readonly IUserRepository _userRepository;
-    
+
     private readonly IMessageRepository _messageRepository;
 
     public TimelineController(ILogger<TimelineController> logger, ILatestRepository latestRepository, IFollowerRepository followerRepository, IUserRepository userRepository, IMessageRepository messageRepository)
@@ -66,10 +66,10 @@ public class TimelineController : Controller
         }
 
         var ownUserId = user.UserId;
-        if (!IsLoggedIn()) 
+        if (!IsLoggedIn())
         {
             _logger.LogWarning($"FollowUnfollowUser returns Forbid because user is not logged in");
-            return Forbid(); 
+            return Forbid();
         }
 
         string otherUsername = "";
@@ -95,7 +95,7 @@ public class TimelineController : Controller
 
         var otherUserId = otherUser.UserId;
         if (action == "unfollow")
-        { 
+        {
             _followerRepository.RemoveFollower(ownUserId, otherUserId);
             _logger.LogInformation($"FollowUnfollowUser user {ownUserId} unfollows {otherUserId}");
         }
@@ -121,10 +121,10 @@ public class TimelineController : Controller
         _latestRepository.AddLatest(latest);
         _logger.LogDebug($"AddMessage added latest: {latest}");
 
-        if (!IsLoggedIn()) 
-        { 
+        if (!IsLoggedIn())
+        {
             _logger.LogWarning($"AddMessage returns Forbid because user {username} is not logged in");
-            return Forbid(); 
+            return Forbid();
         }
         string text = "";
         using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
@@ -159,16 +159,16 @@ public class TimelineController : Controller
             return NotFound();
         }
 
-        if (!IsLoggedIn()) 
-        { 
+        if (!IsLoggedIn())
+        {
             _logger.LogWarning($"GetMessages returns Forbid as user {username} is not logged in");
-            return Forbid(); 
+            return Forbid();
         }
 
         var messages = new List<MessageDTO>();
         foreach (var messageAuthor in _messageRepository.GetUserSpecificMessages(profileUser, no))
         {
-           messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
+            messages.Add(new MessageDTO(messageAuthor.Message.Text, messageAuthor.Message.PubDate.Value, messageAuthor.Author.Username));
         }
         _logger.LogInformation($"GetMessages returns all user specific messages for user {username}");
         return Ok(messages);
@@ -184,10 +184,10 @@ public class TimelineController : Controller
         _latestRepository.AddLatest(latest);
         _logger.LogDebug($"GetAllMessages added latest: {latest}");
 
-        if (!IsLoggedIn()) 
+        if (!IsLoggedIn())
         {
             _logger.LogWarning($"GetAllMessages returns Forbid because user is not logged in");
-            return Forbid(); 
+            return Forbid();
         }
 
         var messages = _messageRepository.GetMessages(no).Select(x => new MessageDTO(x.Message.Text, x.Message.PubDate.Value, x.Author.Username));
@@ -214,10 +214,10 @@ public class TimelineController : Controller
             return NotFound();
         }
 
-        if (!IsLoggedIn()) 
-        { 
+        if (!IsLoggedIn())
+        {
             _logger.LogWarning($"GetFollows returns Forbid as user is not logged in");
-            return Forbid(); 
+            return Forbid();
         }
 
         var follows = _followerRepository.GetCurrentUserFollows(profileUser.UserId, no);

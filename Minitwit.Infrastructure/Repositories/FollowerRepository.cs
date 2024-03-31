@@ -21,7 +21,8 @@ public class FollowerRepository : IFollowerRepository
         try
         {
             _context.SaveChanges();
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }
@@ -35,7 +36,8 @@ public class FollowerRepository : IFollowerRepository
         try
         {
             _context.SaveChanges();
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }
@@ -56,7 +58,7 @@ public class FollowerRepository : IFollowerRepository
                        on user.UserId equals follower.WhomId
                        where follower.WhoId == whoId
                        select user.Username).Take(no).ToList();
-        
+
         return follows;
     }
 }
