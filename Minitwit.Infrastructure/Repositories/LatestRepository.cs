@@ -11,29 +11,38 @@ public class LatestRepository : ILatestRepository
         _context = context;
     }
 
-    public bool AddLatest(int CommandId)
+    public async Task<bool> AddLatestAsync(int commandId)
     {
         _context.Latests.Add(new Latest
         {
-            CommandId = CommandId
+            CommandId = commandId
         });
+
         try
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }
+
         return true;
     }
 
     public int GetLatest()
     {
-        var content = (from l in _context.Latests
-                       orderby l.Id descending
-                       select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
+        Task<int> gettingLatest = this.GetLatestAsync();
 
-        return content;
+        gettingLatest.Wait();
+        return gettingLatest.Result;
     }
+
+    public Task<int> GetLatestAsync()
+        => Task.Run(() =>
+        {
+            return (from l in _context.Latests
+                    orderby l.Id descending
+                    select l.CommandId).Take(1).ToList().FirstOrDefault(-1);
+        });
 }

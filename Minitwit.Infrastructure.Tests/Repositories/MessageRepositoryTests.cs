@@ -40,34 +40,34 @@ public class MessageRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void AddMessageReturnsTrue()
+    public async Task AddMessageReturnsTrue()
     {
-        var response = _messageRepo.AddMessage("Hello", 2);
+        var response = await _messageRepo.AddMessageAsync("Hello", 2);
 
         Assert.True(response);
     }
 
     [Fact]
-    public void GetMessagesReturnsRightMessages()
+    public async Task GetMessagesReturnsRightMessages()
     {
-        var response = _messageRepo.GetMessages(30);
+        var response = await _messageRepo.GetMessagesAsync(30);
 
         Assert.Equal(3, response.Count);
     }
 
     [Fact]
-    public void GetUserSpecificMessagesReturnsRightMessages()
+    public async Task GetUserSpecificMessagesReturnsRightMessages()
     {
-        var response = _messageRepo.GetUserSpecificMessages(_user1, 30);
+        var response = await _messageRepo.GetUserSpecificMessagesAsync(_user1, 30);
 
         Assert.Single(response);
         Assert.Equal("hello guys", response[0].Message.Text);
     }
 
     [Fact]
-    public void GetCurrentUserSpecificMessagesReturnsRightMessages()
+    public async Task GetCurrentUserSpecificMessagesReturnsRightMessages()
     {
-        var response = _messageRepo.GetCurrentUserSpecificMessages(_context.Users.Single(x => x.Username == "user1").UserId, 30);
+        var response = await _messageRepo.GetCurrentUserSpecificMessagesAsync(_context.Users.Single(x => x.Username == "user1").UserId, 30);
 
         Assert.Single(response);
         Assert.Equal("hello guys", response[0].Message.Text);

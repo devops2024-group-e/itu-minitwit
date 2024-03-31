@@ -25,9 +25,11 @@ public class UserRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void GetUserFromUsernameReturnsRightUser()
+    public async Task GetUserFromUsernameReturnsRightUser()
     {
-        var response = _userRepo.GetUser("m_user1");
+        var response = await _userRepo.GetUserAsync("m_user1");
+        if (response is null)
+            Assert.Fail("User is null");
 
         Assert.Equal("1@g.dk", response.Email);
         Assert.Equal("m_user1", response.Username);
@@ -35,10 +37,15 @@ public class UserRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void GetUserFromIdReturnsRightUser()
+    public async Task GetUserFromIdReturnsRightUser()
     {
-        var us = _userRepo.GetUser("m_user2");
-        var response = _userRepo.GetUser(us.UserId);
+        var us = await _userRepo.GetUserAsync("m_user2");
+        if (us is null)
+            Assert.Fail("User m_user2 is null");
+
+        var response = await _userRepo.GetUserAsync(us.UserId);
+        if (response is null)
+            Assert.Fail($"User with userid {us.UserId} return null");
 
         Assert.Equal(us.UserId, response.UserId);
         Assert.Equal("2@g.dk", response.Email);
@@ -47,25 +54,25 @@ public class UserRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void DoesUsereExistReturnsTrue()
+    public async Task DoesUsereExistReturnsTrue()
     {
-        var response = _userRepo.DoesUserExist("m_user3");
+        var response = await _userRepo.DoesUserExistAsync("m_user3");
 
         Assert.True(response);
     }
 
     [Fact]
-    public void DoesUsereExistReturnsFalse()
+    public async Task DoesUsereExistReturnsFalse()
     {
-        var response = _userRepo.DoesUserExist("m_user4");
+        var response = await _userRepo.DoesUserExistAsync("m_user4");
 
         Assert.False(response);
     }
 
     [Fact]
-    public void AddUserReturnsTrue()
+    public async Task AddUserReturnsTrue()
     {
-        var response = _userRepo.AddUser("m_newUser", "adsj@ad.dk", "szdhi");
+        var response = await _userRepo.AddUserAsync("m_newUser", "adsj@ad.dk", "szdhi");
 
         Assert.True(response);
     }

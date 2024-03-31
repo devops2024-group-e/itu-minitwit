@@ -28,9 +28,9 @@ public class RegisterController : Controller
     /// <param name="password2">A repetition of the password of the new user.</param>
     /// <returns>Either http code 400 (BadRequest) or http code 204 (Nocontent)</returns>
     [HttpPost("/register")]
-    public IActionResult Register([FromQuery] int latest, [FromBody] RegisterUser user)
+    public async Task<IActionResult> Register([FromQuery] int latest, [FromBody] RegisterUser user)
     {
-        _latestRepository.AddLatest(latest);
+        await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"Register added latest: {latest}");
 
         string errMessage = "";
@@ -51,14 +51,14 @@ public class RegisterController : Controller
             _logger.LogWarning($"Password in register is empty");
 
         }
-        else if (_userRepository.DoesUserExist(user.Username))
+        else if (await _userRepository.DoesUserExistAsync(user.Username))
         {
             errMessage = "The username is already taken";
             _logger.LogWarning($"Username provided for register already exists");
         }
         else
         {
-            _userRepository.AddUser(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
+            await _userRepository.AddUserAsync(user.Username, user.Email, PasswordHash.Hash(user.Pwd));
             _logger.LogInformation("User registered: {Username}", user.Username);
         }
         if (errMessage != "")
