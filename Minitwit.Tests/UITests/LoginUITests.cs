@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace Minitwit.Tests.UITests;
 public class LoginUITests : IDisposable
@@ -10,7 +12,10 @@ public class LoginUITests : IDisposable
 
     public LoginUITests()
     {
-        _driver = new ChromeDriver();
+        ChromeOptions option = new ChromeOptions();
+        option.AddArguments("--headless");
+        new DriverManager().SetUpDriver(new ChromeConfig());
+        _driver = new ChromeDriver(option);
         //appURL = 
 
     }
