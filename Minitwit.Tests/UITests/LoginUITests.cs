@@ -32,6 +32,19 @@ public class LoginUITests : IDisposable
         Assert.True(body.Text.Contains("MiniTwit"));
     }
 
+    [Fact]
+    public async Task SecondTest_ShouldFail()
+    {
+        _driver.Navigate().GoToUrl("http://161.35.78.128/");
+
+        IWebElement body = _driver.FindElement(By.TagName("body"));
+
+        //Assert.IsTrue(body.Text.Contains("MiniTwit"));
+
+        Assert.False(body.Text.Contains("MiniTwit"));
+    }
+
+
 
     public void Dispose()
     {
