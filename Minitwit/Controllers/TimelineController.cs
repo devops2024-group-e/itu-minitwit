@@ -25,7 +25,7 @@ public class TimelineController : Controller
     [Route("{username?}")]
     public async Task<IActionResult> Index(string username)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        bool is_loggedin = HttpContext.Session.IsAuthenticated();
 
         if (!string.IsNullOrEmpty(username))
         {
@@ -46,7 +46,7 @@ public class TimelineController : Controller
         }
         else
         {
-            var model = await GetCurrentUserTimelineModelAsync(HttpContext.Session.GetInt32("user_id").Value);
+            var model = await GetCurrentUserTimelineModelAsync(HttpContext.Session.GetUserId());
 
             _logger.LogInformation($"Redirecting to timeline for user {username}");
             return View(model);
@@ -65,8 +65,7 @@ public class TimelineController : Controller
     [Route("{username}/follow")]
     public async Task<IActionResult> FollowUser(string username)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
+        if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"FollowUser returns Unauthorized because user {username} is not logged in");
             return Unauthorized();
@@ -79,8 +78,8 @@ public class TimelineController : Controller
             return NotFound();
         }
 
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        await _followerRepository.AddFollowerAsync(ownUserID.Value, profileUser.UserId);
+        var ownUserID = HttpContext.Session.GetUserId();
+        await _followerRepository.AddFollowerAsync(ownUserID, profileUser.UserId);
         _logger.LogInformation($"FollowUser user {username} now follows {profileUser.Username}");
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
@@ -91,9 +90,7 @@ public class TimelineController : Controller
     [Route("{username}/unfollow")]
     public async Task<IActionResult> UnfollowUser(string username)
     {
-
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
+        if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"UnfollowUser returns Unauthorized because user {username} is not logged in");
             return Unauthorized();
@@ -106,8 +103,8 @@ public class TimelineController : Controller
             return NotFound();
         }
 
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        await _followerRepository.RemoveFollowerAsync(ownUserID.Value, profileUser.UserId);
+        var ownUserID = HttpContext.Session.GetUserId();
+        await _followerRepository.RemoveFollowerAsync(ownUserID, profileUser.UserId);
         _logger.LogInformation($"UnfollowUser user {username} unfollowed {profileUser.Username}");
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
@@ -118,14 +115,13 @@ public class TimelineController : Controller
     [HttpPost("add_message")]
     public async Task<IActionResult> AddMessage(string text)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
+        if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"AddMessage returns Unauthorized because user is not logged in");
             return Unauthorized();
         }
 
-        var authorId = (int)HttpContext.Session.GetInt32("user_id");
+        var authorId = HttpContext.Session.GetUserId();
         await _messageRepository.AddMessageAsync(text, authorId);
         _logger.LogInformation($"AddMessage added message for user with id {authorId} and text {text}");
 
@@ -164,10 +160,12 @@ public class TimelineController : Controller
 
         if (is_loggedin)
         {
-            int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+            int currentUserId = HttpContext.Session.GetUserId();
             model.Profile.IsMe = currentUserId == profileUser.UserId;
             model.Profile.IsFollowing = await _followerRepository.IsFollowingAsync(currentUserId, profileUser.UserId);
-            model.CurrentUsername = (await _userRepository.GetUserAsync(currentUserId)).Username;
+
+            User? currentUser = await _userRepository.GetUserAsync(currentUserId);
+            model.CurrentUsername = currentUser?.Username;
         }
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.

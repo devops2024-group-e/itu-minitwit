@@ -20,8 +20,7 @@ public class LoginController : Controller
 
     public IActionResult Index()
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogDebug("User is already logged in and redirected to timeline");
             return RedirectToAction("Index", "Timeline");
@@ -36,8 +35,7 @@ public class LoginController : Controller
     public async Task<IActionResult> LoginNow(string username, string password)
     {
         _logger.LogInformation("Login attempt for user {username}", username);
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogDebug("User is already logged in and redirected to timeline");
             return RedirectToAction("Index", "Timeline"); // TODO: Change to '/Timeline' ??
