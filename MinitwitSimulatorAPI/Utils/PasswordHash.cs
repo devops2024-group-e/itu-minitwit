@@ -16,8 +16,8 @@ public static class PasswordHash
         var hashedResult = Convert.ToHexString(KeyDerivation.Pbkdf2(
                     password: password,
                     salt: salt,
-                    prf: KeyDerivationPrf.HMACSHA256,
-                    iterationCount: 600000,
+                    prf: KeyDerivationPrf.HMACSHA512,
+                    iterationCount: 100000,
                     numBytesRequested: 32));
         return $"{Convert.ToHexString(salt)}${hashedResult}";
     }
