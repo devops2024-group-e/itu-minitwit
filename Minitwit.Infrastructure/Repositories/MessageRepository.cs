@@ -17,7 +17,7 @@ public class MessageRepository : IMessageRepository
         {
             AuthorId = authorId,
             Text = text,
-            PubDate = (int)DateTime.Now.Ticks,
+            PubDate = DateTime.Now.Ticks,
             Flagged = 0
         });
 
