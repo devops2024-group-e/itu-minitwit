@@ -78,6 +78,9 @@ jobs:
 
       - name: Set up database
         run: docker compose -f docker-compose.yaml up minitwit-db -d
+      
+      - name: Set up frontend
+        run: dotnet run --project Minitwit/
 
       - name: Test
         run: dotnet test Minitwit.Tests/Minitwit.Tests.csproj

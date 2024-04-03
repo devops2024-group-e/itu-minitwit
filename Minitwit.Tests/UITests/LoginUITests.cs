@@ -23,7 +23,8 @@ public class LoginUITests : IDisposable
     [Fact]
     public async Task FirstTest_ReturnsTrue()
     {
-        _driver.Navigate().GoToUrl("http://161.35.78.128/");
+        _driver.Navigate().GoToUrl("http://localhost:5191/");
+        //_driver.Navigate().GoToUrl("http://161.35.78.128/");
 
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
@@ -35,7 +36,8 @@ public class LoginUITests : IDisposable
     [Fact]
     public async Task SecondTest_ShouldFail()
     {
-        _driver.Navigate().GoToUrl("http://161.35.78.128/");
+        _driver.Navigate().GoToUrl("http://localhost:5191/");
+        //_driver.Navigate().GoToUrl("http://161.35.78.128/");
 
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
