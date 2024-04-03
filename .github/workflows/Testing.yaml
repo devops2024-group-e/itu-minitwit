@@ -80,7 +80,11 @@ jobs:
         run: docker compose -f docker-compose.yaml up minitwit-db -d
       
       - name: Set up frontend
-        run: dotnet run --project Minitwit/
+        run: dotnet run --project Minitwit/ &
 
       - name: Test
-        run: dotnet test Minitwit.Tests/Minitwit.Tests.csproj
+        run: |
+          #Wait for frontend to run
+          sleep 5
+          #Run tests
+          dotnet test Minitwit.Tests/Minitwit.Tests.csproj
