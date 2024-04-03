@@ -10,14 +10,14 @@
         foreach (var message in Model.Messages)
         {
             <li>
-                @Html.GravatarImage(message.Author.Email, size: 48, defaultImage: GravatarHtmlHelper.DefaultImage.Identicon)
+                @Html.GravatarImage(message.Author?.Email, size: 48, defaultImage: GravatarHtmlHelper.DefaultImage.Identicon)
                 @{
-                    var url = $"/{message.Author.Username}";
+                    var url = $"/{message.Author?.Name ?? ""}";
                 }
                 <p>
-                    <strong><a href="@url">@message.Author.Username</a></strong>
-                    @message.Message.Text
-                    <small>&mdash; @message.Message.PubDate</small>
+                    <strong><a href="@url">@message.Author?.Name</a></strong>
+                    @message.Text
+                    <small>&mdash; @message.PubDate?.ToString("dd/MM/yyyy HH:mm")</small>
                 </p>
             </li>
         }
