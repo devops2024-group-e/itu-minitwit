@@ -6,12 +6,12 @@ using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 
 namespace Minitwit.Tests.UITests;
-public class LoginAndLogoutUITests : IDisposable
+public class LoginRegisterLogoutUITests : IDisposable
 {
     private readonly IWebDriver _driver;
     private string appURL;
 
-    public LoginAndLogoutUITests()
+    public LoginRegisterLogoutUITests()
     {
         ChromeOptions option = new ChromeOptions();
         option.AddArguments("--headless");
@@ -38,17 +38,20 @@ public class LoginAndLogoutUITests : IDisposable
 
     [Fact]
     public async Task NonRegisteredUserCanRegister_ReturnsTrue()
-    {
+    {   
+        //Arrange
         _driver.Navigate().GoToUrl("http://localhost:5191/");
 
+        //Act
         _driver.FindElement(By.LinkText("sign up |")).Click();
 
         _driver.FindElement(By.Name("username")).SendKeys("Test User 1");
-        _driver.FindElement(By.Name("email")).SendKeys("example@email.com");
+        _driver.FindElement(By.Name("email")).SendKeys("example1@email.com");
         _driver.FindElement(By.Name("password")).SendKeys("12345");
         _driver.FindElement(By.Name("password2")).SendKeys("12345");
         _driver.FindElement(By.ClassName("actions")).Submit();
 
+        //Assert
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
         Assert.True(body.Text.Contains("You were successfully registered and can login now"));
@@ -56,25 +59,60 @@ public class LoginAndLogoutUITests : IDisposable
 
     public async Task RegisteredUserCanLogin_ReturnsTrue()
     {
+        //Arrange
         _driver.Navigate().GoToUrl("http://localhost:5191/");
 
         _driver.FindElement(By.LinkText("sign up |")).Click();
 
-        _driver.FindElement(By.Name("username")).SendKeys("Test User 1");
-        _driver.FindElement(By.Name("email")).SendKeys("example@email.com");
+        _driver.FindElement(By.Name("username")).SendKeys("Test User 2");
+        _driver.FindElement(By.Name("email")).SendKeys("example2@email.com");
         _driver.FindElement(By.Name("password")).SendKeys("12345");
         _driver.FindElement(By.Name("password2")).SendKeys("12345");
         _driver.FindElement(By.ClassName("actions")).Submit();
 
-        _driver.FindElement(By.Name("username")).SendKeys("Test User 1");
+        //Act
+        _driver.FindElement(By.Name("username")).SendKeys("Test User 2");
         _driver.FindElement(By.Name("password")).SendKeys("12345");
         _driver.FindElement(By.ClassName("actions")).Submit();
 
+        //Assert
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
         Assert.True(body.Text.Contains("You were logged in"));
         Assert.True(body.Text.Contains("My Timeline"));
         Assert.True(body.Text.Contains("This is you!"));
+    }
+
+    public async Task LoggedInUserCanLogout_ReturnsTrue()
+    {
+        //Arrange
+        _driver.Navigate().GoToUrl("http://localhost:5191/");
+
+        _driver.FindElement(By.LinkText("sign up |")).Click();
+
+        _driver.FindElement(By.Name("username")).SendKeys("Test User 3");
+        _driver.FindElement(By.Name("email")).SendKeys("example3@email.com");
+        _driver.FindElement(By.Name("password")).SendKeys("12345");
+        _driver.FindElement(By.Name("password2")).SendKeys("12345");
+        _driver.FindElement(By.ClassName("actions")).Submit();
+
+        _driver.FindElement(By.Name("username")).SendKeys("Test User 3");
+        _driver.FindElement(By.Name("password")).SendKeys("12345");
+        _driver.FindElement(By.ClassName("actions")).Submit();
+        
+        _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+        //Act
+        _driver.FindElement(By.LinkText("sign out")).Click();
+
+        //Assert
+        IWebElement body = _driver.FindElement(By.TagName("body"));
+
+        Assert.True(body.Text.Contains("You were logged out"));
+        Assert.True(body.Text.Contains("MiniTwit"));
+        Assert.True(body.Text.Contains("sign up"));
+        Assert.True(body.Text.Contains("sign in"));
+        Assert.True(_driver.Url.Contains("/public"));
     }
 
 
