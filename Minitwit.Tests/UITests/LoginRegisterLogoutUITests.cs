@@ -17,8 +17,6 @@ public class LoginRegisterLogoutUITests : IDisposable
         option.AddArguments("--headless");
         new DriverManager().SetUpDriver(new ChromeConfig());
         _driver = new ChromeDriver(option);
-        //appURL = 
-
     }
 
     [Fact]
@@ -57,6 +55,7 @@ public class LoginRegisterLogoutUITests : IDisposable
         Assert.True(body.Text.Contains("You were successfully registered and can login now"));
     }
 
+    [Fact]
     public async Task RegisteredUserCanLogin_ReturnsTrue()
     {
         //Arrange
@@ -83,18 +82,19 @@ public class LoginRegisterLogoutUITests : IDisposable
         Assert.True(body.Text.Contains("This is you!"));
     }
 
+    [Fact]
     public async Task LoggedInUserCanLogout_ReturnsTrue()
     {
         //Arrange
-        _driver.Navigate().GoToUrl("http://localhost:5191/");
-
-        _driver.FindElement(By.LinkText("sign up |")).Click();
+        _driver.Navigate().GoToUrl("http://localhost:5191/Register");
 
         _driver.FindElement(By.Name("username")).SendKeys("Test User 3");
         _driver.FindElement(By.Name("email")).SendKeys("example3@email.com");
         _driver.FindElement(By.Name("password")).SendKeys("12345");
         _driver.FindElement(By.Name("password2")).SendKeys("12345");
         _driver.FindElement(By.ClassName("actions")).Submit();
+
+        _driver.Navigate().GoToUrl("http://localhost:5191/Login");
 
         _driver.FindElement(By.Name("username")).SendKeys("Test User 3");
         _driver.FindElement(By.Name("password")).SendKeys("12345");
