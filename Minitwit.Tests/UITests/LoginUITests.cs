@@ -43,7 +43,7 @@ public class LoginUITests : IDisposable
 
         //Assert.IsTrue(body.Text.Contains("MiniTwit"));
 
-        Assert.False(body.Text.Contains("MiniTwit"));
+        Assert.True(body.Text.Contains("MiniTwit"));
     }
 
 
