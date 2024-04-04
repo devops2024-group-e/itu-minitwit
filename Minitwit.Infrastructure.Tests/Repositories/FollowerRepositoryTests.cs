@@ -4,7 +4,6 @@ using Minitwit.Infrastructure.Models;
 
 namespace Minitwit.Infrastructure.Tests.Repositories;
 
-[Collection(nameof(RepositorySequentialTestCollectionDefinition))]
 public class FollowerRepositoryTests : IDisposable
 {
     private readonly FollowerRepository _followerRepository;
