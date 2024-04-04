@@ -10,7 +10,8 @@
         foreach (var message in Model.Messages)
         {
             <li>
-                @Html.GravatarImage(message.Author?.Email, size: 48, defaultImage: GravatarHtmlHelper.DefaultImage.Identicon)
+                @Html.GravatarImage(message.Author?.Email ?? string.Empty, size: 48, defaultImage:
+                         GravatarHtmlHelper.DefaultImage.Identicon)
                 @{
                     var url = $"/{message.Author?.Name ?? ""}";
                 }

@@ -9,7 +9,6 @@ public class MessageViewModel
 
     public string Text { get; set; } = null!;
 
-    [DisplayFormat(DataFormatString = "dd/MM/yyyy HH:mm")]
     public DateTime? PubDate { get; set; }
 
     public int? Flagged { get; set; }
