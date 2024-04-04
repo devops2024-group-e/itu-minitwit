@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Minitwit.Models;
-public class MessageDTO
+namespace Minitwit.ViewModels;
+public class MessageViewModel
 {
     public int MessageId { get; set; }
 
-    public AuthorDTO? Author { get; set; }
+    public AuthorViewModel? Author { get; set; }
 
     public string Text { get; set; } = null!;
 

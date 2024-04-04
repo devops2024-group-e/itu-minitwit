@@ -1,12 +1,10 @@
-using Minitwit.Models;
-
 namespace Minitwit.ViewModels;
 
 public class TimelineViewModel
 {
     public string? CurrentUsername { get; set; }
     public Profile? Profile { get; set; }
-    public required ICollection<MessageDTO> Messages { get; set; }
+    public required ICollection<MessageViewModel> Messages { get; set; }
 }
 
 public class Profile
