@@ -33,7 +33,7 @@ public class RegisterController : Controller
         if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogInformation("User is already authenticated. Redirecting to timeline");
-            return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
+            return RedirectToPage("/Index");
         }
 
         string errMessage;

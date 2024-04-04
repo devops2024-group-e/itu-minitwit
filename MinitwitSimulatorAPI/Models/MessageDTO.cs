@@ -1,3 +1,3 @@
 namespace MinitwitSimulatorAPI.Models;
 
-public record MessageDTO(string Content, int PubDate, string User);
+public record MessageDTO(string Content, long PubDate, string User);

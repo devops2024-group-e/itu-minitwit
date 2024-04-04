@@ -59,7 +59,7 @@ public class TimelineController : Controller
         var messages = await _messageRepository.GetMessagesAsync(30);
 
         _logger.LogInformation($"Redirecting to public timeline");
-        return View(new PublicTimelineViewModel { Messages = messages });
+        return View(new PublicTimelineViewModel { Messages = messages.ConvertToViewModel() });
     }
 
     [Route("{username}/follow")]
@@ -149,7 +149,7 @@ public class TimelineController : Controller
 
         var messages = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
 
-        TimelineViewModel model = new TimelineViewModel { Messages = messages };
+        TimelineViewModel model = new TimelineViewModel { Messages = messages.ConvertToViewModel() };
         model.Profile = new Profile
         {
             Username = profileUser.Username,
@@ -169,7 +169,8 @@ public class TimelineController : Controller
         }
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
-        model.Messages = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
+        var message = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
+        model.Messages = messages.ConvertToViewModel();
 
         _logger.LogInformation($"GetUserTimelineModel returns the Messages relevant for user {username}");
         return model;
@@ -183,6 +184,10 @@ public class TimelineController : Controller
 
         _logger.LogInformation($"GetCurrentUserTimelineModel returns the Timeline relevant for the current user");
 
-        return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
+        return new TimelineViewModel
+        {
+            CurrentUsername = currentUsername,
+            Messages = messages.ConvertToViewModel()
+        };
     }
 }
