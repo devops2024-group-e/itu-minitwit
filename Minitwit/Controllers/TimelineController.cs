@@ -4,7 +4,6 @@ using Minitwit.Infrastructure.Models;
 using Minitwit.Utils;
 using Minitwit.ViewModels;
 using Minitwit.Infrastructure.Repositories;
-using Minitwit.Models;
 
 namespace Minitwit.Controllers;
 
@@ -60,22 +59,7 @@ public class TimelineController : Controller
         var messages = await _messageRepository.GetMessagesAsync(30);
 
         _logger.LogInformation($"Redirecting to public timeline");
-        return View(new PublicTimelineViewModel
-        {
-            Messages = messages.Select(x => new MessageDTO
-            {
-                MessageId = x.Message.MessageId,
-                Author = new AuthorDTO
-                {
-                    Id = x.Author.UserId,
-                    Name = x.Author.Username
-                },
-                Text = x.Message.Text,
-                PubDate = new DateTime(x.Message.PubDate ?? long.MinValue),
-                Flagged = x.Message.Flagged
-
-            }).ToList()
-        });
+        return View(new PublicTimelineViewModel { Messages = messages.ConvertToViewModel() });
     }
 
     [Route("{username}/follow")]
@@ -165,22 +149,7 @@ public class TimelineController : Controller
 
         var messages = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
 
-        TimelineViewModel model = new TimelineViewModel
-        {
-            Messages = messages.Select(x => new MessageDTO
-            {
-                MessageId = x.Message.MessageId,
-                Author = new AuthorDTO
-                {
-                    Id = x.Author.UserId,
-                    Name = x.Author.Username
-                },
-                Text = x.Message.Text,
-                PubDate = new DateTime(x.Message.PubDate ?? long.MinValue),
-                Flagged = x.Message.Flagged
-
-            }).ToList()
-        };
+        TimelineViewModel model = new TimelineViewModel { Messages = messages.ConvertToViewModel() };
         model.Profile = new Profile
         {
             Username = profileUser.Username,
@@ -201,20 +170,7 @@ public class TimelineController : Controller
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
         var message = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
-        model.Messages = messages.Select(x => new MessageDTO
-        {
-            MessageId = x.Message.MessageId,
-            Author = new AuthorDTO
-            {
-                Id = x.Author.UserId,
-                Name = x.Author.Username
-            },
-            Text = x.Message.Text,
-            PubDate = new DateTime(x.Message.PubDate ?? long.MinValue),
-            Flagged = x.Message.Flagged
-
-        }).ToList();
-
+        model.Messages = messages.ConvertToViewModel();
 
         _logger.LogInformation($"GetUserTimelineModel returns the Messages relevant for user {username}");
         return model;
@@ -231,19 +187,7 @@ public class TimelineController : Controller
         return new TimelineViewModel
         {
             CurrentUsername = currentUsername,
-            Messages = messages.Select(x => new MessageDTO
-            {
-                MessageId = x.Message.MessageId,
-                Author = new AuthorDTO
-                {
-                    Id = x.Author.UserId,
-                    Name = x.Author.Username
-                },
-                Text = x.Message.Text,
-                PubDate = new DateTime(x.Message.PubDate ?? long.MinValue),
-                Flagged = x.Message.Flagged
-
-            }).ToList()
+            Messages = messages.ConvertToViewModel()
         };
     }
 }
