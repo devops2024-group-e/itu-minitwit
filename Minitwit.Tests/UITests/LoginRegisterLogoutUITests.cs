@@ -1,5 +1,6 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 
@@ -18,13 +19,13 @@ public class LoginRegisterLogoutUITests : IDisposable
     }
 
     [Fact]
-    public async Task NonRegisteredUserCanAccessTheSite_ReturnsTrue()
+    public async Task NonRegisteredUserCanAccessTheSite()
     {
         _driver.Navigate().GoToUrl("http://localhost:5191/");
 
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
-        String currentUrl = _driver.Url; 
+        var currentUrl = _driver.Url; 
 
         Assert.True(body.Text.Contains("MiniTwit"));
         Assert.True(body.Text.Contains("sign up"));
@@ -33,7 +34,7 @@ public class LoginRegisterLogoutUITests : IDisposable
     }
 
     [Fact]
-    public async Task NonRegisteredUserCanRegister_ReturnsTrue()
+    public async Task NonRegisteredUserCanRegister()
     {   
         //Arrange
         _driver.Navigate().GoToUrl("http://localhost:5191/");
@@ -54,7 +55,7 @@ public class LoginRegisterLogoutUITests : IDisposable
     }
 
     [Fact]
-    public async Task RegisteredUserCanLogin_ReturnsTrue()
+    public async Task RegisteredUserCanLogin()
     {
         //Arrange
         _driver.Navigate().GoToUrl("http://localhost:5191/");
@@ -81,7 +82,7 @@ public class LoginRegisterLogoutUITests : IDisposable
     }
 
     [Fact]
-    public async Task LoggedInUserCanLogout_ReturnsTrue()
+    public async Task LoggedInUserCanLogout()
     {
         //Arrange
         _driver.Navigate().GoToUrl("http://localhost:5191/Register");
@@ -101,7 +102,11 @@ public class LoginRegisterLogoutUITests : IDisposable
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
         //Act
-        _driver.FindElement(By.LinkText("sign out")).Click();
+        _driver.FindElement(By.XPath("/html/body/div/div[1]/a[3]")).Click();
+
+        var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+        wait.Until(ExpectedConditions.UrlContains("/public"));
+
 
         //Assert
         IWebElement body = _driver.FindElement(By.TagName("body"));
