@@ -20,8 +20,7 @@ public class LoginController : Controller
 
     public IActionResult Index()
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogDebug("User is already logged in and redirected to timeline");
             return RedirectToAction("Index", "Timeline");
@@ -36,11 +35,10 @@ public class LoginController : Controller
     public async Task<IActionResult> LoginNow(string username, string password)
     {
         _logger.LogInformation("Login attempt for user {username}", username);
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogDebug("User is already logged in and redirected to timeline");
-            return RedirectToAction("Index", "Timeline"); // TODO: Change to '/Timeline' ??
+            return RedirectToAction("Index", "Timeline");
         }
 
         var user = await _userRepository.GetUserAsync(username);
@@ -53,7 +51,7 @@ public class LoginController : Controller
 
         if (PasswordHash.CheckPasswordHash(password, user.PwHash))
         {
-            HttpContext.Session.SetInt32("user_id", (int)user.UserId); // TODO: This is a bad type conversion...
+            HttpContext.Session.SetInt32("user_id", user.UserId);
             TempData.QueueFlashMessage("You were logged in");
 
             _logger.LogInformation($"User with username {username} was logged in and redirected to Timeline");

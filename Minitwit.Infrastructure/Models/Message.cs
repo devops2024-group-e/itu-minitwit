@@ -11,7 +11,7 @@ public partial class Message
 
     public string Text { get; set; } = null!;
 
-    public int? PubDate { get; set; }
+    public long? PubDate { get; set; }
 
     public int? Flagged { get; set; }
 }

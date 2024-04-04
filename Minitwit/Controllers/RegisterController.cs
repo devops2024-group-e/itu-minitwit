@@ -18,8 +18,7 @@ public class RegisterController : Controller
 
     public IActionResult Index()
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogInformation("User is already authenticated. Redirecting to timeline");
             return RedirectToAction("Index", "Timeline");
@@ -31,11 +30,10 @@ public class RegisterController : Controller
     [HttpPost()]
     public async Task<IActionResult> Register(string username, string email, string password, string password2)
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogInformation("User is already authenticated. Redirecting to timeline");
-            return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
+            return RedirectToPage("/Index");
         }
 
         string errMessage;
