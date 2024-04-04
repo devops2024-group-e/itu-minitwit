@@ -30,11 +30,6 @@ public class UserRepository : IUserRepository
             Email = email,
             PwHash = password
         };
-        {
-            Username = username,
-            Email = email,
-            PwHash = password
-        };
 
         _context.Users.Add(user);
         try
