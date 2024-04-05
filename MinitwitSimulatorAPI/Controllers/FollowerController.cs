@@ -23,7 +23,7 @@ public class FollowerController : Controller
         _userRepository = userRepository;
     }
 
-    
+
     /// <summary>
     /// This method checks whether the user is logged in.
     /// </summary>
@@ -45,7 +45,7 @@ public class FollowerController : Controller
         return await _userRepository.GetUserAsync(username);
     }
 
-   /// <summary>
+    /// <summary>
     /// The user currently logged in, follows or unfollows the user given in the json-body.
     /// </summary>
     /// <param name="ownUsername">The username of the user to be followed.</param>
@@ -109,7 +109,7 @@ public class FollowerController : Controller
         return NoContent();
     }
 
-       /// <summary>
+    /// <summary>
     /// Gets the users followed by a given user.
     /// </summary>
     /// <param name="username">The username of the user, whose follows should be returned.</param>

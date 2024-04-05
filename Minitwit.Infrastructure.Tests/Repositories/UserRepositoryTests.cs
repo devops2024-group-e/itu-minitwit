@@ -3,7 +3,6 @@ using Minitwit.Infrastructure.Repositories;
 
 namespace Minitwit.Infrastructure.Tests.Repositories;
 
-[Collection(nameof(RepositorySequentialTestCollectionDefinition))]
 public class UserRepositoryTests : IDisposable
 {
 
