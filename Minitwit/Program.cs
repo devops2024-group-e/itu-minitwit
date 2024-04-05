@@ -24,7 +24,7 @@ builder.Services.AddDbContext<MinitwitContext>(options =>
 });
 
 // Add dependencies to dependency injection
-builder.Services.AddScoped<IFollowerRepository,FollowerRepository>();
+builder.Services.AddScoped<IFollowerRepository, FollowerRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddOpenTelemetry()

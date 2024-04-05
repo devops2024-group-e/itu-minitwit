@@ -8,4 +8,4 @@ ENV POSTGRES_DB=minitwit
 
 WORKDIR /db-setup
 COPY . /db-setup
-ADD schema.sql /docker-entrypoint-initdb.d
+COPY schema.sql /docker-entrypoint-initdb.d

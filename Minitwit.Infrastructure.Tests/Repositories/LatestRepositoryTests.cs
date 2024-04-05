@@ -16,42 +16,43 @@ public class LatestRepositoryTests : IDisposable
         _context = new MinitwitContext(builder.Options);
         _context.Database.EnsureCreated();
 
-        _context.Latests.Add(new Latest{Id = 1, CommandId = 11});
-        _context.Latests.Add(new Latest{Id = 2, CommandId = 22});
-        _context.Latests.Add(new Latest{Id = 3, CommandId = 33});
-        _context.Latests.Add(new Latest{Id = 4, CommandId = 44});
+        _context.Latests.Add(new Latest { Id = 1, CommandId = 11 });
+        _context.Latests.Add(new Latest { Id = 2, CommandId = 22 });
+        _context.Latests.Add(new Latest { Id = 3, CommandId = 33 });
+        _context.Latests.Add(new Latest { Id = 4, CommandId = 44 });
         _context.SaveChanges();
 
         _latestRepository = new LatestRepository(_context);
     }
 
     [Fact]
-    public void AddLatest_SuccesfullyAddsLatest_ReturnsTrue()
+    public async Task AddLatest_SuccesfullyAddsLatest_ReturnsTrue()
     {
-        var result = _latestRepository.AddLatest(55);
+        var result = await _latestRepository.AddLatestAsync(55);
 
         Assert.True(result);
     }
 
     [Fact]
-    public void GetLatest_SuccesfullyGetsLatest_ReturnsLatestsCommandId()
+    public async Task GetLatest_SuccesfullyGetsLatest_ReturnsLatestsCommandId()
     {
-        var result = _latestRepository.GetLatest();
+        var result = await _latestRepository.GetLatestAsync();
 
         Assert.Equal(44, result);
     }
 
     [Fact]
-    public void AddLatest_GetLatest_SuccesfullyGetsNewlyAddedLatest_ReturnsLatestsCommandId()
+    public async Task AddLatest_GetLatest_SuccesfullyGetsNewlyAddedLatest_ReturnsLatestsCommandId()
     {
         // Arrange
-        _latestRepository.AddLatest(55);
-        
+        int expectedLatestId = 65;
+        await _latestRepository.AddLatestAsync(expectedLatestId);
+
         // Act
-        var result = _latestRepository.GetLatest();
+        var result = await _latestRepository.GetLatestAsync();
 
         // Assert
-        Assert.Equal(55, result);
+        Assert.Equal(expectedLatestId, result);
     }
 
     public void Dispose()

@@ -18,8 +18,7 @@ public class RegisterController : Controller
 
     public IActionResult Index()
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogInformation("User is already authenticated. Redirecting to timeline");
             return RedirectToAction("Index", "Timeline");
@@ -29,13 +28,12 @@ public class RegisterController : Controller
     }
 
     [HttpPost()]
-    public IActionResult Register(string username, string email, string password, string password2)
+    public async Task<IActionResult> Register(string username, string email, string password, string password2)
     {
-        bool is_authenticated = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (is_authenticated)
+        if (HttpContext.Session.IsAuthenticated())
         {
             _logger.LogInformation("User is already authenticated. Redirecting to timeline");
-            return RedirectToPage("/Index"); // TODO: Change to '/Timeline' ??
+            return RedirectToPage("/Index");
         }
 
         string errMessage;
@@ -54,20 +52,20 @@ public class RegisterController : Controller
         {
             errMessage = "You have to enter a password";
             _logger.LogWarning($"Password in register is empty");
-        }         
+        }
         else if (password != password2)
         {
             errMessage = "The two passwords do not match";
             _logger.LogWarning($"Two passwords given to register do not match");
         }
-        else if (_userRepository.DoesUserExist(username))
+        else if (await _userRepository.DoesUserExistAsync(username))
         {
             errMessage = "The username is already taken";
             _logger.LogWarning($"Username provided for register already exists");
         }
         else
         {
-            _userRepository.AddUser(username, email, PasswordHash.Hash(password));
+            await _userRepository.AddUserAsync(username, email, PasswordHash.Hash(password));
 
             _logger.LogInformation("User registered: {Username}", username);
             TempData.QueueFlashMessage("You were successfully registered and can login now");

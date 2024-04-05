@@ -23,13 +23,13 @@ public class TimelineController : Controller
     }
 
     [Route("{username?}")]
-    public IActionResult Index(string username)
+    public async Task<IActionResult> Index(string username)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
+        bool is_loggedin = HttpContext.Session.IsAuthenticated();
 
         if (!string.IsNullOrEmpty(username))
         {
-            var model = GetUserTimelineModel(username, is_loggedin);
+            var model = await GetUserTimelineModelAsync(username, is_loggedin);
             if (model == null)
             {
                 _logger.LogWarning("Index in Timeline returns NotFound");
@@ -46,7 +46,7 @@ public class TimelineController : Controller
         }
         else
         {
-            var model = GetCurrentUserTimelineModel(HttpContext.Session.GetInt32("user_id").Value);
+            var model = await GetCurrentUserTimelineModelAsync(HttpContext.Session.GetUserId());
 
             _logger.LogInformation($"Redirecting to timeline for user {username}");
             return View(model);
@@ -54,33 +54,32 @@ public class TimelineController : Controller
     }
 
     [Route("public")]
-    public IActionResult Public()
+    public async Task<IActionResult> Public()
     {
-        var messages = _messageRepository.GetMessages(30);
+        var messages = await _messageRepository.GetMessagesAsync(30);
 
         _logger.LogInformation($"Redirecting to public timeline");
-        return View(new PublicTimelineViewModel { Messages = messages });
+        return View(new PublicTimelineViewModel { Messages = messages.ConvertToViewModel() });
     }
 
     [Route("{username}/follow")]
-    public IActionResult FollowUser(string username)
+    public async Task<IActionResult> FollowUser(string username)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
+        if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"FollowUser returns Unauthorized because user {username} is not logged in");
             return Unauthorized();
         }
 
-        User? profileUser = _userRepository.GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
             _logger.LogWarning($"FollowUser returns NotFound for user {username}");
             return NotFound();
         }
 
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _followerRepository.AddFollower(ownUserID.Value, profileUser.UserId);
+        var ownUserID = HttpContext.Session.GetUserId();
+        await _followerRepository.AddFollowerAsync(ownUserID, profileUser.UserId);
         _logger.LogInformation($"FollowUser user {username} now follows {profileUser.Username}");
 
         TempData.QueueFlashMessage($"You are now following \"{profileUser.Username}\"");
@@ -89,25 +88,23 @@ public class TimelineController : Controller
     }
 
     [Route("{username}/unfollow")]
-    public IActionResult UnfollowUser(string username)
+    public async Task<IActionResult> UnfollowUser(string username)
     {
-
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
+        if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"UnfollowUser returns Unauthorized because user {username} is not logged in");
             return Unauthorized();
         }
 
-        User? profileUser = _userRepository.GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
             _logger.LogWarning($"UnfollowUser returns NotFound for user {username}");
             return NotFound();
         }
 
-        var ownUserID = HttpContext.Session.GetInt32("user_id");
-        _followerRepository.RemoveFollower(ownUserID.Value, profileUser.UserId);
+        var ownUserID = HttpContext.Session.GetUserId();
+        await _followerRepository.RemoveFollowerAsync(ownUserID, profileUser.UserId);
         _logger.LogInformation($"UnfollowUser user {username} unfollowed {profileUser.Username}");
 
         TempData.QueueFlashMessage($"You are no longer following \"{profileUser.Username}\"");
@@ -116,17 +113,16 @@ public class TimelineController : Controller
     }
 
     [HttpPost("add_message")]
-    public IActionResult AddMessage(string text)
+    public async Task<IActionResult> AddMessage(string text)
     {
-        bool is_loggedin = HttpContext.Session.TryGetValue("user_id", out byte[]? bytes);
-        if (!is_loggedin)
+        if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"AddMessage returns Unauthorized because user is not logged in");
             return Unauthorized();
         }
-    
-        var authorId = (int)HttpContext.Session.GetInt32("user_id");
-        _messageRepository.AddMessage(text, authorId);
+
+        var authorId = HttpContext.Session.GetUserId();
+        await _messageRepository.AddMessageAsync(text, authorId);
         _logger.LogInformation($"AddMessage added message for user with id {authorId} and text {text}");
 
         TempData.QueueFlashMessage("Your message was recorded");
@@ -142,18 +138,18 @@ public class TimelineController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    private TimelineViewModel? GetUserTimelineModel(string username, bool is_loggedin)
+    private async Task<TimelineViewModel?> GetUserTimelineModelAsync(string username, bool is_loggedin)
     {
-        User? profileUser = _userRepository.GetUser(username);
+        User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
             _logger.LogWarning($"GetUserTimelineModel returns null because user {username} does not exist");
             return null;
         }
 
-        var messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
+        var messages = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
 
-        TimelineViewModel model = new TimelineViewModel { Messages = messages };
+        TimelineViewModel model = new TimelineViewModel { Messages = messages.ConvertToViewModel() };
         model.Profile = new Profile
         {
             Username = profileUser.Username,
@@ -164,27 +160,34 @@ public class TimelineController : Controller
 
         if (is_loggedin)
         {
-            int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+            int currentUserId = HttpContext.Session.GetUserId();
             model.Profile.IsMe = currentUserId == profileUser.UserId;
-            model.Profile.IsFollowing = _followerRepository.IsFollowing(currentUserId, profileUser.UserId);
-            model.CurrentUsername = _userRepository.GetUser(currentUserId).Username;
+            model.Profile.IsFollowing = await _followerRepository.IsFollowingAsync(currentUserId, profileUser.UserId);
+
+            User? currentUser = await _userRepository.GetUserAsync(currentUserId);
+            model.CurrentUsername = currentUser?.Username;
         }
 
         //Is this really needed? Nothing has changed since the last call in line 142, as far as i can see.
-        model.Messages = _messageRepository.GetUserSpecificMessages(profileUser, 30);
+        var message = await _messageRepository.GetUserSpecificMessagesAsync(profileUser, 30);
+        model.Messages = messages.ConvertToViewModel();
 
         _logger.LogInformation($"GetUserTimelineModel returns the Messages relevant for user {username}");
         return model;
     }
 
-    private TimelineViewModel GetCurrentUserTimelineModel(int currentUserId)
+    private async Task<TimelineViewModel> GetCurrentUserTimelineModelAsync(int currentUserId)
     {
-        var currentUsername = _userRepository.GetUser(currentUserId).Username;
+        var currentUsername = (await _userRepository.GetUserAsync(currentUserId))?.Username;
 
-        var messages = _messageRepository.GetCurrentUserSpecificMessages(currentUserId, 30);
+        var messages = await _messageRepository.GetCurrentUserSpecificMessagesAsync(currentUserId, 30);
 
         _logger.LogInformation($"GetCurrentUserTimelineModel returns the Timeline relevant for the current user");
 
-        return new TimelineViewModel { CurrentUsername = currentUsername, Messages = messages };
+        return new TimelineViewModel
+        {
+            CurrentUsername = currentUsername,
+            Messages = messages.ConvertToViewModel()
+        };
     }
 }

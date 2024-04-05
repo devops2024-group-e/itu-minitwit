@@ -15,7 +15,7 @@ create table message (
   message_id serial primary key,
   author_id integer not null,
   text text not null,
-  pub_date integer,
+  pub_date bigint,
   flagged integer
 );
 
