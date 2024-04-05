@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using Minitwit.Infrastructure;
 using MinitwitSimulatorAPI;
+using MinitwitSimulatorAPI.Utils;
 using static System.Net.HttpStatusCode;
 
 namespace Minitwit.Simulator.Api.Tests.Controllers;
@@ -29,5 +30,11 @@ public class RegisterControllerTests
 
         Assert.True(response.IsSuccessStatusCode);
         Assert.Equal(NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public void PasswordHash_GeneratePassword_returnsTrue()
+    {
+        Assert.True(PasswordHash.CheckPasswordHash("lmao", "0A5282F9022F4B156FFA034A47486511$8897C801CD9D12E59600311E6652A7C7570C45F5D4553FCB672881CF59B302E7"));
     }
 }
