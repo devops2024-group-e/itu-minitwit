@@ -7,9 +7,59 @@ on:
     manual: true
 
 jobs:
+  setup-infrastructure:
+    name: Setup Infrastructure
+    runs-on: ubuntu-latest
+    outputs:
+      ansible-inventory: ${{ steps.ansible-inventory.outputs.inventory }} # Based of the documentation from https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+    steps:
+      - name: Checkout IaC
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Minitwit.Provision/
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version:7.0.x
+
+      - name: Setup Infrastructure Changes
+        uses: pulumi/actions@v5
+        with:
+          command: up
+          stack-name: arnenator/minitwit-prod
+          working-directory: Minitwit.Provision/
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+
+      - name: Generate Ansible Inventory output
+        id: ansible-inventory
+        run: |
+          # Get server categories
+          echo "Getting categories from Pulumi output"
+          declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
+
+          echo "Adding all server category..."
+
+          # Create the ansible inventory file content
+          read -r -d '' ansibleinventory << EOM
+          [all]
+          $(pulumi stack output --json | jq -r 'add | .[]')
+
+          $(for cate in "${categories[@]}"; do
+           echo "[${cate}]"
+           echo "$(pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
+           echo ""
+          done)
+          EOM
+
+          echo "inventory=${ansibleinventory}" >> $GITHUB_OUTPUT
+
   provision-web:
     name: Provision and deploy web servers
-    needs: build
+    needs: setup-infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Login to GitHub Container Registry
@@ -32,6 +82,10 @@ jobs:
             .github/actions/ansible-run-playbook
           sparse-checkout-cone-mode: false
           path: action
+
+      - name: Create ansible Inventory file
+        run: |
+          ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
 
       - name: Provision and deploy web servers
         uses: ./action/.github/actions/ansible-run-playbook
@@ -47,7 +101,7 @@ jobs:
 
   provision-monitor:
     name: Provision and deploy monitor server
-    needs: build
+    needs: setup-infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Login to GitHub Container Registry
@@ -70,6 +124,10 @@ jobs:
             .github/actions/ansible-run-playbook
           sparse-checkout-cone-mode: false
           path: action
+
+      - name: Create ansible Inventory file
+        run: |
+          ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
 
       - name: Provision and deploy monitoring servers
         uses: ./action/.github/actions/ansible-run-playbook
