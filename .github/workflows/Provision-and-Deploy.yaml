@@ -20,9 +20,10 @@ jobs:
           sparse-checkout: |
             Minitwit.Provision/
 
-      - uses: actions/setup-dotnet@v3
+      - name: Set up Dotnet
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version:7.0.x
+          dotnet-version: '7.0.x'
 
       - name: Setup Infrastructure Changes
         id: pulumi
