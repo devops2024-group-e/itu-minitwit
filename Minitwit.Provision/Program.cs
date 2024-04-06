@@ -46,7 +46,7 @@ return await Deployment.RunAsync(() =>
     // Export outputs here
     return new Dictionary<string, object?>
     {
-        ["web-server-ips"] = webServers.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
-        ["monitoring-server-ips"] = monitoringServer.NetworkInterfaces["PublicIP"],
+        ["web"] = webServers.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
+        ["monitoring"] = new List<Output<string>>() { monitoringServer.NetworkInterfaces["PublicIP"] },
     };
 });
