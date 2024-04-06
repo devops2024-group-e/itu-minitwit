@@ -25,6 +25,7 @@ jobs:
           dotnet-version:7.0.x
 
       - name: Setup Infrastructure Changes
+        id: pulumi
         uses: pulumi/actions@v5
         with:
           command: up
@@ -34,23 +35,27 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
 
+      - name: Get pulumi output
+        run: |
+          echo ${{ steps.pulumi.outputs }}
+
       - name: Generate Ansible Inventory output
         id: ansible-inventory
         run: |
           # Get server categories
           echo "Getting categories from Pulumi output"
-          declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
+          declare -a categories=($(${{ steps.pulumi.outputs }} | jq -r 'keys | .[]'))
 
           echo "Adding all server category..."
 
           # Create the ansible inventory file content
           read -r -d '' ansibleinventory << EOM
           [all]
-          $(pulumi stack output --json | jq -r 'add | .[]')
+          $(${{ steps.pulumi.outputs }} | jq -r 'add | .[]')
 
           $(for cate in "${categories[@]}"; do
            echo "[${cate}]"
-           echo "$(pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
+           echo "$(${{ steps.pulumi.outputs }} | jq -r --arg category "${cate}" '.[$category] | .[]')"
            echo ""
           done)
           EOM
