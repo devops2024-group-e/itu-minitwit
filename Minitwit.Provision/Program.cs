@@ -5,6 +5,7 @@ using Minitwit.Provision.Infrastructure;
 using Minitwit.Provision.Infrastructure.DigitalOcean;
 using Pulumi.DigitalOcean;
 using Minitwit.Provision.IO;
+using Minitwit.Provision;
 
 const string VM_IMAGE = "ubuntu-23-10-x64";
 const string REGION = "fra1";
@@ -29,7 +30,18 @@ return await Deployment.RunAsync(() =>
                                                                             sshKeys);
 
     // Create the monitoring servers
-    IVirtualMachine monitoringServer = DOVirtualMachine.CreateVM("minitwit-mon-test-1", VM_IMAGE, REGION, sshKeys);
+    IVirtualMachine monitoringServer = DOVirtualMachine.CreateVM("minitwit-mon-test-1",
+                                                                    VM_IMAGE,
+                                                                    REGION,
+                                                                   sshKeys);
+
+    // Create databasecluster with minitwit database
+    IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-test-db-01",
+                                                                                ComputeSizes.Small,
+                                                                                DatabaseProviders.Postgres,
+                                                                                nodecount: 1);
+    minitwitDbCluster.CreateDatabase("minitwit");
+
 
     // Export outputs here
     return new Dictionary<string, object?>
