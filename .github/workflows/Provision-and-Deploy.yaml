@@ -54,7 +54,7 @@ jobs:
             echo "$( pulumi stack output --json | jq -r 'add | .[]')"
 
             # Adding category specific servers
-            $(for cate in "${categories[@]}"; do
+            for cate in "${categories[@]}"; do
               echo "[${cate}]"
               echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
               echo ""
