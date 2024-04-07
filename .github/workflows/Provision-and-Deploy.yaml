@@ -52,6 +52,7 @@ jobs:
             # Adding all server category
             echo "[all]"
             echo "$( pulumi stack output --json | jq -r 'add | .[]')"
+            echo ""
 
             # Adding category specific servers
             for cate in "${categories[@]}"; do
@@ -94,7 +95,7 @@ jobs:
 
       - name: Create ansible Inventory file
         run: |
-          ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
+          echo ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
 
       - name: Provision and deploy web servers
         uses: ./action/.github/actions/ansible-run-playbook
@@ -136,7 +137,7 @@ jobs:
 
       - name: Create ansible Inventory file
         run: |
-          ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
+          echo ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
 
       - name: Provision and deploy monitoring servers
         uses: ./action/.github/actions/ansible-run-playbook
