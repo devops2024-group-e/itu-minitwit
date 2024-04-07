@@ -30,7 +30,9 @@ jobs:
 
       - name: Setup infrastructure
         working-directory: Minitwit.Provision/
-        run: pulumi up -y
+        run: |
+          pulumi stack select arnenator/Minitwit.Provision/prod
+          pulumi up -y
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
@@ -39,6 +41,7 @@ jobs:
         id: ansible-inventory
         working-directory: Minitwit.Provision/
         run: |
+          pulumi stack select arnenator/Minitwit.Provision/prod
           # Get server categories
           echo "Getting categories from Pulumi output"
           declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
