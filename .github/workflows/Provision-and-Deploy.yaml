@@ -95,7 +95,7 @@ jobs:
 
       - name: Create ansible Inventory file
         run: |
-          echo "${INVENTORY}"" > main/.infrastructure/inventory.ansible
+          echo "${INVENTORY}" > main/.infrastructure/inventory.ansible
         env:
           INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
 
@@ -139,7 +139,7 @@ jobs:
 
       - name: Create ansible Inventory file
         run: |
-          echo "${INVENTORY}"" > main/.infrastructure/inventory.ansible
+          echo "${INVENTORY}" > main/.infrastructure/inventory.ansible
         env:
           INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
 
