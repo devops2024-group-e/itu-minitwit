@@ -47,6 +47,13 @@ jobs:
           declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
 
           echo "Adding all server category..."
+          echo "$( pulumi stack output --json | jq -r 'add | .[]')"
+
+          for cate in "${categories[@]}"; do
+           echo "[${cate}]"
+           echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
+           echo ""
+          done
 
           # Create the ansible inventory file content
           read -r -d '' ansibleinventory << EOM
