@@ -25,43 +25,43 @@ jobs:
         with:
           dotnet-version: '7.0.x'
 
-      - name: Setup Infrastructure Changes
-        id: pulumi
+      - name: Install pulumi
         uses: pulumi/actions@v5
-        with:
-          command: up
-          stack-name: arnenator/Minitwit.Provision/prod
-          work-dir: Minitwit.Provision/
+
+      - name: Setup infrastructure
+        working-directory: Minitwit.Provision/
+        run: pulumi up -y
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
 
-      - name: Get pulumi output
-        run: |
-          echo ${{ steps.pulumi.outputs }}
-
       - name: Generate Ansible Inventory output
         id: ansible-inventory
+        working-directory: Minitwit.Provision/
         run: |
           # Get server categories
           echo "Getting categories from Pulumi output"
-          declare -a categories=($(${{ steps.pulumi.outputs }} | jq -r 'keys | .[]'))
+          declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
 
           echo "Adding all server category..."
 
           # Create the ansible inventory file content
           read -r -d '' ansibleinventory << EOM
           [all]
-          $(${{ steps.pulumi.outputs }} | jq -r 'add | .[]')
+          $( pulumi stack output --json | jq -r 'add | .[]')
 
           $(for cate in "${categories[@]}"; do
            echo "[${cate}]"
-           echo "$(${{ steps.pulumi.outputs }} | jq -r --arg category "${cate}" '.[$category] | .[]')"
+           echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
            echo ""
           done)
           EOM
 
           echo "inventory=${ansibleinventory}" >> $GITHUB_OUTPUT
+
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
 
   provision-web:
     name: Provision and deploy web servers
