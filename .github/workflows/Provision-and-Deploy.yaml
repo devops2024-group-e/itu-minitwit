@@ -60,6 +60,8 @@ jobs:
           done)
           EOM
 
+          echo "${ansibleinventory}"
+
           echo "inventory=${ansibleinventory}" >> $GITHUB_OUTPUT
 
         env:
