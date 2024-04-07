@@ -31,7 +31,7 @@ jobs:
         with:
           command: up
           stack-name: arnenator/Minitwit.Provision/prod
-          working-directory: Minitwit.Provision/
+          work-dir: Minitwit.Provision/
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
