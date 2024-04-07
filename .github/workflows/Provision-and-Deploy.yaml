@@ -46,30 +46,21 @@ jobs:
           echo "Getting categories from Pulumi output"
           declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
 
-          echo "Adding all server category..."
-          echo "$( pulumi stack output --json | jq -r 'add | .[]')"
-
-          for cate in "${categories[@]}"; do
-           echo "[${cate}]"
-           echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
-           echo ""
-          done
-
           # Create the ansible inventory file content
-          read -r -d '' ansibleinventory << EOM
-          [all]
-          $( pulumi stack output --json | jq -r 'add | .[]')
+          {
+            echo 'inventory<<EOF'
+            # Adding all server category
+            echo '[all]'
+            echo "$( pulumi stack output --json | jq -r 'add | .[]')"
 
-          $(for cate in "${categories[@]}"; do
-           echo "[${cate}]"
-           echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
-           echo ""
-          done)
-          EOM
-
-          echo "${ansibleinventory}"
-
-          echo "inventory=${ansibleinventory}" >> $GITHUB_OUTPUT
+            # Adding category specific servers
+            $(for cate in "${categories[@]}"; do
+              echo "[${cate}]"
+              echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
+              echo ""
+            done
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
 
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
