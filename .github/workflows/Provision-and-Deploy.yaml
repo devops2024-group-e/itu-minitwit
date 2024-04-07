@@ -48,9 +48,9 @@ jobs:
 
           # Create the ansible inventory file content
           {
-            echo 'inventory<<EOF'
+            echo "inventory<<EOF"
             # Adding all server category
-            echo '[all]'
+            echo "[all]"
             echo "$( pulumi stack output --json | jq -r 'add | .[]')"
 
             # Adding category specific servers
@@ -59,7 +59,7 @@ jobs:
               echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
               echo ""
             done
-            echo EOF
+            echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
         env:
