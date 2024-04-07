@@ -95,7 +95,9 @@ jobs:
 
       - name: Create ansible Inventory file
         run: |
-          echo ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
+          echo "${INVENTORY}"" > main/.infrastructure/inventory.ansible
+        env:
+          INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
 
       - name: Provision and deploy web servers
         uses: ./action/.github/actions/ansible-run-playbook
@@ -137,7 +139,9 @@ jobs:
 
       - name: Create ansible Inventory file
         run: |
-          echo ${{ needs.setup-infrastructure.outputs.ansible-inventory }} > main/.infrastructure/inventory.ansible
+          echo "${INVENTORY}"" > main/.infrastructure/inventory.ansible
+        env:
+          INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
 
       - name: Provision and deploy monitoring servers
         uses: ./action/.github/actions/ansible-run-playbook
