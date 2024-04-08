@@ -13,15 +13,16 @@ internal record DOVirtualPrivateNetwork : IPrivateNetwork<DOVirtualPrivateNetwor
 
     private readonly Vpc _vpc;
 
-    private DOVirtualPrivateNetwork(string name, string ipRange)
+    private DOVirtualPrivateNetwork(string name, string ipRange, string region)
     {
         _vpc = new Vpc(name, new VpcArgs
         {
             Name = name,
-            IpRange = ipRange
+            IpRange = ipRange,
+            Region = region
         });
     }
 
-    public static IPrivateNetwork<DOVirtualPrivateNetwork> CreatePrivateNetwork(string name, string ipRange)
-        => new DOVirtualPrivateNetwork(name, ipRange);
+    public static IPrivateNetwork<DOVirtualPrivateNetwork> CreatePrivateNetwork(string name, string ipRange, string region)
+        => new DOVirtualPrivateNetwork(name, ipRange, region);
 }

@@ -40,6 +40,7 @@ internal record DOVirtualMachine : IVirtualMachine
     {
         _virtualMachine = new Droplet(name, new()
         {
+            Name = name,
             Image = os,
             Region = region,
             Size = "s-1vcpu-1gb",
@@ -120,7 +121,7 @@ internal record DOVirtualMachine : IVirtualMachine
         string setName = setNamePrefix[^1] == '-' ? setNamePrefix : $"{setNamePrefix}-"; // Create the prefix seperator
 
         // Creates a collection of VM's with the following naming scheme: <VM Set Name>-<VM Number>
-        return sshKeys is null ? Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, networkId, region))
-                                : Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, networkId, region, sshKeys));
+        return sshKeys is null ? Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, networkId, region)).ToList()
+                                : Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, networkId, region, sshKeys)).ToList();
     }
 }

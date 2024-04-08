@@ -14,14 +14,14 @@ return await Deployment.RunAsync(() =>
     var sshKeys = CreateSSHKeys();
 
     // Has IP range from 192.168.1.1->192.168.1.254, MASK is 255.255.255.0
-    var minitwitVPC = DOVirtualPrivateNetwork.CreatePrivateNetwork("minitwit-prod-vpc", "192.168.1.0/24");
+    var minitwitVPC = DOVirtualPrivateNetwork.CreatePrivateNetwork("minitwit-prod-vpc", "192.168.1.0/24", REGION);
 
     // Create the web servers
     IEnumerable<IVirtualMachine> webServers = DOVirtualMachine.CreateVMSet("minitwit-web-test",
                                                                             VM_IMAGE,
                                                                             minitwitVPC.Id,
                                                                             REGION,
-                                                                            count: 1,
+                                                                            count: 2,
                                                                             sshKeys);
 
     // Create the monitoring servers
@@ -48,9 +48,9 @@ return await Deployment.RunAsync(() =>
         Purpose = "Application Environment",
         Resources = new InputList<string>
         {
+            webServers.Select(x => x.Name).ToArray(),
             monitoringServer.Name,
             minitwitDbCluster.Name,
-            webServers.Select(x => x.Name).ToArray()
         }
     });
 
