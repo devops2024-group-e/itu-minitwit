@@ -36,13 +36,14 @@ internal record DOVirtualMachine : IVirtualMachine
     /// The provided name should be the slug name.
     /// You can find the list of available regions here https://docs.digitalocean.com/products/platform/availability-matrix/#app-platform-availability
     /// </param>
-    private DOVirtualMachine(string name, string os, string region)
+    private DOVirtualMachine(string name, string os, Output<string> networkId, string region)
     {
         _virtualMachine = new Droplet(name, new()
         {
             Image = os,
             Region = region,
             Size = "s-1vcpu-1gb",
+            VpcUuid = networkId
         });
 
         _networkInterfaces = new Dictionary<string, Output<string>>
@@ -65,7 +66,7 @@ internal record DOVirtualMachine : IVirtualMachine
     /// You can find the list of available regions here https://docs.digitalocean.com/products/platform/availability-matrix/#app-platform-availability
     /// </param>
     /// <param name="sshKeys">List of public ssh keys that should be able to be authorized</param>
-    private DOVirtualMachine(string name, string os, string region, InputList<string> sshKeys)
+    private DOVirtualMachine(string name, string os, Output<string> networkId, string region, InputList<string> sshKeys)
     {
         _virtualMachine = new Droplet(name, new()
         {
@@ -74,6 +75,7 @@ internal record DOVirtualMachine : IVirtualMachine
             Region = region,
             Size = "s-1vcpu-1gb",
             SshKeys = sshKeys,
+            VpcUuid = networkId
         });
 
         _networkInterfaces = new Dictionary<string, Output<string>>
@@ -91,7 +93,8 @@ internal record DOVirtualMachine : IVirtualMachine
     /// <param name="os">The operating system and version. You can find the list of available operating system images here https://docs.digitalocean.com/products/droplets/details/images/</param>
     /// <param name="region">The region where the virtual machine should be placed</param>
     /// <returns>Returns the virtual machine</returns>
-    public static IVirtualMachine CreateVM(string name, string os, string region) => new DOVirtualMachine(name, os, region);
+    public static IVirtualMachine CreateVM(string name, string os, Output<string> networkId, string region)
+        => new DOVirtualMachine(name, os, networkId, region);
 
     /// <summary>
     /// Creates a Virtual Machine a.k.a. droplet
@@ -101,7 +104,8 @@ internal record DOVirtualMachine : IVirtualMachine
     /// <param name="region">The region where the virtual machine should be placed</param>
     /// <param name="sshKeys">SSH keys to be authorized on the server</param>
     /// <returns>Returns the virtual machine</returns>
-    public static IVirtualMachine CreateVM(string name, string os, string region, InputList<string> sshKeys) => new DOVirtualMachine(name, os, region, sshKeys);
+    public static IVirtualMachine CreateVM(string name, string os, Output<string> networkId, string region, InputList<string> sshKeys)
+        => new DOVirtualMachine(name, os, networkId, region, sshKeys);
 
     /// <summary>
     /// Creates a set of similar virtual machines
@@ -111,12 +115,12 @@ internal record DOVirtualMachine : IVirtualMachine
     /// <param name="region">The region where the virtual machine should be placed</param>
     /// <param name="count">The number of virtual machines to be created</param>
     /// <returns>Returns an enumerable of virtual machines</returns>
-    public static IEnumerable<IVirtualMachine> CreateVMSet(string setNamePrefix, string os, string region, int count = 1, InputList<string>? sshKeys = null)
+    public static IEnumerable<IVirtualMachine> CreateVMSet(string setNamePrefix, string os, Output<string> networkId, string region, int count = 1, InputList<string>? sshKeys = null)
     {
         string setName = setNamePrefix[^1] == '-' ? setNamePrefix : $"{setNamePrefix}-"; // Create the prefix seperator
 
         // Creates a collection of VM's with the following naming scheme: <VM Set Name>-<VM Number>
-        return sshKeys is null ? Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, region))
-                                : Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, region, sshKeys));
+        return sshKeys is null ? Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, networkId, region))
+                                : Enumerable.Range(1, count).Select(vmNumber => CreateVM($"{setName}{vmNumber}", os, networkId, region, sshKeys));
     }
 }

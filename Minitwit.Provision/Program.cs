@@ -4,10 +4,7 @@ using Pulumi;
 using Minitwit.Provision.Infrastructure;
 using Minitwit.Provision.Infrastructure.DigitalOcean;
 using Pulumi.DigitalOcean;
-using Minitwit.Provision.IO;
 using Minitwit.Provision;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
 
 const string VM_IMAGE = "ubuntu-23-10-x64";
 const string REGION = "fra1";
@@ -16,9 +13,13 @@ return await Deployment.RunAsync(() =>
 {
     var sshKeys = CreateSSHKeys();
 
+    // Has IP range from 192.168.1.1->192.168.1.254, MASK is 255.255.255.0
+    var minitwitVPC = DOVirtualPrivateNetwork.CreatePrivateNetwork("minitwit-prod-vpc", "192.168.1.0/24");
+
     // Create the web servers
     IEnumerable<IVirtualMachine> webServers = DOVirtualMachine.CreateVMSet("minitwit-web-test",
                                                                             VM_IMAGE,
+                                                                            minitwitVPC.Id,
                                                                             REGION,
                                                                             count: 1,
                                                                             sshKeys);
@@ -26,6 +27,7 @@ return await Deployment.RunAsync(() =>
     // Create the monitoring servers
     IVirtualMachine monitoringServer = DOVirtualMachine.CreateVM("minitwit-mon-test-1",
                                                                     VM_IMAGE,
+                                                                    minitwitVPC.Id,
                                                                     REGION,
                                                                    sshKeys);
 
@@ -33,6 +35,7 @@ return await Deployment.RunAsync(() =>
     IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-test-db-01",
                                                                                 ComputeSizes.Small,
                                                                                 DatabaseProviders.Postgres,
+                                                                                minitwitVPC.Id,
                                                                                 nodecount: 1);
     minitwitDbCluster.CreateDatabase("minitwit");
 

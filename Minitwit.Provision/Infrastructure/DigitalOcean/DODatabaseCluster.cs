@@ -32,7 +32,7 @@ internal record DODatabaseCluster : IDatabaseCluster
     /// <param name="provider">Which type of the database to create</param>
     /// <param name="nodecount">Amount of nodes that cluster should have</param>
     /// <param name="region">Where it is located</param>
-    private DODatabaseCluster(string name, string version, string size, string provider, int nodecount, string region)
+    private DODatabaseCluster(string name, string version, string size, string provider, Output<string> networkId, int nodecount, string region)
     {
         _cluster = new DatabaseCluster(name, new()
         {
@@ -41,6 +41,7 @@ internal record DODatabaseCluster : IDatabaseCluster
             Size = size,
             Region = region,
             NodeCount = nodecount,
+            PrivateNetworkUuid = networkId
         });
     }
 
@@ -52,8 +53,8 @@ internal record DODatabaseCluster : IDatabaseCluster
     /// <param name="provider">Which type of database</param>
     /// <param name="nodecount">How many nodes the cluster should have</param>
     /// <returns>A database cluster</returns>
-    public static IDatabaseCluster CreateDatabaseCluster(string name, ComputeSizes size, DatabaseProviders provider, int nodecount)
-        => new DODatabaseCluster(name, GetProviderVersion(provider), GetComputeSize(size), GetProviderName(provider), nodecount, "fra1");
+    public static IDatabaseCluster CreateDatabaseCluster(string name, ComputeSizes size, DatabaseProviders provider, Output<string> networkId, int nodecount)
+        => new DODatabaseCluster(name, GetProviderVersion(provider), GetComputeSize(size), GetProviderName(provider), networkId, nodecount, "fra1");
 
     /// <summary>
     /// Gets the provider key for DigitalOcean
