@@ -12,7 +12,7 @@ namespace Minitwit.Provision.Infrastructure.DigitalOcean;
 /// </summary>
 internal record DODatabaseCluster : IDatabaseCluster
 {
-    public Output<string> Name => _cluster.Name;
+    public Output<string> Name => _cluster.ClusterUrn;
 
     public Output<int> NodeCount => _cluster.NodeCount;
 

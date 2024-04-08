@@ -12,7 +12,7 @@ namespace Minitwit.Provision.Infrastructure.DigitalOcean;
 /// </summary>
 internal record DOVirtualMachine : IVirtualMachine
 {
-    Output<string> IVirtualMachine.Name => _virtualMachine.Name;
+    Output<string> IVirtualMachine.Name => _virtualMachine.DropletUrn;
 
     Output<string> IVirtualMachine.OS => _virtualMachine.Image;
 

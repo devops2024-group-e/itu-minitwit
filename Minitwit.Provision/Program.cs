@@ -40,6 +40,21 @@ return await Deployment.RunAsync(() =>
     minitwitDbCluster.CreateDatabase("minitwit");
 
 
+
+    var minitwitProject = new Project("Minitwit", new ProjectArgs()
+    {
+        Name = "Minitwit",
+        Description = "A mini Twitter clone application for the course DevOps at the IT University of Copenhagen",
+        Purpose = "Application Environment",
+        Resources = new InputList<string>
+        {
+            monitoringServer.Name,
+            minitwitDbCluster.Name,
+            webServers.Select(x => x.Name).ToArray()
+        }
+    });
+
+
     // Export outputs here
     return new Dictionary<string, object?>
     {
