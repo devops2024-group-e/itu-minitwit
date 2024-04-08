@@ -7,7 +7,7 @@ internal record DOVirtualPrivateNetwork : IPrivateNetwork<DOVirtualPrivateNetwor
 {
     public Output<string> Id => _vpc.Id;
 
-    public Output<string> Name => _vpc.Name;
+    public Output<string> Name => _vpc.VpcUrn;
 
     public Output<string> IPRange => _vpc.IpRange;
 
