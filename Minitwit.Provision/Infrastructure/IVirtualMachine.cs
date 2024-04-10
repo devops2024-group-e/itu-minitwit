@@ -25,5 +25,5 @@ internal interface IVirtualMachine
     /// <summary>
     /// Network interfaces of the virtual machine. That is, a dictionary of IP addresses indicating if they are private/public or IPv4/IPv6
     /// </summary>
-    IDictionary<string, Pulumi.Output<string>> NetworkInterfaces { get; } // TODO: Change to a real network interface type that keeps more information
+    IDictionary<string, Pulumi.Output<string>> NetworkInterfaces { get; }
 }
