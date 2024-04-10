@@ -1,6 +1,6 @@
 ---
 - name: Monitor setup
-  hosts: monitor
+  hosts: monitoring
   become: true
 
   tasks:
