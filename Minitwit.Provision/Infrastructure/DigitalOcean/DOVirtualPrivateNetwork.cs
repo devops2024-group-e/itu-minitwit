@@ -3,7 +3,7 @@ using Pulumi.DigitalOcean;
 
 namespace Minitwit.Provision.Infrastructure.DigitalOcean;
 
-internal record DOVirtualPrivateNetwork : IPrivateNetwork<DOVirtualPrivateNetwork>
+internal record DOVirtualPrivateNetwork : IPrivateNetwork
 {
     public Output<string> Id => _vpc.Id;
 
@@ -23,6 +23,6 @@ internal record DOVirtualPrivateNetwork : IPrivateNetwork<DOVirtualPrivateNetwor
         });
     }
 
-    public static IPrivateNetwork<DOVirtualPrivateNetwork> CreatePrivateNetwork(string name, string ipRange, string region)
+    public static IPrivateNetwork CreatePrivateNetwork(string name, string ipRange, string region)
         => new DOVirtualPrivateNetwork(name, ipRange, region);
 }

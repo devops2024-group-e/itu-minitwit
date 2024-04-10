@@ -2,7 +2,7 @@ using Pulumi;
 
 namespace Minitwit.Provision.Infrastructure;
 
-internal interface IPrivateNetwork<T>
+internal interface IPrivateNetwork
 {
     Output<string> Id { get; }
 
