@@ -76,11 +76,11 @@ static InputList<string> CreateSSHKeys()
         Name = "Ansible",
         PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDUoPbebMqsdvUWEDHE5L7VA7mU51rwyWhJFHQ+r0JYOPe5MYHZrQzckIZkslQaWF7yt5CvQySkG9iVJ06vN0sQoUmolua8ys87pYmqgXukx3W37UF/V7dLKopgpEUny1MWYlj+C3g0uSeMYGNLyNP6OnSLRWvD9qKiTThVZFOn9MCwMFBP90jizwvQDrAkzRvIrtFe/L3In50wuk8YYrpZE0b11zt3gyywKLf+ajc1lZOfM3c1MDAA4nqrVFDvoeCyFeu9KqfOvEbGqGNfIgGeIu7dKKBUHt0I36CQAkDvSz06yf3us+0zeOz0yJnKPfZidHk+yGeR/LyMOHHOqx+pPIKgP5yggs+FuuMaWjQzzUyvVcN/U3mxnFNIFX8vmI7JWcpJCCgeMog+10jQxmlPq1GvpS0my+g+7/SmKv5+zFHTMcSdHnhyaf3B1gSoJOYr47KqLBp3Qt7t9LxBQ4We3uISrOT9Q5XBVPk51PKi8vsOMbmqL4JZILzB0dwKq0M52nM/a1Gb1Oo7B/h72D4S1++7vHQSrrnW86pRQ8Izwg01xfvJc7FTHBsbO6jQAtfek9x/CNacp8YIt8WwyljoQBlY5+0VieEUKFY7pjUBF4yw5osEjRp620dx4GstnIBwb5AZlq5JBmCevDmiFqFm7sAP+1NoFhEXbFIZffV0Uw== andreastietgen@andreass-mbp.lan"
     });
-    // SshKey malinSSHKey = new("Malin-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "Malin-ssh-key",
-    //     PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqHS1gbWOZrJYFmxGSwJ6I2u0sfuPt0hg5OsyF1xIgC42VITYdst5/qTB5P2xiZUo/x4f7vPiE17h/ibCDlboPl4f4zZSTExeQxHceoGxqND2r1VXxb+bwz2s6aGb8jT4qLle0Tboj3eTO61W2mNPrZbrcFpQs8Javkj9Wa1I++cOmt5jKAGc287mPOt5M/USMV09IFwH3MaYaswWZ5pZUharNAL+sqBRuYO8BoJH8gtMzLeVz3UfHETsRzbQ87XsstiH2JnlJ8PmYHC4e+9/hG9wj0O3buu5T+2HLI6asqCK/BNGNLZhe5lvlChPHb1XIrIAvfuiuxSjy6BbNexao/BYTWzCuimYajGPr2ZQzJrYPpS+n67DmsUmAOpNeaQKpPSiiixmNM9o5i8zx4n4iZa6vTO1NuBkai8QHhakIBurtx19UqsjW3HNjF7Jd0NaH80uHzAl4CFovezQS32TFL216fww6UankrkkoloXstkmpi9a5kLzDyesIVuXVReU= malin nordqvist@DESKTOP-90ST137"
-    // });
+    SshKey malinSSHKey = new("Malin-ssh-key", new SshKeyArgs
+    {
+        Name = "Malin-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDImN+79Poq8zUQTCfS+sIKJwnJfLihtWQgFrb96+TFKtYCq89k/2ZBeYTjZm/fHctN3MrGdpaz4xUWnAmdJqRxtgQjx2owPA0TW68tjKYLTRaKltmQfaTxCa38gjwUw3NnvcZcpNDzjVwD4zXF1OuQfMPdj63ZK9O5EUSNT4JhqpyS8J1wjEUQ1kddtgOt2Wbm1lm/LMbadzCDpof0J7FlT4IGJzyDLU8JUWOdFitGEo1oruaCZF6ycIpDzQxNYh7mwhRIdIObi/d0S4eCnwUcHSTJiDcKiZ4SADcrKIeMpy9/aDaIhH5cprPXuT484UwX6hzTIwkOVnuE5Urq5IwBCVtJtUXv1tgw1Un8qv72mka3jroIPLKlq46do90eR/y9TiZlUfX9JeF1ejcz4DV8zQxhsfPeDBbJdI8CpGkqrA8rTCdqg7p1FhHCw9wF3zyAXmj4ppnPVLQu6txDtDyel54Vzidu8KT4lqeH2XGLcd8sfwHIheCXWDUmdyNMUg0hlhJcclvUIej6T0MT/8Zq/4uovP3f9pr1uVkaHP5sKqjFxHAn9OmFHTCO/5MwsCVErfWPpaT2KQvDU/7OUKUrR7R2SKE/oOgcaJbEpPaKCRTskMFfdru/pLO/wAjvV3xAOqxR/B0upA/Rk54D5nhAt3T0fBUTwT/zkl03kBdqTw== malin nordqvist@DESKTOP-90ST137"
+    });
     // SshKey sarahSSHKey = new("Sarah-ssh-key", new SshKeyArgs
     // {
     //     Name = "Sarah-ssh-key",
@@ -106,7 +106,7 @@ static InputList<string> CreateSSHKeys()
     {
         andreasSSHKey.Id,
         ansibleSSHKey.Id,
-        // malinSSHKey.Id,
+        malinSSHKey.Id,
         // sarahSSHKey.Id,
         // milleLaptopSSHKey.Id,
         // millePcSSHKey.Id,
