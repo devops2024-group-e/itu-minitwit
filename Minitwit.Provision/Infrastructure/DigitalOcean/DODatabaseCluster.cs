@@ -87,10 +87,10 @@ internal record DODatabaseCluster : IDatabaseCluster
 
     public void CreateDatabase(string name)
     {
-        new DatabaseDb(name, new()
+        var _ = new DatabaseDb(name, new()
         {
             Name = name,
-            ClusterId = _cluster.Id, // TODO: Add db name in the new args
+            ClusterId = _cluster.Id,
         });
     }
 }
