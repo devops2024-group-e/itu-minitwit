@@ -86,11 +86,11 @@ static InputList<string> CreateSSHKeys()
     //     Name = "Sarah-ssh-key",
     //     PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD6XFydqlxARlR/NNhVKN6aqoq6ew5pClNPCp90X2R07q9k/BOJH1LEvh5agq1zyCWMdJl1/EISUmxWGawDmAp+BA+Sye3jHt80h1g/Z2bofUJZmCWsngk5dBQRuxff1tFHwjEgyuVcEfx558PKN/qSAIeoLGjOb08gCCOXTggP3j4E7/K4LBaJpOuYZOWxXFAXSMjDVA9seRKAOFlO/qw5hLYCJGlALGGbmhXPYyH5qDEdp3dX8iQEJVrF/WV+gcnl8WJHGw0bERTLWr4OERmfZP+xL5XjjTzUILQvAKx7KMNFbJ9VdjdjLUS14+uJmLfz538NUuHl2bgrVC68FOHF6G9HW9SgRW55VL59h/43YbvlHGIHYZXcvR1DZDkhOm7gN60bQpMP5w2mpygP8EdYD7ydp9gzQRM5F1CDBNMO4GpU+LT3ycUZDqlZyZsA5j/bMUwskgBGvGuHescbAlw9hYHwZds698vSxpoonrGcgXceeO2DECSgViBeXOJyTMAtNMhXhK1vrxz0jwmAqnXty28jmdxTBdceBSVkFvit4dynqyAG6IKtXWQPg0eU5PWiRplez8mlSF3ByoXjXeGAR/5YZRVRhN97Z94/v8T2/7+BNqCIX2/l1MrU9XqH0KvR5vIG+aG7NiADWSankXHMbbDiPpKbEL7BkFqvOxIDDw== sarah@Sarah-Legion"
     // });
-    // SshKey milleLaptopSSHKey = new("Mille-laptop-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "Mille-laptop-ssh-key",
-    //     PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDFV6i58sKnXbhLSV2yIGRktPzz3UOQXPQvTZ0nA+VnieJNAPbThlo1LeNnrYjcL0dpzVZ1O4dYDiDQiwxYxq0oH/RHbVVkO7hbHhUyGWQGEm3LQzgwDxgA+/JjKpyACB9woJc7CcKYowZPajJOs3ggGw0T/QH740HaMn/QVoJhX82o7RrIYdj8PN2XqF3/tIMPSIdn4wvH0LavDBtVrZdKxG1Oog9ZJIm3SG2j9Jp2iMElgB535BlFVilAC+vPCUzCseb0Uz+ATb62P0Wjkaon/WenMH7/7Y+P/JzWJdnVJAD+DUj6t7veTIMOIIrHCiVvvnIJlcD0gc+amaSdlmxJH0sjrw1ZHzDHG880l0XlMzS1L1iyEbB5TgJJpp6sayz/84osSk+HmG8Z4jt1T/S0CCzdBQ2OTNCKwyJlQndgTiv6SXtdQlCf87JelzaFwrH01BG0Z8m/1P8FEjy3Fjio8rMd9Lq9D2X7NqANsOMIb2DE1biUgCh8DhcL8l4nnjUrO1B8KISPE7lzAuhIGkvp4jLLAuQClfCF1zF1K0wlGC5Qj3AjQKlW55nOgtU0sQ+tQmpHVMp4bPFIRxz1wHYqCNFKRTfeuASURDu4YlYw3w1LEkeyvsJ9Bf4YXt3R1HwG40nwCGnAPmkMgdh1+sJE7sMD/ZlK6mQoll3wiUSP+w== pinkvinus@ScuffedKeyboardComputerNix"
-    // });
+    SshKey milleLaptopSSHKey = new("Mille-laptop-ssh-key", new SshKeyArgs
+    {
+        Name = "Mille-laptop-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCMc7BPduNHlbfMWkJrvRqvrhcW53bks4zjxG/YrKMYFR/vVN/yXBNUJERENQfFed7/7BbISE/B0JbIfTBlyFQrOm63+qpUcwkK5q5W9ubPO59q00bif2/DPg5BB3l5NrYKf6komNuXMLmhHMrgZswAQeG+Vmi/ZR/cjEo1YH96raVlCSyMplEI+ha8xKUg0BDXShEaYHaR2aSrtgOJgOK1FMwpN2U6tNjeO4j6093oxJXqYi59c98ykLTKK/p30tnnD57bk42+dtgKGhy0E9qaAUZHEVapnEgbOE7dN5O48VkdNpcHZvYB3TsrdsbW313RC+AUN40/ZC37rMrb1n/96+gcC4a+TWVzyDAnno/66t8kKAShgqNNlljSU9o33MXZ0ojosyCtH9ZW8RbD2hJIRmwOqitH+CR28Kt4k4yavgS0SMQF6tQ4FaqTnP/ufOuWDuLfhmKpA9992CU6rm4mC6p9oV1ZajLbb2yhM/JsjE5AAiQOjAsv32N202DJBEk= pinkvinus@ScuffedKeyboardComputerNix"
+    });
     // SshKey millePcSSHKey = new("Mille-pc-ssh-key", new SshKeyArgs
     // {
     //     Name = "Mille-pc-ssh-key",
@@ -108,7 +108,7 @@ static InputList<string> CreateSSHKeys()
         ansibleSSHKey.Id,
         malinSSHKey.Id,
         // sarahSSHKey.Id,
-        // milleLaptopSSHKey.Id,
+        milleLaptopSSHKey.Id,
         // millePcSSHKey.Id,
         // mySSHKey.Id,
     };
