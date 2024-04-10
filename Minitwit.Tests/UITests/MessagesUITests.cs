@@ -48,11 +48,13 @@ public class MessagesUITests : IDisposable
 
         var myTimelineBody = _driver.FindElement(By.TagName("body"));
         Assert.True(myTimelineBody.Text.Contains("Hej fra User 6"));
+        Assert.True(myTimelineBody.Text.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
 
         _driver.Navigate().GoToUrl("http://localhost:5191/public");
         var publicTimelineBody = _driver.FindElement(By.TagName("body"));
         Assert.True(publicTimelineBody.Text.Contains("Hej fra User 6"));
         Assert.True(publicTimelineBody.Text.Contains("Test User 6"));
+        Assert.True(publicTimelineBody.Text.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
     }
 
 
