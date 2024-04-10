@@ -61,12 +61,12 @@ public class FollowUnfollowUITests : IDisposable
 
         //Assert Follow
         var flashMessage = _driver.FindElement(By.ClassName("flashes"));
-        Assert.True(flashMessage.Text.Contains("You are now following"));
+        Assert.Contains("You are now following", flashMessage.Text);
 
         _driver.Navigate().GoToUrl("http://localhost:5191");
         var body = _driver.FindElement(By.TagName("body"));
 
-        Assert.True(body.Text.Contains("Hej fra User 5"));
+        Assert.Contains("Hej fra User 5", body.Text);
 
         //Act Unfollow
         _driver.Navigate().GoToUrl("http://localhost:5191/public");
@@ -75,13 +75,13 @@ public class FollowUnfollowUITests : IDisposable
 
         //Assert Unfollow
         flashMessage = _driver.FindElement(By.ClassName("flashes"));
-        
-        Assert.True(flashMessage.Text.Contains("You are no longer following"));
+
+        Assert.Contains("You are no longer following", flashMessage.Text);
 
         _driver.Navigate().GoToUrl("http://localhost:5191");
         body = _driver.FindElement(By.TagName("body"));
 
-        Assert.False(body.Text.Contains("Hej fra User 5"));
+        Assert.DoesNotContain("Hej fra User 5", body.Text);
     }
 
     public void Dispose()
