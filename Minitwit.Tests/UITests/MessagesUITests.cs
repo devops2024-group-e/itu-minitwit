@@ -44,15 +44,17 @@ public class MessagesUITests : IDisposable
 
         //Assert
         var flashMessage = _driver.FindElement(By.ClassName("flashes"));
-        Assert.True(flashMessage.Text.Contains("Your message was recorded"));
+        Assert.Contains("Your message was recorded", flashMessage.Text);
 
         var myTimelineBody = _driver.FindElement(By.TagName("body"));
-        Assert.True(myTimelineBody.Text.Contains("Hej fra User 6"));
+        Assert.Contains("Hej fra User 6", myTimelineBody.Text);
+        Assert.Contains(DateTime.Now.ToString("dd/MM/yyyy"), myTimelineBody.Text);
 
         _driver.Navigate().GoToUrl("http://localhost:5191/public");
         var publicTimelineBody = _driver.FindElement(By.TagName("body"));
-        Assert.True(publicTimelineBody.Text.Contains("Hej fra User 6"));
-        Assert.True(publicTimelineBody.Text.Contains("Test User 6"));
+        Assert.Contains("Hej fra User 6", publicTimelineBody.Text);
+        Assert.Contains("Test User 6", publicTimelineBody.Text);
+        Assert.Contains(DateTime.Now.ToString("dd/MM/yyyy"), publicTimelineBody.Text);
     }
 
 

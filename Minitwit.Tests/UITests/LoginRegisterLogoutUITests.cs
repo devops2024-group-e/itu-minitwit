@@ -25,17 +25,17 @@ public class LoginRegisterLogoutUITests : IDisposable
 
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
-        var currentUrl = _driver.Url; 
+        var currentUrl = _driver.Url;
 
-        Assert.True(body.Text.Contains("MiniTwit"));
-        Assert.True(body.Text.Contains("sign up"));
-        Assert.True(body.Text.Contains("sign in"));
-        Assert.True(currentUrl.Contains("/public"));
+        Assert.Contains("MiniTwit", body.Text);
+        Assert.Contains("sign up", body.Text);
+        Assert.Contains("sign in", body.Text);
+        Assert.Contains("/public", currentUrl);
     }
 
     [Fact]
     public async Task NonRegisteredUserCanRegister()
-    {   
+    {
         //Arrange
         _driver.Navigate().GoToUrl("http://localhost:5191/");
 
@@ -51,7 +51,7 @@ public class LoginRegisterLogoutUITests : IDisposable
         //Assert
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
-        Assert.True(body.Text.Contains("You were successfully registered and can login now"));
+        Assert.Contains("You were successfully registered and can login now", body.Text);
     }
 
     [Fact]
@@ -76,9 +76,9 @@ public class LoginRegisterLogoutUITests : IDisposable
         //Assert
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
-        Assert.True(body.Text.Contains("You were logged in"));
-        Assert.True(body.Text.Contains("My Timeline"));
-        Assert.True(body.Text.Contains("This is you!"));
+        Assert.Contains("You were logged in", body.Text);
+        Assert.Contains("My Timeline", body.Text);
+        Assert.Contains("This is you!", body.Text);
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class LoginRegisterLogoutUITests : IDisposable
         _driver.FindElement(By.Name("username")).SendKeys("Test User 3");
         _driver.FindElement(By.Name("password")).SendKeys("12345");
         _driver.FindElement(By.ClassName("actions")).Submit();
-        
+
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
         //Act
@@ -111,11 +111,11 @@ public class LoginRegisterLogoutUITests : IDisposable
         //Assert
         IWebElement body = _driver.FindElement(By.TagName("body"));
 
-        Assert.True(body.Text.Contains("You were logged out"));
-        Assert.True(body.Text.Contains("MiniTwit"));
-        Assert.True(body.Text.Contains("sign up"));
-        Assert.True(body.Text.Contains("sign in"));
-        Assert.True(_driver.Url.Contains("/public"));
+        Assert.Contains("You were logged out", body.Text);
+        Assert.Contains("MiniTwit", body.Text);
+        Assert.Contains("sign up", body.Text);
+        Assert.Contains("sign in", body.Text);
+        Assert.Contains("/public", _driver.Url);
     }
 
 
