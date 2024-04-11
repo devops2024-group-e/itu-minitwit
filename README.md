@@ -41,17 +41,12 @@ Then application should start and display where you can access the webpage in th
 
 ### How to make pre-commit work
 > [!NOTE]
-> We use Homebrew. Homebrew can be installed on Linux. However, it can only be installed on Linux machines with x64 CPU. In order to install Homebrew look [here](https://brew.sh)
+> This guide assumes that you are using the devcontainer.
 
-Run the following commands to install pre-commit, dotnet-format and hadolint:
+After opening the devcontainer, run the following commands to install pre-commit, dotnet-format and hadolint:
 ```bash
-brew install pre-commit
-
-dotnet tool install -g dotnet-format --version "7.*" --add-source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json
-
-brew install hadolint
-
 install pre-commit #In order to have hooks that run automatically when we commit
-```
 
-If you run the pre-commit hooks but the dotnet formatter fails you have to install dotnet sdk 8 and run it again.
+pre-commit
+```
+The last command takes a bit of time to run, as it traverses through the files and applyes the formatters and linters.
