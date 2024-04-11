@@ -6,7 +6,9 @@ networks:
 
 services:
   dotnet-dev:
-    image: mcr.microsoft.com/devcontainers/dotnet:7.0
+    build:
+      context: ./
+      dockerfile: Dockerfile
     volumes:
       # Mount the root folder that contains .git
       - ../:/workspace
