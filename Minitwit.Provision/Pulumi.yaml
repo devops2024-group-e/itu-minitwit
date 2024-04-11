@@ -1,0 +1,7 @@
+name: Minitwit.Provision
+runtime: dotnet
+description: Infrastructure for the Minitwit application
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: csharp

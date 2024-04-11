@@ -45,13 +45,14 @@ public class LatestRepositoryTests : IDisposable
     public async Task AddLatest_GetLatest_SuccesfullyGetsNewlyAddedLatest_ReturnsLatestsCommandId()
     {
         // Arrange
-        await _latestRepository.AddLatestAsync(55);
+        int expectedLatestId = 65;
+        await _latestRepository.AddLatestAsync(expectedLatestId);
 
         // Act
         var result = await _latestRepository.GetLatestAsync();
 
         // Assert
-        Assert.Equal(55, result);
+        Assert.Equal(expectedLatestId, result);
     }
 
     public void Dispose()

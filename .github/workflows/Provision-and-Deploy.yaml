@@ -1,0 +1,156 @@
+---
+name: provision-and-deployment
+run-name: Provision infrastructure and deploy application
+
+on:
+  workflow_dispatch:
+    manual: true
+
+jobs:
+  setup-infrastructure:
+    name: Setup Infrastructure
+    runs-on: ubuntu-latest
+    outputs:
+      ansible-inventory: ${{ steps.ansible-inventory.outputs.inventory }} # Based of the documentation from https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+    steps:
+      - name: Checkout IaC
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Minitwit.Provision/
+
+      - name: Set up Dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Install pulumi
+        uses: pulumi/actions@v5
+
+      - name: Setup infrastructure
+        working-directory: Minitwit.Provision/
+        run: |
+          pulumi stack select arnenator/Minitwit.Provision/prod
+          pulumi up -y
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+
+      - name: Generate Ansible Inventory output
+        id: ansible-inventory
+        working-directory: Minitwit.Provision/
+        run: |
+          pulumi stack select arnenator/Minitwit.Provision/prod
+          # Get server categories
+          echo "Getting categories from Pulumi output"
+          declare -a categories=($(pulumi stack output --json | jq -r 'keys | .[]'))
+
+          # Create the ansible inventory file content
+          {
+            echo "inventory<<EOF"
+            # Adding all server category
+            echo "[all]"
+            echo "$( pulumi stack output --json | jq -r 'add | .[]')"
+            echo ""
+
+            # Adding category specific servers
+            for cate in "${categories[@]}"; do
+              echo "[${cate}]"
+              echo "$( pulumi stack output --json | jq -r --arg category "${cate}" '.[$category] | .[]')"
+              echo ""
+            done
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+
+  provision-web:
+    name: Provision and deploy web servers
+    needs: setup-infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PWD }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Fetch Ansible Playbook action
+        uses: actions/checkout@v4
+        with:
+          repository: devops2024-group-e/ansible-action
+          sparse-checkout: |
+            .github/actions/ansible-run-playbook
+          sparse-checkout-cone-mode: false
+          path: action
+
+      - name: Create ansible Inventory file
+        run: |
+          echo "${INVENTORY}" > main/.infrastructure/inventory.ansible
+        env:
+          INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
+
+      - name: Provision and deploy web servers
+        uses: ./action/.github/actions/ansible-run-playbook
+        with:
+          dotoken: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+          dosshkeyname: ${{ secrets.DIGITAL_OCEAN_ANSIBLE_SSH_KEY_NAME }}
+          sshkey: ${{ secrets.ANSIBLE_SSH_KEY }}
+          dockeruser: ${{ secrets.DOCKER_USER }}
+          dockerpassword: ${{ secrets.DOCKER_PWD }}
+          inventoryfile: inventory.ansible
+          playbook: web-playbook.yaml
+          working-directory: main/.infrastructure
+
+  provision-monitor:
+    name: Provision and deploy monitor server
+    needs: setup-infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PWD }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Fetch Ansible Playbook action
+        uses: actions/checkout@v4
+        with:
+          repository: devops2024-group-e/ansible-action
+          sparse-checkout: |
+            .github/actions/ansible-run-playbook
+          sparse-checkout-cone-mode: false
+          path: action
+
+      - name: Create ansible Inventory file
+        run: |
+          echo "${INVENTORY}" > main/.infrastructure/inventory.ansible
+        env:
+          INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
+
+      - name: Provision and deploy monitoring servers
+        uses: ./action/.github/actions/ansible-run-playbook
+        with:
+          dotoken: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+          dosshkeyname: ${{ secrets.DIGITAL_OCEAN_ANSIBLE_SSH_KEY_NAME }}
+          sshkey: ${{ secrets.ANSIBLE_SSH_KEY }}
+          dockeruser: ${{ secrets.DOCKER_USER }}
+          dockerpassword: ${{ secrets.DOCKER_PWD }}
+          inventoryfile: inventory.ansible
+          playbook: monitor-playbook.yaml
+          working-directory: main/.infrastructure

@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
-      
+
       - name: Install .NET 7
         uses: actions/setup-dotnet@v3
         with:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-      
+
       - name: Build
         run: dotnet build
 
@@ -49,15 +49,15 @@ jobs:
           git add .
           git commit -m "Bump frontend version to ${{ steps.bump.outputs.newVersion }}"
           git push
-          
-          
+
+
       # Runs a single command using the runners shell
       - name: Changelog
         uses: scottbrenner/generate-changelog-action@master
         id: Changelog
         env:
           REPO: ${{ github.repository }}
-          
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
@@ -70,4 +70,3 @@ jobs:
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
-        

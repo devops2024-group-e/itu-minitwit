@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Minitwit.Infrastructure.Repositories;
 using Minitwit.Infrastructure;
 using Minitwit.Infrastructure.Models;
+
 namespace Minitwit.Infrastructure.Tests.Repositories;
+
 public class MessageRepositoryTests : IDisposable
 {
     private readonly IMessageRepository _messageRepo;
