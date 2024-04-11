@@ -6,7 +6,7 @@ COPY dotnet-sdk-setup.sh /setup
 RUN chmod +x dotnet-sdk-setup.sh && ./dotnet-sdk-setup.sh
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3=3.11.2 python3-pip=23.0.1 \
+    && apt-get install -y --no-install-recommends python3=3.11.2-1+b1 python3-pip=23.0.1+dfsg-1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
