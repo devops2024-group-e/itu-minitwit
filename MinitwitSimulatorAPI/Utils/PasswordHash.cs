@@ -15,7 +15,7 @@ public static class PasswordHash
     {
         string hashedResult;
         string result;
-        switch(algorithm)
+        switch (algorithm)
         {
             case "SHA512":
                 hashedResult = Convert.ToHexString(KeyDerivation.Pbkdf2(
@@ -36,7 +36,7 @@ public static class PasswordHash
                 result = $"SHA512${Convert.ToHexString(salt)}${hashedResult}";
                 break;
         }
-        
+
         return result;
     }
 
@@ -46,7 +46,7 @@ public static class PasswordHash
 
         string pp;
 
-        switch(passwordParts[0])
+        switch (passwordParts[0])
         {
             case "SHA512":
                 pp = GeneratePasswordHash(password, Convert.FromHexString(passwordParts[1]), "SHA512");
