@@ -24,7 +24,7 @@ public static class PasswordHash
                     prf: KeyDerivationPrf.HMACSHA512,
                     iterationCount: 21000,
                     numBytesRequested: 32));
-                result = $"{Convert.ToHexString(salt)}${hashedResult}";
+                result = $"SHA512${Convert.ToHexString(salt)}${hashedResult}";
                 break;
             default:
                 hashedResult = Convert.ToHexString(KeyDerivation.Pbkdf2(
@@ -33,10 +33,9 @@ public static class PasswordHash
                     prf: KeyDerivationPrf.HMACSHA256,
                     iterationCount: 600000,
                     numBytesRequested: 32));
-                result = $"SHA512${Convert.ToHexString(salt)}${hashedResult}";
+                result = $"{Convert.ToHexString(salt)}${hashedResult}";
                 break;
         }
-
         return result;
     }
 
