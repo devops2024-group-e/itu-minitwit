@@ -40,12 +40,12 @@ return await Deployment.RunAsync(() =>
     //                                                                sshKeys);
 
     // Create databasecluster with minitwit database
-    // IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-test-db-01",
-    //                                                                             ComputeSizes.Small,
-    //                                                                             DatabaseProviders.Postgres,
-    //                                                                             minitwitVPC.Id,
-    //                                                                             nodecount: 1);
-    // minitwitDbCluster.CreateDatabase("minitwit");
+    IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-test-db-01",
+                                                                                ComputeSizes.Small,
+                                                                                DatabaseProviders.Postgres,
+                                                                                minitwitVPC.Id,
+                                                                                nodecount: 1);
+    minitwitDbCluster.CreateDatabase("minitwit");
 
 
 
@@ -59,7 +59,7 @@ return await Deployment.RunAsync(() =>
             swmManagers.Select(x => x.Name).ToArray(),
             swmNodes.Select(x => x.Name).ToArray(),
             // monitoringServer.Name,
-            // minitwitDbCluster.Name,
+            minitwitDbCluster.Name,
         }
     });
 
