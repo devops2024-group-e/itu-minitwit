@@ -4,10 +4,6 @@ networks:
   main:
     name: minitwit-network
 
-volumes:
-  pgdata:
-
-
 services:
 
   minitwit-frontend:
@@ -24,6 +20,12 @@ services:
       - minitwit-db
     ports:
       - '80:80'
+    logging:
+      driver: loki
+      options:
+        loki-url: http://64.226.117.89:3100/loki/api/v1/push # TODO: Change this to the private URL of the ops-1 server
+    environment:
+      - Minitwit_ConnectionStrings__MinitwitDatabase=Host=private-minitwit-test-db-01-4158eeb-do-user-15947112-0.c.db.ondigitalocean.com;Port=25060;Username=minitwit-sa;Password=***;Database=minitwit
 
   minitwit-backend:
     image: ghcr.io/devops2024-group-e/backend.minitwit:latest
@@ -37,5 +39,9 @@ services:
       - main
     depends_on:
       - minitwit-db
+    logging:
+      driver: loki
+      options:
+        loki-url: http://64.226.117.89:3100/loki/api/v1/push # TODO: Change this to the private URL of the ops-1 server
     ports:
       - '8080:8080'
