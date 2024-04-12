@@ -40,6 +40,7 @@ public class RegisterControllerTests
     {
         Assert.True(PasswordHash.CheckPasswordHash(password, passwordHash));
     }
+
     [Theory]
     [InlineData(@"|{[6I:*{*|", @"47F7BA030E703B84604323A58561D50A$559E79B9EC47D9F8425994977636C6DC61DD900581E5766D88816B0C8411A255")]
     [InlineData(@"^(@{Je=oj", @"EE4FA899AA7EE58BBB5EABD599B19B75$EAE78CF593D71572C618917ADC4979C1708D94C380FFD3A87A0FCB9BCB245647")]
@@ -48,6 +49,7 @@ public class RegisterControllerTests
     {
         Assert.True(PasswordHash.CheckPasswordHash(password, passwordHash));
     }
+
     [Theory]
     [InlineData(@"|{[6I:*{*|", @"SHA512$47F7BA030E703B84604323A58561D50A$559E79B9EC47D9F8425994977636C6DC61DD900581E5766D88816B0C8411A255")]
     [InlineData(@"^(@{Je=oj", @"SHA512$EE4FA899AA7EE58BBB5EABD599B19B75$EAE78CF593D71572C618917ADC4979C1708D94C380FFD3A87A0FCB9BCB245647")]
@@ -65,5 +67,4 @@ public class RegisterControllerTests
     {
         Assert.False(PasswordHash.CheckPasswordHash(password, passwordHash));
     }
-    
 }
