@@ -1,0 +1,41 @@
+version: '3.5'
+
+networks:
+  main:
+    name: minitwit-network
+
+volumes:
+  pgdata:
+
+
+services:
+
+  minitwit-frontend:
+    image: ghcr.io/devops2024-group-e/frontend.minitwit:latest
+    container_name: frontend
+    deploy:
+      replicas: 1
+      update_config:
+        delay: 10s
+        order: stop-first
+    networks:
+      - main
+    depends_on:
+      - minitwit-db
+    ports:
+      - '80:80'
+
+  minitwit-backend:
+    image: ghcr.io/devops2024-group-e/backend.minitwit:latest
+    container_name: backend
+    deploy:
+      replicas: 2
+      update_config:
+        delay: 10s
+        order: stop-first
+    networks:
+      - main
+    depends_on:
+      - minitwit-db
+    ports:
+      - '8080:8080'
