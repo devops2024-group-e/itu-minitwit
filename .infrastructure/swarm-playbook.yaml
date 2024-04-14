@@ -9,4 +9,4 @@
    - role: home-dir
      vars:
        directory: /minitwit-swarm
-       sync_directory: ./swm-man-server
+       sync_directory: ./swm-man-server/

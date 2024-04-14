@@ -9,7 +9,7 @@
   - role: home-dir
     vars:
       directory: /minitwit-obs
-      sync_directory: ./obs-server
+      sync_directory: ./obs-server/
 
   tasks:
   - name: Run Docker Compose Up
