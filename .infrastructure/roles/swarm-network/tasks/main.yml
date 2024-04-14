@@ -1,0 +1,38 @@
+---
+# Define firewall rules by starting to deny everything and then allowing only what is needed
+- name: Standard Deny all
+  community.general.ufw:
+    policy: deny
+
+- name: Allow port 80 for HTTP
+  community.general.ufw:
+    rule: allow
+    port: '80'
+
+- name: Allow port 8080 for HTTP
+  community.general.ufw:
+    rule: allow
+    port: '8080'
+
+- name: Allow SSH
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: '22'
+
+- name: Allow gathering of metrics
+  community.general.ufw:
+    rule: allow
+    direction: in
+    interface: eth1
+    port: '9323'
+
+- name: Allow swarm communication through private network
+  community.general.ufw:
+    rule: allow
+    interface: eth1
+    port: '2377'
+
+- name: Enable firewall
+  community.general.ufw:
+    state: enabled
