@@ -3,7 +3,7 @@
 - name: check/init swarm
   community.docker.docker_swarm:
     state: present
-    advertise_addr: "{{ groups['swmmanagers'][0]['eth1']['ipv4']['address']}}:2377"
+    advertise_addr: "{{ groups['swmmanagers'][0]['ansible_eth1']['ipv4']['address']}}:2377"
   register: __output_swarm
   when: inventory_hostname in groups['swmmanagers'][0]
 
@@ -13,7 +13,7 @@
     timeout: 60
     advertise_addr: eth1:2377
     join_token: "{{ hostvars[groups['swmmanagers'][0]]['__output_swarm']['swarm_facts']['JoinTokens']['Manager']}}"
-    remote_addrs: "{{ groups['swmmanager'][0]['eth1']['ipv4']['address']}}"
+    remote_addrs: "{{ groups['swmmanager'][0]['ansible_eth1']['ipv4']['address']}}"
   when: inventory_hostname in groups['swmmanagers'] and inventory_hostname not in groups['swmmanagers'][0]
 
 - name: install worker
@@ -22,7 +22,7 @@
     timeout: 60
     advertise_addr: eth1:2377
     join_token: "{{ hostvars[groups['swmmanagers'][0]]['__output_swarm']['swarm_facts']['JoinTokens']['Worker'] }}"
-    remote_addrs: "{{ hostvars[groups['swmmanagers'][0]]['eth1']['ipv4']['address'] }}"
+    remote_addrs: "{{ hostvars[groups['swmmanagers'][0]]['ansible_eth11']['ipv4']['address'] }}"
   when: inventory_hostname in groups['swmnodes']
 
 - name: Add bashrc path to bash_profile
