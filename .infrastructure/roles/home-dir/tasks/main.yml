@@ -13,6 +13,6 @@
 
 - name: Synchronization of configuration files from web-server to server minitwit dir
   ansible.posix.synchronize:
-    src: "{{ sync-directory }}"
+    src: "{{ sync_directory }}"
     dest: "{{ directory }}"
     checksum: true
