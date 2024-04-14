@@ -1,6 +1,6 @@
 ---
 - name: Monitor setup
-  hosts: monitoring
+  hosts: observability
   become: true
   roles:
   - apt

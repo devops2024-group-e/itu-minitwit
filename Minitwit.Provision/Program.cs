@@ -21,7 +21,7 @@ return await Deployment.RunAsync(() =>
                                                                             VM_IMAGE,
                                                                             minitwitVPC.Id,
                                                                             REGION,
-                                                                            count: 2,
+                                                                            count: 1,
                                                                             sshKeys);
 
     IEnumerable<IVirtualMachine> swmManagers = DOVirtualMachine.CreateVMSet("minitwit-swm-man",
@@ -33,14 +33,14 @@ return await Deployment.RunAsync(() =>
 
 
     //Create the monitoring servers
-    // IVirtualMachine monitoringServer = DOVirtualMachine.CreateVM("minitwit-mon-1",
-    //                                                                 VM_IMAGE,
-    //                                                                 minitwitVPC.Id,
-    //                                                                 REGION,
-    //                                                                sshKeys);
+    IVirtualMachine observabilityServer = DOVirtualMachine.CreateVM("minitwit-obs-1",
+                                                                    VM_IMAGE,
+                                                                    minitwitVPC.Id,
+                                                                    REGION,
+                                                                   sshKeys);
 
     // Create databasecluster with minitwit database
-    IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-test-db-01",
+    IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-db",
                                                                                 ComputeSizes.Small,
                                                                                 DatabaseProviders.Postgres,
                                                                                 minitwitVPC.Id,
@@ -58,7 +58,7 @@ return await Deployment.RunAsync(() =>
         {
             swmManagers.Select(x => x.Name).ToArray(),
             swmNodes.Select(x => x.Name).ToArray(),
-            // monitoringServer.Name,
+            observabilityServer.Name,
             minitwitDbCluster.Name,
         }
     });
@@ -69,7 +69,7 @@ return await Deployment.RunAsync(() =>
     {
         ["swmmanagers"] = swmManagers.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
         ["swmnodes"] = swmNodes.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
-        // ["monitoring"] = new List<Output<string>>() { monitoringServer.NetworkInterfaces["PublicIP"] },
+        ["observability"] = new List<Output<string>>() { observabilityServer.NetworkInterfaces["PublicIP"] },
     };
 });
 
@@ -101,25 +101,25 @@ static InputList<string> CreateSSHKeys()
         Name = "Mille-laptop-ssh-key",
         PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCMc7BPduNHlbfMWkJrvRqvrhcW53bks4zjxG/YrKMYFR/vVN/yXBNUJERENQfFed7/7BbISE/B0JbIfTBlyFQrOm63+qpUcwkK5q5W9ubPO59q00bif2/DPg5BB3l5NrYKf6komNuXMLmhHMrgZswAQeG+Vmi/ZR/cjEo1YH96raVlCSyMplEI+ha8xKUg0BDXShEaYHaR2aSrtgOJgOK1FMwpN2U6tNjeO4j6093oxJXqYi59c98ykLTKK/p30tnnD57bk42+dtgKGhy0E9qaAUZHEVapnEgbOE7dN5O48VkdNpcHZvYB3TsrdsbW313RC+AUN40/ZC37rMrb1n/96+gcC4a+TWVzyDAnno/66t8kKAShgqNNlljSU9o33MXZ0ojosyCtH9ZW8RbD2hJIRmwOqitH+CR28Kt4k4yavgS0SMQF6tQ4FaqTnP/ufOuWDuLfhmKpA9992CU6rm4mC6p9oV1ZajLbb2yhM/JsjE5AAiQOjAsv32N202DJBEk= pinkvinus@ScuffedKeyboardComputerNix"
     });
-    // SshKey millePcSSHKey = new("Mille-pc-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "Mille-pc-ssh-key",
-    //     PublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZanDonPqwSD+2LkwBtk9GsZhO+nr96Yai9WEqAyQFA pinkvinus@NonScuffedComputerNix"
-    // });
-    // SshKey mySSHKey = new("My-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "My-ssh-key",
-    //     PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKtSKzMmwH4wslwad2t9VAfGS8A6CKkiejZNXMGbYavZtzSSX3ZVoqFSaKW+DLWsUi8dnF1en9+c6tkiafQ0frreVKddXWU21Q6vT1oSii5+RLDzb9iIVBnajeRO/89taFJQs3jlJr703zJKz+EnY+orK2VC9JNX9r+j1U5ugvyL1LiogaWaCl+r9cM/tfN7M1j+2TOitZPp7JH2SPJv8DqdjjWKprRYAQQ+n8RMqlFRqS6Lwc686mzR6DBQlqehZc1YsbihNlQkGj3VR5Kyw0YnEbdZvW17v78NMKM5Ilsylnt30VPDNPBcbhmQuNXOVUApM73EnLXsWjEiGgZ3xkq03zdH5I6R27X5CPLr6Pa+OyYCR0EhuelFkwK/1Sv50z6enH6sbxU1L35UG6RqsM33PB4j/D5ix5wLbmFrC1bqe4Xb8C79kBffS5FYL7tETtfX1J8DRo5uBotPmNxSuZxBKHG4d7W716gmvpH6p0rgF5p2R6RgG+uYEpsjYznk8= myssenberg@Mys-MacBook-Air.local"
-    // });
+    SshKey millePcSSHKey = new("Mille-pc-ssh-key", new SshKeyArgs
+    {
+        Name = "Mille-pc-ssh-key",
+        PublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZanDonPqwSD+2LkwBtk9GsZhO+nr96Yai9WEqAyQFA pinkvinus@NonScuffedComputerNix"
+    });
+    SshKey mySSHKey = new("My-ssh-key", new SshKeyArgs
+    {
+        Name = "My-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKtSKzMmwH4wslwad2t9VAfGS8A6CKkiejZNXMGbYavZtzSSX3ZVoqFSaKW+DLWsUi8dnF1en9+c6tkiafQ0frreVKddXWU21Q6vT1oSii5+RLDzb9iIVBnajeRO/89taFJQs3jlJr703zJKz+EnY+orK2VC9JNX9r+j1U5ugvyL1LiogaWaCl+r9cM/tfN7M1j+2TOitZPp7JH2SPJv8DqdjjWKprRYAQQ+n8RMqlFRqS6Lwc686mzR6DBQlqehZc1YsbihNlQkGj3VR5Kyw0YnEbdZvW17v78NMKM5Ilsylnt30VPDNPBcbhmQuNXOVUApM73EnLXsWjEiGgZ3xkq03zdH5I6R27X5CPLr6Pa+OyYCR0EhuelFkwK/1Sv50z6enH6sbxU1L35UG6RqsM33PB4j/D5ix5wLbmFrC1bqe4Xb8C79kBffS5FYL7tETtfX1J8DRo5uBotPmNxSuZxBKHG4d7W716gmvpH6p0rgF5p2R6RgG+uYEpsjYznk8= myssenberg@Mys-MacBook-Air.local"
+    });
 
     return new()
     {
         andreasSSHKey.Id,
         ansibleSSHKey.Id,
         malinSSHKey.Id,
-        // sarahSSHKey.Id,
+        sarahSSHKey.Id,
         milleLaptopSSHKey.Id,
-        // millePcSSHKey.Id,
-        // mySSHKey.Id,
+        millePcSSHKey.Id,
+        mySSHKey.Id,
     };
 }

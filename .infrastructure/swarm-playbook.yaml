@@ -1,5 +1,5 @@
 - name: install docker
-  hosts: all
+  hosts: swmmanagers:swmnodes
   become: yes
   roles:
    - apt
