@@ -2,5 +2,11 @@
   hosts: all
   become: yes
   roles:
+   - apt
    - docker
    - swarm
+   - swarm-network
+   - role: home-dir
+     vars:
+       directory: /minitwit-swarm
+       sync-directory: ./swm-man-server
