@@ -30,6 +30,7 @@
 - name: Allow swarm communication through private network
   community.general.ufw:
     rule: allow
+    direction: in
     interface: eth1
     port: '2377'
 
