@@ -2,10 +2,6 @@
 # tasks file for roles/swarm
 - name: Print all available facts
   ansible.builtin.debug:
-    var: ansible_facts
-
-- name: Print all available facts
-  ansible.builtin.debug:
     var: hostvars[groups['swmmanagers'][0]]
 
 - name: check/init swarm
@@ -30,7 +26,7 @@
     timeout: 60
     advertise_addr: eth1:2377
     join_token: "{{ hostvars[groups['swmmanagers'][0]]['__output_swarm']['swarm_facts']['JoinTokens']['Worker'] }}"
-    remote_addrs: "{{ hostvars[groups['swmmanagers'][0]]['ansible_facts']['ansible_eth1']['ipv4']['address'] }}"
+    remote_addrs: "{{ hostvars[groups['swmmanagers'][0]]['ansible_facts']['eth1']['ipv4']['address'] }}"
   when: inventory_hostname in groups['swmnodes']
 
 - name: Add bashrc path to bash_profile
