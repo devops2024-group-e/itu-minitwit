@@ -25,20 +25,12 @@
     remote_addrs: "{{ hostvars[groups['swmmanagers'][0]]['ansible_facts']['eth1']['ipv4']['address'] }}"
   when: inventory_hostname in groups['swmnodes']
 
-- name: Add bashrc path to bash_profile
-  ansible.builtin.shell: echo ". /root/.bashrc" > ~/.bash_profile
+#########################################
+######## Install Docker Plugins #########
+#########################################
 
-- name: Set bash_profile to source
-  ansible.builtin.shell: source ~/.bash_profile
-  args:
-    executable: /bin/bash
-
-- name: Set /minitwit as home dir
-  ansible.builtin.shell: echo "cd /minitwit" >> ~/.bash_profile
-
-- name: Synchronization of configuration files from web-server to server minitwit dir
-  ansible.posix.synchronize:
-    src: swm-man-server/
-    dest: /minitwit
-    checksum: true
-  when: inventory_hostname in groups['swmmanagers']
+- name: Install loki log driver plugin
+  community.docker.docker_plugin:
+    plugin_name: grafana/loki-docker-driver
+    alias: loki
+    state: present
