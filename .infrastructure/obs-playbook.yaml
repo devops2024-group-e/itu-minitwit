@@ -1,0 +1,18 @@
+---
+- name: Monitor setup
+  hosts: monitoring
+  become: true
+  roles:
+  - apt
+  - docker
+  - observability-network
+  - role: home-dir
+    vars:
+      directory: /minitwit-obs
+      sync-directory: ./obs-server
+
+  tasks:
+  - name: Run Docker Compose Up
+    ansible.builtin.shell: cd /minitwit-obs && docker compose up -d
+    args:
+      executable: /bin/bash
