@@ -34,3 +34,8 @@
     plugin_name: grafana/loki-docker-driver
     alias: loki
     state: present
+
+- name: Enable loki plugin
+  community.docker.docker_plugin:
+    plugin_name: loki
+    state: enable
