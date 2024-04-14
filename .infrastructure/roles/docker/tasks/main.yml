@@ -1,11 +1,4 @@
 ---
-# tasks file for roles/docker
-- name: Install aptitude
-  ansible.builtin.apt:
-    name: aptitude
-    state: latest
-    update_cache: true
-
 - name: Install docker
   ansible.builtin.apt:
     name: docker.io=24.0.5-0ubuntu1

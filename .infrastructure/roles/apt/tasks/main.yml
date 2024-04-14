@@ -1,0 +1,7 @@
+---
+# tasks file for roles/apt
+- name: Install aptitude
+  ansible.builtin.apt:
+    name: aptitude
+    state: latest
+    update_cache: true
