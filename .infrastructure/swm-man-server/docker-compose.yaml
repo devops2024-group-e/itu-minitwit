@@ -49,6 +49,11 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    deploy:
+      replicas: 1
+      update_config:
+        delay: 10s
+        order: stop-first
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:

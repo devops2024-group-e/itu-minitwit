@@ -27,6 +27,12 @@
     interface: eth1
     port: '9323'
 
+
+- name: Allow calling prometheus
+  community.general.ufw:
+    rule: allow
+    port: '9090'
+
 - name: Allow swarm communication through private network
   community.general.ufw:
     rule: allow
