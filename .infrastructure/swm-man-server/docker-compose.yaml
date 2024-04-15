@@ -45,3 +45,13 @@ services:
         loki-url: http://64.226.117.89:3100/loki/api/v1/push # TODO: Change this to the private URL of the ops-1 server
     ports:
       - '8080:8080'
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+    networks:
+      - main
