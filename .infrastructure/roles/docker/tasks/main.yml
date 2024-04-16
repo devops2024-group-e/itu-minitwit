@@ -2,7 +2,7 @@
 
 - name: Configure docker daemon to be available
   ansible.builtin.copy:
-    src: "{{docker_conf}}/daemon.json"
+    src: "{{docker_conf_dir}}daemon.json"
     dest: /etc/docker/daemon.json
     owner: foo
     group: foo

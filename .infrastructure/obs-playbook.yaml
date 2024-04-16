@@ -4,12 +4,14 @@
   become: true
   roles:
   - apt
-  - docker
-  - observability-network
   - role: home-dir
     vars:
       directory: /minitwit-obs
       sync_directory: ./obs-server/
+  - role: docker
+    vars:
+      docker_conf_dir: ./obs-server/
+  - observability-network
 
   tasks:
   - name: Run Docker Compose Up
