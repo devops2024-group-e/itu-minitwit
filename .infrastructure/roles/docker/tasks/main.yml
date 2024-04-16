@@ -4,9 +4,6 @@
   ansible.builtin.copy:
     src: "{{docker_conf_dir}}daemon.json"
     dest: /etc/docker/daemon.json
-    owner: foo
-    group: foo
-    mode: '0644'
 
 - name: Install docker
   ansible.builtin.apt:
