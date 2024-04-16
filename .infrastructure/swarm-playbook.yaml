@@ -3,10 +3,12 @@
   become: yes
   roles:
    - apt
-   - docker
-   - swarm
-   - swarm-network
    - role: home-dir
      vars:
        directory: /minitwit-swarm
        sync_directory: ./swm-man-server/
+   - role: docker
+     vars:
+       docker_conf: /minitwit-swarm
+   - swarm
+   - swarm-network

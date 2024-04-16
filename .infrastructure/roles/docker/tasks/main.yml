@@ -1,4 +1,13 @@
 ---
+
+- name: Configure docker daemon to be available
+  ansible.builtin.copy:
+    src: "{{docker_conf}}/daemon.json"
+    dest: /etc/docker/daemon.json
+    owner: foo
+    group: foo
+    mode: '0644'
+
 - name: Install docker
   ansible.builtin.apt:
     name: docker.io=24.0.5-0ubuntu1
