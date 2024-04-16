@@ -5,11 +5,22 @@
     state: directory
     mode: '0755'
 
+
 - name: Configure docker daemon to be available
   ansible.builtin.copy:
     src: "{{docker_conf_dir}}daemon.json"
     dest: /etc/docker/daemon.json
 
+- name: Create docker systemd directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Add docker systemd startup override
+  ansible.builtin.copy:
+    src: "{{docker_conf_dir}}docker.conf"
+    dest: /etc/systemd/system/docker.service.d/docker.conf
 - name: Install docker
   ansible.builtin.apt:
     name: docker.io=24.0.5-0ubuntu1
