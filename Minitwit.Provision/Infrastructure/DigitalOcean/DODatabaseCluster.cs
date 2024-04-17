@@ -22,7 +22,6 @@ internal record DODatabaseCluster : IDatabaseCluster
 
 
     private readonly DatabaseCluster _cluster;
-    private readonly double _mebibytesForGB = Math.Pow(10, 9) / Math.Pow(2, 20);
 
     /// <summary>
     /// Creates DigitalOcean managed Database cluster
@@ -33,7 +32,7 @@ internal record DODatabaseCluster : IDatabaseCluster
     /// <param name="provider">Which type of the database to create</param>
     /// <param name="nodecount">Amount of nodes that cluster should have</param>
     /// <param name="region">Where it is located</param>
-    private DODatabaseCluster(string name, string version, string size, string provider, Output<string> networkId, int nodecount, string region, int diskGB = 25)
+    private DODatabaseCluster(string name, string version, string size, string provider, Output<string> networkId, int nodecount, string region)
     {
         _cluster = new DatabaseCluster(name, new()
         {
@@ -42,8 +41,7 @@ internal record DODatabaseCluster : IDatabaseCluster
             Size = size,
             Region = region,
             NodeCount = nodecount,
-            PrivateNetworkUuid = networkId,
-            StorageSizeMib = (_mebibytesForGB * diskGB).ToString()
+            PrivateNetworkUuid = networkId
         });
     }
 

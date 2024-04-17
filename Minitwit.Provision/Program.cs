@@ -41,7 +41,7 @@ return await Deployment.RunAsync(() =>
 
     // Create databasecluster with minitwit database
     IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-db",
-                                                                                ComputeSizes.Small,
+                                                                                ComputeSizes.Medium,
                                                                                 DatabaseProviders.Postgres,
                                                                                 minitwitVPC.Id,
                                                                                 nodecount: 1);
