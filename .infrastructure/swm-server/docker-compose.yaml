@@ -3,6 +3,7 @@ version: '3.5'
 networks:
   main:
     name: minitwit-network
+    driver: overlay
 
 services:
 
