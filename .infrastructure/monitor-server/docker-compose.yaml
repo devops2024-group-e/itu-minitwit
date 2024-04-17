@@ -36,6 +36,8 @@ services:
     networks:
       - minitwit-ops-network
     volumes:
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
       - grafana-storage:/var/lib/grafana
 
   prometheus:
