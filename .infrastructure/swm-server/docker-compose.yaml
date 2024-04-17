@@ -58,6 +58,7 @@ services:
         order: stop-first
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - '9090:9090'
     networks:
