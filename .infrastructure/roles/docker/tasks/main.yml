@@ -1,0 +1,47 @@
+---
+- name: Create docker config directory
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
+
+- name: Configure docker daemon to be available
+  ansible.builtin.copy:
+    src: "{{docker_conf_dir}}daemon.json"
+    dest: /etc/docker/daemon.json
+
+- name: Create docker systemd directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Add docker systemd startup override
+  ansible.builtin.copy:
+    src: "{{docker_conf_dir}}docker.conf"
+    dest: /etc/systemd/system/docker.service.d/docker.conf
+- name: Install docker
+  ansible.builtin.apt:
+    name: docker.io=24.0.5-0ubuntu1
+    state: latest
+    update_cache: true
+
+- name: Install docker-compose
+  ansible.builtin.apt:
+    name: docker-compose-v2=2.20.2+ds1-0ubuntu1
+    state: latest
+    update_cache: true
+
+- name: Install python3-docker
+  ansible.builtin.apt:
+    name: python3-docker=5.0.3-1
+    state: latest
+    update_cache: true
+
+- name: Login to private container registry
+  community.docker.docker_login:
+    username: "{{ dockeruser }}"
+    password: "{{ dockerpassword }}"
+    registry_url: ghcr.io
+    state: present

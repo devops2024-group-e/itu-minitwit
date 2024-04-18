@@ -1,0 +1,18 @@
+---
+# tasks file for roles/home-dir
+- name: Add bashrc path to bash_profile
+  ansible.builtin.shell: echo ". /root/.bashrc" > ~/.bash_profile
+
+- name: Set bash_profile to source
+  ansible.builtin.shell: source ~/.bash_profile
+  args:
+    executable: /bin/bash
+
+- name: Set /minitwit as home dir
+  ansible.builtin.shell: 'echo "cd {{ directory }}" >> ~/.bash_profile'
+
+- name: Synchronization of configuration files from web-server to server minitwit dir
+  ansible.posix.synchronize:
+    src: "{{ sync_directory }}"
+    dest: "{{ directory }}"
+    checksum: true

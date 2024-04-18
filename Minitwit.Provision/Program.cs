@@ -17,23 +17,31 @@ return await Deployment.RunAsync(() =>
     var minitwitVPC = DOVirtualPrivateNetwork.CreatePrivateNetwork("minitwit-prod-vpc", "192.168.1.0/24", REGION);
 
     // Create the web servers
-    IEnumerable<IVirtualMachine> webServers = DOVirtualMachine.CreateVMSet("minitwit-web-test",
+    IEnumerable<IVirtualMachine> swmNodes = DOVirtualMachine.CreateVMSet("minitwit-swm-node",
                                                                             VM_IMAGE,
                                                                             minitwitVPC.Id,
                                                                             REGION,
-                                                                            count: 2,
+                                                                            count: 1,
                                                                             sshKeys);
 
-    // Create the monitoring servers
-    IVirtualMachine monitoringServer = DOVirtualMachine.CreateVM("minitwit-mon-test-1",
+    IEnumerable<IVirtualMachine> swmManagers = DOVirtualMachine.CreateVMSet("minitwit-swm-man",
+                                                                            VM_IMAGE,
+                                                                            minitwitVPC.Id,
+                                                                            REGION,
+                                                                            count: 1,
+                                                                            sshKeys);
+
+
+    //Create the monitoring servers
+    IVirtualMachine observabilityServer = DOVirtualMachine.CreateVM("minitwit-obs-1",
                                                                     VM_IMAGE,
                                                                     minitwitVPC.Id,
                                                                     REGION,
                                                                    sshKeys);
 
     // Create databasecluster with minitwit database
-    IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-test-db-01",
-                                                                                ComputeSizes.Small,
+    IDatabaseCluster minitwitDbCluster = DODatabaseCluster.CreateDatabaseCluster("minitwit-db",
+                                                                                ComputeSizes.Medium,
                                                                                 DatabaseProviders.Postgres,
                                                                                 minitwitVPC.Id,
                                                                                 nodecount: 1);
@@ -48,8 +56,9 @@ return await Deployment.RunAsync(() =>
         Purpose = "Application Environment",
         Resources = new InputList<string>
         {
-            webServers.Select(x => x.Name).ToArray(),
-            monitoringServer.Name,
+            swmManagers.Select(x => x.Name).ToArray(),
+            swmNodes.Select(x => x.Name).ToArray(),
+            observabilityServer.Name,
             minitwitDbCluster.Name,
         }
     });
@@ -58,8 +67,9 @@ return await Deployment.RunAsync(() =>
     // Export outputs here
     return new Dictionary<string, object?>
     {
-        ["web"] = webServers.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
-        ["monitoring"] = new List<Output<string>>() { monitoringServer.NetworkInterfaces["PublicIP"] },
+        ["swmmanagers"] = swmManagers.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
+        ["swmnodes"] = swmNodes.Select(x => x.NetworkInterfaces["PublicIP"]).ToList(),
+        ["observability"] = new List<Output<string>>() { observabilityServer.NetworkInterfaces["PublicIP"] },
     };
 });
 
@@ -81,35 +91,41 @@ static InputList<string> CreateSSHKeys()
         Name = "Malin-ssh-key",
         PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDImN+79Poq8zUQTCfS+sIKJwnJfLihtWQgFrb96+TFKtYCq89k/2ZBeYTjZm/fHctN3MrGdpaz4xUWnAmdJqRxtgQjx2owPA0TW68tjKYLTRaKltmQfaTxCa38gjwUw3NnvcZcpNDzjVwD4zXF1OuQfMPdj63ZK9O5EUSNT4JhqpyS8J1wjEUQ1kddtgOt2Wbm1lm/LMbadzCDpof0J7FlT4IGJzyDLU8JUWOdFitGEo1oruaCZF6ycIpDzQxNYh7mwhRIdIObi/d0S4eCnwUcHSTJiDcKiZ4SADcrKIeMpy9/aDaIhH5cprPXuT484UwX6hzTIwkOVnuE5Urq5IwBCVtJtUXv1tgw1Un8qv72mka3jroIPLKlq46do90eR/y9TiZlUfX9JeF1ejcz4DV8zQxhsfPeDBbJdI8CpGkqrA8rTCdqg7p1FhHCw9wF3zyAXmj4ppnPVLQu6txDtDyel54Vzidu8KT4lqeH2XGLcd8sfwHIheCXWDUmdyNMUg0hlhJcclvUIej6T0MT/8Zq/4uovP3f9pr1uVkaHP5sKqjFxHAn9OmFHTCO/5MwsCVErfWPpaT2KQvDU/7OUKUrR7R2SKE/oOgcaJbEpPaKCRTskMFfdru/pLO/wAjvV3xAOqxR/B0upA/Rk54D5nhAt3T0fBUTwT/zkl03kBdqTw== malin nordqvist@DESKTOP-90ST137"
     });
-    // SshKey sarahSSHKey = new("Sarah-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "Sarah-ssh-key",
-    //     PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD6XFydqlxARlR/NNhVKN6aqoq6ew5pClNPCp90X2R07q9k/BOJH1LEvh5agq1zyCWMdJl1/EISUmxWGawDmAp+BA+Sye3jHt80h1g/Z2bofUJZmCWsngk5dBQRuxff1tFHwjEgyuVcEfx558PKN/qSAIeoLGjOb08gCCOXTggP3j4E7/K4LBaJpOuYZOWxXFAXSMjDVA9seRKAOFlO/qw5hLYCJGlALGGbmhXPYyH5qDEdp3dX8iQEJVrF/WV+gcnl8WJHGw0bERTLWr4OERmfZP+xL5XjjTzUILQvAKx7KMNFbJ9VdjdjLUS14+uJmLfz538NUuHl2bgrVC68FOHF6G9HW9SgRW55VL59h/43YbvlHGIHYZXcvR1DZDkhOm7gN60bQpMP5w2mpygP8EdYD7ydp9gzQRM5F1CDBNMO4GpU+LT3ycUZDqlZyZsA5j/bMUwskgBGvGuHescbAlw9hYHwZds698vSxpoonrGcgXceeO2DECSgViBeXOJyTMAtNMhXhK1vrxz0jwmAqnXty28jmdxTBdceBSVkFvit4dynqyAG6IKtXWQPg0eU5PWiRplez8mlSF3ByoXjXeGAR/5YZRVRhN97Z94/v8T2/7+BNqCIX2/l1MrU9XqH0KvR5vIG+aG7NiADWSankXHMbbDiPpKbEL7BkFqvOxIDDw== sarah@Sarah-Legion"
-    // });
+    SshKey sarahSSHKey = new("Sarah-ssh-key", new SshKeyArgs
+    {
+        Name = "Sarah-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD6XFydqlxARlR/NNhVKN6aqoq6ew5pClNPCp90X2R07q9k/BOJH1LEvh5agq1zyCWMdJl1/EISUmxWGawDmAp+BA+Sye3jHt80h1g/Z2bofUJZmCWsngk5dBQRuxff1tFHwjEgyuVcEfx558PKN/qSAIeoLGjOb08gCCOXTggP3j4E7/K4LBaJpOuYZOWxXFAXSMjDVA9seRKAOFlO/qw5hLYCJGlALGGbmhXPYyH5qDEdp3dX8iQEJVrF/WV+gcnl8WJHGw0bERTLWr4OERmfZP+xL5XjjTzUILQvAKx7KMNFbJ9VdjdjLUS14+uJmLfz538NUuHl2bgrVC68FOHF6G9HW9SgRW55VL59h/43YbvlHGIHYZXcvR1DZDkhOm7gN60bQpMP5w2mpygP8EdYD7ydp9gzQRM5F1CDBNMO4GpU+LT3ycUZDqlZyZsA5j/bMUwskgBGvGuHescbAlw9hYHwZds698vSxpoonrGcgXceeO2DECSgViBeXOJyTMAtNMhXhK1vrxz0jwmAqnXty28jmdxTBdceBSVkFvit4dynqyAG6IKtXWQPg0eU5PWiRplez8mlSF3ByoXjXeGAR/5YZRVRhN97Z94/v8T2/7+BNqCIX2/l1MrU9XqH0KvR5vIG+aG7NiADWSankXHMbbDiPpKbEL7BkFqvOxIDDw== sarah@Sarah-Legion"
+    });
     SshKey milleLaptopSSHKey = new("Mille-laptop-ssh-key", new SshKeyArgs
     {
         Name = "Mille-laptop-ssh-key",
         PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCMc7BPduNHlbfMWkJrvRqvrhcW53bks4zjxG/YrKMYFR/vVN/yXBNUJERENQfFed7/7BbISE/B0JbIfTBlyFQrOm63+qpUcwkK5q5W9ubPO59q00bif2/DPg5BB3l5NrYKf6komNuXMLmhHMrgZswAQeG+Vmi/ZR/cjEo1YH96raVlCSyMplEI+ha8xKUg0BDXShEaYHaR2aSrtgOJgOK1FMwpN2U6tNjeO4j6093oxJXqYi59c98ykLTKK/p30tnnD57bk42+dtgKGhy0E9qaAUZHEVapnEgbOE7dN5O48VkdNpcHZvYB3TsrdsbW313RC+AUN40/ZC37rMrb1n/96+gcC4a+TWVzyDAnno/66t8kKAShgqNNlljSU9o33MXZ0ojosyCtH9ZW8RbD2hJIRmwOqitH+CR28Kt4k4yavgS0SMQF6tQ4FaqTnP/ufOuWDuLfhmKpA9992CU6rm4mC6p9oV1ZajLbb2yhM/JsjE5AAiQOjAsv32N202DJBEk= pinkvinus@ScuffedKeyboardComputerNix"
     });
-    // SshKey millePcSSHKey = new("Mille-pc-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "Mille-pc-ssh-key",
-    //     PublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZanDonPqwSD+2LkwBtk9GsZhO+nr96Yai9WEqAyQFA pinkvinus@NonScuffedComputerNix"
-    // });
-    // SshKey mySSHKey = new("My-ssh-key", new SshKeyArgs
-    // {
-    //     Name = "My-ssh-key",
-    //     PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKtSKzMmwH4wslwad2t9VAfGS8A6CKkiejZNXMGbYavZtzSSX3ZVoqFSaKW+DLWsUi8dnF1en9+c6tkiafQ0frreVKddXWU21Q6vT1oSii5+RLDzb9iIVBnajeRO/89taFJQs3jlJr703zJKz+EnY+orK2VC9JNX9r+j1U5ugvyL1LiogaWaCl+r9cM/tfN7M1j+2TOitZPp7JH2SPJv8DqdjjWKprRYAQQ+n8RMqlFRqS6Lwc686mzR6DBQlqehZc1YsbihNlQkGj3VR5Kyw0YnEbdZvW17v78NMKM5Ilsylnt30VPDNPBcbhmQuNXOVUApM73EnLXsWjEiGgZ3xkq03zdH5I6R27X5CPLr6Pa+OyYCR0EhuelFkwK/1Sv50z6enH6sbxU1L35UG6RqsM33PB4j/D5ix5wLbmFrC1bqe4Xb8C79kBffS5FYL7tETtfX1J8DRo5uBotPmNxSuZxBKHG4d7W716gmvpH6p0rgF5p2R6RgG+uYEpsjYznk8= myssenberg@Mys-MacBook-Air.local"
-    // });
+    SshKey millePcSSHKey = new("Mille-pc-ssh-key", new SshKeyArgs
+    {
+        Name = "Mille-pc-ssh-key",
+        PublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZanDonPqwSD+2LkwBtk9GsZhO+nr96Yai9WEqAyQFA pinkvinus@NonScuffedComputerNix"
+    });
+    SshKey mySSHKey = new("My-ssh-key", new SshKeyArgs
+    {
+        Name = "My-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKtSKzMmwH4wslwad2t9VAfGS8A6CKkiejZNXMGbYavZtzSSX3ZVoqFSaKW+DLWsUi8dnF1en9+c6tkiafQ0frreVKddXWU21Q6vT1oSii5+RLDzb9iIVBnajeRO/89taFJQs3jlJr703zJKz+EnY+orK2VC9JNX9r+j1U5ugvyL1LiogaWaCl+r9cM/tfN7M1j+2TOitZPp7JH2SPJv8DqdjjWKprRYAQQ+n8RMqlFRqS6Lwc686mzR6DBQlqehZc1YsbihNlQkGj3VR5Kyw0YnEbdZvW17v78NMKM5Ilsylnt30VPDNPBcbhmQuNXOVUApM73EnLXsWjEiGgZ3xkq03zdH5I6R27X5CPLr6Pa+OyYCR0EhuelFkwK/1Sv50z6enH6sbxU1L35UG6RqsM33PB4j/D5ix5wLbmFrC1bqe4Xb8C79kBffS5FYL7tETtfX1J8DRo5uBotPmNxSuZxBKHG4d7W716gmvpH6p0rgF5p2R6RgG+uYEpsjYznk8= myssenberg@Mys-MacBook-Air.local"
+    });
+    SshKey amalieSSHKey = new("Amalie-ssh-key", new SshKeyArgs
+    {
+        Name = "Amalie-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQChoUE+dBnCduXOkv+xXPtr/TCB7b3Hrk2zvFmRDaR0px+WdRbWo/e+YoG1B3ShnGDeu7SoMjoyw3BPqFvlQVJ7XyZCUJKAsy3u5PkRardiSzwQ36nzcrWWvs794xl/Giv+52iX8DSug/qPNYSYkJ7d40hltq7qwDfFl6vuMNw0c3nqIQCsfIay59A/0UzwZiL1Zv8/BsIREQhE3h9+UtsGbuEEZ44zzq0G6/lX3RsdGsFxzzAjzuk6A4JKFGMF1AP1ZHZfM5KbmvxrRRUBVcGAjJLIL0RHXexiZL9IkhXYDD8pDw7Zj4tNoj5bly5OfAUjErWtcMh1GzqwPiuaFmYUaiIEbfw1fUGwqCoZpfYFJG70W4CkMN9+dkv//lLlYDwumiele3LhavDzo+65zQvzaovF5uA90Qqg4CJ00rUtIrTYpyBd7lpdSfNiU204vqwBGnfBcTQNvk5pTZpQvXhOricdKQ7xI4JL8rr9ETAU4/sDMP+FL9vkKh2quy/wuqwbjQINBlzyHkHpfRmLm/FkK73xFnMmZSghNlnHKLOInEfNg4du3rQdhp/9NBFYNK+IolzGA6WwaAupqvXLxnf9aiqpO5y0qlTTkUGcOkdPL1fuEwbgtVbLHyQEUUQ6/wg7WIE/qymnVRY96c8EcRgRxKFvA1SezqChWkMbl2uJIw== amaliebogild@MacBook-Pro-tilhrende-Amalie.local"
+    });
 
     return new()
     {
         andreasSSHKey.Id,
         ansibleSSHKey.Id,
         malinSSHKey.Id,
-        // sarahSSHKey.Id,
+        sarahSSHKey.Id,
         milleLaptopSSHKey.Id,
-        // millePcSSHKey.Id,
-        // mySSHKey.Id,
+        millePcSSHKey.Id,
+        mySSHKey.Id,
+        amalieSSHKey.Id
     };
 }

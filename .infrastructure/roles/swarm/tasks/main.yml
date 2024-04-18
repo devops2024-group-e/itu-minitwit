@@ -1,0 +1,41 @@
+---
+# tasks file for roles/swarm
+- name: check/init swarm
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: "{{ hostvars[groups['swmmanagers'][0]]['ansible_facts']['eth1']['ipv4']['address']}}:2377"
+  register: __output_swarm
+  when: inventory_hostname in groups['swmmanagers'][0]
+
+- name: install manager
+  community.docker.docker_swarm:
+    state: join
+    timeout: 60
+    advertise_addr: eth1:2377
+    join_token: "{{ hostvars[groups['swmmanagers'][0]]['__output_swarm']['swarm_facts']['JoinTokens']['Manager']}}"
+    remote_addrs: "{{ hostvars[groups['swmmanager'][0]]['ansible_facts']['eth1']['ipv4']['address']}}"
+  when: inventory_hostname in groups['swmmanagers'] and inventory_hostname not in groups['swmmanagers'][0]
+
+- name: install worker
+  community.docker.docker_swarm:
+    state: join
+    timeout: 60
+    advertise_addr: eth1:2377
+    join_token: "{{ hostvars[groups['swmmanagers'][0]]['__output_swarm']['swarm_facts']['JoinTokens']['Worker'] }}"
+    remote_addrs: "{{ hostvars[groups['swmmanagers'][0]]['ansible_facts']['eth1']['ipv4']['address'] }}"
+  when: inventory_hostname in groups['swmnodes']
+
+#########################################
+######## Install Docker Plugins #########
+#########################################
+
+- name: Install loki log driver plugin
+  community.docker.docker_plugin:
+    plugin_name: grafana/loki-docker-driver
+    alias: loki
+    state: present
+
+- name: Enable loki plugin
+  community.docker.docker_plugin:
+    plugin_name: loki
+    state: enable

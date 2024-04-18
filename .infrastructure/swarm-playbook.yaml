@@ -1,0 +1,22 @@
+---
+- name: Setup docker swarm servers
+  hosts: swmmanagers:swmnodes
+  become: yes
+  roles:
+   - apt
+   - role: home-dir
+     vars:
+       directory: /minitwit-swarm
+       sync_directory: ./swm-server/
+   - role: docker
+     vars:
+       docker_conf_dir: ./swm-server/
+   - swarm
+   - swarm-network
+
+  tasks:
+    - name: Run Docker Compose Up
+      ansible.builtin.shell: cd /minitwit-swarm && docker stack deploy --with-registry-auth -c docker-compose.yaml minitwit
+      args:
+        executable: /bin/bash
+      when: inventory_hostname in groups['swmmanagers'][0]

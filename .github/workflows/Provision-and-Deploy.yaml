@@ -67,8 +67,8 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
 
-  provision-web:
-    name: Provision and deploy web servers
+  provision-swarm:
+    name: Provision and deploy swarm servers
     needs: setup-infrastructure
     runs-on: ubuntu-latest
     steps:
@@ -108,11 +108,11 @@ jobs:
           dockeruser: ${{ secrets.DOCKER_USER }}
           dockerpassword: ${{ secrets.DOCKER_PWD }}
           inventoryfile: inventory.ansible
-          playbook: web-playbook.yaml
+          playbook: swarm-playbook.yaml
           working-directory: main/.infrastructure
 
-  provision-monitor:
-    name: Provision and deploy monitor server
+  provision-observability:
+    name: Provision and deploy observability servers
     needs: setup-infrastructure
     runs-on: ubuntu-latest
     steps:
@@ -143,7 +143,7 @@ jobs:
         env:
           INVENTORY: ${{ needs.setup-infrastructure.outputs.ansible-inventory }}
 
-      - name: Provision and deploy monitoring servers
+      - name: Provision and deploy web servers
         uses: ./action/.github/actions/ansible-run-playbook
         with:
           dotoken: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
@@ -152,5 +152,5 @@ jobs:
           dockeruser: ${{ secrets.DOCKER_USER }}
           dockerpassword: ${{ secrets.DOCKER_PWD }}
           inventoryfile: inventory.ansible
-          playbook: monitor-playbook.yaml
+          playbook: obs-playbook.yaml
           working-directory: main/.infrastructure

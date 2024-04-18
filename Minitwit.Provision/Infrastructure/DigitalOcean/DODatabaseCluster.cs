@@ -80,8 +80,8 @@ internal record DODatabaseCluster : IDatabaseCluster
     private static string GetComputeSize(ComputeSizes size) => size switch
     {
         Small => "db-s-1vcpu-1gb",
-        Medium => "db-s-2vcpu-4gb",
-        Large => "db-s-4vcpu-8gb",
+        Medium => "db-s-1vcpu-2gb",
+        Large => "db-s-2vcpu-4gb",
         _ => throw new NotSupportedException($"The size {size} is not supported for Database Nodes in DigitalOcean Databases")
     };
 
