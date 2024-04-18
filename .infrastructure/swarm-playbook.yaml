@@ -16,7 +16,7 @@
 
   tasks:
     - name: Run Docker Compose Up
-      ansible.builtin.shell: cd /minitwit-obs && docker stack deploy --resolve-image --with-registry-auth -c docker-compose.yaml minitwit
+      ansible.builtin.shell: cd /minitwit-swarm && docker stack deploy --resolve-image --with-registry-auth -c docker-compose.yaml minitwit
       args:
         executable: /bin/bash
       when: inventory_hostname in groups['swmmanagers'][0]
