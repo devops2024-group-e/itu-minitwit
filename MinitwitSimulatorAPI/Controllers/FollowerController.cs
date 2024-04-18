@@ -80,7 +80,7 @@ public class FollowerController : Controller
         var otherUser = await this.GetUserAsync(otherUsername);
         if (otherUser is null)
         {
-            _logger.LogWarning($"FollowUnfollowUser returns NotFound because other user {otherUsername} does not exist");
+            _logger.LogWarning("FollowUnfollowUser returns NotFound because other username does not exist");
             return NotFound();
         }
         var otherUserId = otherUser.UserId;
