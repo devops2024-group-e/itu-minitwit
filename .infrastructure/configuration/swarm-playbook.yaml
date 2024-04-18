@@ -7,10 +7,10 @@
    - role: home-dir
      vars:
        directory: /minitwit-swarm
-       sync_directory: ./swm-server/
+       sync_directory: ../servers/swm-server/
    - role: docker
      vars:
-       docker_conf_dir: ./swm-server/
+       docker_conf_dir: ../servers/swm-server/
    - swarm
    - swarm-network
 
