@@ -3,10 +3,58 @@ name: provision-and-deployment
 run-name: Provision infrastructure and deploy application
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     manual: true
 
 jobs:
+  build-and-push-docker-image:
+    name: Build and push docker images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push database minitwit
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: USER_PWD=${{ secrets.USER_PWD }}
+          file: ./Dockerfile.database
+          push: true
+          tags: ghcr.io/devops2024-group-e/database.minitwit:latest
+
+      - name: Build and push frontend minitwit
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
+          file: ./Dockerfile.frontend
+          push: true
+          tags: ghcr.io/devops2024-group-e/frontend.minitwit:latest
+
+      - name: Build and push backend minitwit
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
+          file: ./Dockerfile.backend
+          push: true
+          tags: ghcr.io/devops2024-group-e/backend.minitwit:latest
+
   setup-infrastructure:
     name: Setup Infrastructure
     runs-on: ubuntu-latest
@@ -69,7 +117,7 @@ jobs:
 
   provision-swarm:
     name: Provision and deploy swarm servers
-    needs: setup-infrastructure
+    needs: [setup-infrastructure, build-and-push-docker-image]
     runs-on: ubuntu-latest
     steps:
       - name: Login to GitHub Container Registry
@@ -113,7 +161,7 @@ jobs:
 
   provision-observability:
     name: Provision and deploy observability servers
-    needs: setup-infrastructure
+    needs: [setup-infrastructure, build-and-push-docker-image]
     runs-on: ubuntu-latest
     steps:
       - name: Login to GitHub Container Registry
