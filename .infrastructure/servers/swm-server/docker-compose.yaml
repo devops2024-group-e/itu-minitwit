@@ -9,7 +9,6 @@ services:
 
   minitwit-frontend:
     image: ghcr.io/devops2024-group-e/frontend.minitwit:latest
-    container_name: frontend
     deploy:
       replicas: 1
       update_config:
@@ -30,7 +29,6 @@ services:
 
   minitwit-backend:
     image: ghcr.io/devops2024-group-e/backend.minitwit:latest
-    container_name: backend
     deploy:
       replicas: 2
       update_config:
@@ -49,7 +47,6 @@ services:
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
     deploy:
       replicas: 1
       update_config:
