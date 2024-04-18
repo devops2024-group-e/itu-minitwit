@@ -15,7 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minitwit.Infrastructure.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minitwit.Simulator.Api.Tests", "Minitwit.Simulator.Api.Tests\Minitwit.Simulator.Api.Tests.csproj", "{11330B3F-0314-4DAC-8281-739EF620AF07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minitwit.Provision", "Minitwit.Provision\Minitwit.Provision.csproj", "{EA52DB3D-ED07-4014-AFF6-00DA081416A7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".infrastructure", ".infrastructure", "{C67F91DA-0AC9-4C8A-8BC5-75F7C977C309}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minitwit.Provision", ".infrastructure\Minitwit.Provision\Minitwit.Provision.csproj", "{00CF858C-8B47-4C4B-A336-D82D71F3A055}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,9 +52,12 @@ Global
 		{11330B3F-0314-4DAC-8281-739EF620AF07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11330B3F-0314-4DAC-8281-739EF620AF07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11330B3F-0314-4DAC-8281-739EF620AF07}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA52DB3D-ED07-4014-AFF6-00DA081416A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA52DB3D-ED07-4014-AFF6-00DA081416A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA52DB3D-ED07-4014-AFF6-00DA081416A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA52DB3D-ED07-4014-AFF6-00DA081416A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00CF858C-8B47-4C4B-A336-D82D71F3A055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00CF858C-8B47-4C4B-A336-D82D71F3A055}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00CF858C-8B47-4C4B-A336-D82D71F3A055}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00CF858C-8B47-4C4B-A336-D82D71F3A055}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{00CF858C-8B47-4C4B-A336-D82D71F3A055} = {C67F91DA-0AC9-4C8A-8BC5-75F7C977C309}
 	EndGlobalSection
 EndGlobal
