@@ -1,4 +1,5 @@
-- name: install docker
+---
+- name: Setup docker swarm servers
   hosts: swmmanagers:swmnodes
   become: yes
   roles:
@@ -12,3 +13,10 @@
        docker_conf_dir: ./swm-server/
    - swarm
    - swarm-network
+
+  tasks:
+    - name: Run Docker Compose Up
+      ansible.builtin.shell: cd /minitwit-obs && docker stack deploy --resolve-image --with-registry-auth -c docker-compose.yaml minitwit
+      args:
+        executable: /bin/bash
+      when: inventory_hostname in groups['swmmanagers'] and inventory_hostname not in groups['swmmanagers'][0]
