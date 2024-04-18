@@ -8,7 +8,7 @@ public static class PasswordHash
     public static string Hash(string value)
     {
         var salt = RandomNumberGenerator.GetBytes(16);
-        return GeneratePasswordHash(value, salt, "SHA512"); // TODO: Change back to 512
+        return GeneratePasswordHash(value, salt, "SHA512");
     }
 
     private static string GeneratePasswordHash(string password, byte[] salt, string algorithm)
