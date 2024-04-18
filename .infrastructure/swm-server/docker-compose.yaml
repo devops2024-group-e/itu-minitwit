@@ -53,7 +53,7 @@ services:
     image: prom/prometheus
     container_name: prometheus
     deploy:
-      mode: global
+      replicas: 1
       update_config:
         delay: 10s
         order: stop-first
