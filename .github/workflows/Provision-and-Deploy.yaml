@@ -57,7 +57,7 @@ jobs:
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
-            Minitwit.Provision/
+            .infrastructure/Minitwit.Provision/
 
       - name: Set up Dotnet
         uses: actions/setup-dotnet@v3
@@ -68,7 +68,7 @@ jobs:
         uses: pulumi/actions@v5
 
       - name: Setup infrastructure
-        working-directory: Minitwit.Provision/
+        working-directory: .infrastructure/Minitwit.Provision/
         run: |
           pulumi stack select arnenator/Minitwit.Provision/prod
           pulumi up -y
@@ -78,7 +78,7 @@ jobs:
 
       - name: Generate Ansible Inventory output
         id: ansible-inventory
-        working-directory: Minitwit.Provision/
+        working-directory: .infrastructure/Minitwit.Provision/
         run: |
           pulumi stack select arnenator/Minitwit.Provision/prod
           # Get server categories
