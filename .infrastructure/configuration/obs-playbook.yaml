@@ -7,10 +7,10 @@
   - role: home-dir
     vars:
       directory: /minitwit-obs
-      sync_directory: ./obs-server/
+      sync_directory: ../servers/obs-server/
   - role: docker
     vars:
-      docker_conf_dir: ./obs-server/
+      docker_conf_dir: ../servers/obs-server/
   - observability-network
 
   tasks:

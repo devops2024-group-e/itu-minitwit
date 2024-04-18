@@ -9,7 +9,6 @@ services:
 
   minitwit-frontend:
     image: ghcr.io/devops2024-group-e/frontend.minitwit:latest
-    container_name: frontend
     deploy:
       replicas: 1
       update_config:
@@ -25,14 +24,11 @@ services:
       driver: loki
       options:
         loki-url: http://192.168.1.5:3100/loki/api/v1/push
-    environment:
-      - Minitwit_ConnectionStrings__MinitwitDatabase=Host=private-minitwit-test-db-01-4158eeb-do-user-15947112-0.c.db.ondigitalocean.com;Port=25060;Username=minitwit-sa;Password=***;Database=minitwit
     labels:
       - prometheus-job=minitwit-frontend
 
   minitwit-backend:
     image: ghcr.io/devops2024-group-e/backend.minitwit:latest
-    container_name: backend
     deploy:
       replicas: 2
       update_config:
@@ -51,7 +47,6 @@ services:
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
     deploy:
       replicas: 1
       update_config:
