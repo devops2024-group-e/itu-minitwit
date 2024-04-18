@@ -19,4 +19,4 @@
       ansible.builtin.shell: cd /minitwit-obs && docker stack deploy --resolve-image --with-registry-auth -c docker-compose.yaml minitwit
       args:
         executable: /bin/bash
-      when: inventory_hostname in groups['swmmanagers'] and inventory_hostname not in groups['swmmanagers'][0]
+      when: inventory_hostname in groups['swmmanagers'][0]
