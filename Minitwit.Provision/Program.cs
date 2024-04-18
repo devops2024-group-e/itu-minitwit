@@ -111,6 +111,11 @@ static InputList<string> CreateSSHKeys()
         Name = "My-ssh-key",
         PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKtSKzMmwH4wslwad2t9VAfGS8A6CKkiejZNXMGbYavZtzSSX3ZVoqFSaKW+DLWsUi8dnF1en9+c6tkiafQ0frreVKddXWU21Q6vT1oSii5+RLDzb9iIVBnajeRO/89taFJQs3jlJr703zJKz+EnY+orK2VC9JNX9r+j1U5ugvyL1LiogaWaCl+r9cM/tfN7M1j+2TOitZPp7JH2SPJv8DqdjjWKprRYAQQ+n8RMqlFRqS6Lwc686mzR6DBQlqehZc1YsbihNlQkGj3VR5Kyw0YnEbdZvW17v78NMKM5Ilsylnt30VPDNPBcbhmQuNXOVUApM73EnLXsWjEiGgZ3xkq03zdH5I6R27X5CPLr6Pa+OyYCR0EhuelFkwK/1Sv50z6enH6sbxU1L35UG6RqsM33PB4j/D5ix5wLbmFrC1bqe4Xb8C79kBffS5FYL7tETtfX1J8DRo5uBotPmNxSuZxBKHG4d7W716gmvpH6p0rgF5p2R6RgG+uYEpsjYznk8= myssenberg@Mys-MacBook-Air.local"
     });
+    SshKey amalieSSHKey = new("Amalie-ssh-key", new SshKeyArgs
+    {
+        Name = "Amalie-ssh-key",
+        PublicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQChoUE+dBnCduXOkv+xXPtr/TCB7b3Hrk2zvFmRDaR0px+WdRbWo/e+YoG1B3ShnGDeu7SoMjoyw3BPqFvlQVJ7XyZCUJKAsy3u5PkRardiSzwQ36nzcrWWvs794xl/Giv+52iX8DSug/qPNYSYkJ7d40hltq7qwDfFl6vuMNw0c3nqIQCsfIay59A/0UzwZiL1Zv8/BsIREQhE3h9+UtsGbuEEZ44zzq0G6/lX3RsdGsFxzzAjzuk6A4JKFGMF1AP1ZHZfM5KbmvxrRRUBVcGAjJLIL0RHXexiZL9IkhXYDD8pDw7Zj4tNoj5bly5OfAUjErWtcMh1GzqwPiuaFmYUaiIEbfw1fUGwqCoZpfYFJG70W4CkMN9+dkv//lLlYDwumiele3LhavDzo+65zQvzaovF5uA90Qqg4CJ00rUtIrTYpyBd7lpdSfNiU204vqwBGnfBcTQNvk5pTZpQvXhOricdKQ7xI4JL8rr9ETAU4/sDMP+FL9vkKh2quy/wuqwbjQINBlzyHkHpfRmLm/FkK73xFnMmZSghNlnHKLOInEfNg4du3rQdhp/9NBFYNK+IolzGA6WwaAupqvXLxnf9aiqpO5y0qlTTkUGcOkdPL1fuEwbgtVbLHyQEUUQ6/wg7WIE/qymnVRY96c8EcRgRxKFvA1SezqChWkMbl2uJIw== amaliebogild@MacBook-Pro-tilhrende-Amalie.local"
+    });
 
     return new()
     {
@@ -121,5 +126,6 @@ static InputList<string> CreateSSHKeys()
         milleLaptopSSHKey.Id,
         millePcSSHKey.Id,
         mySSHKey.Id,
+        amalieSSHKey.Id
     };
 }
