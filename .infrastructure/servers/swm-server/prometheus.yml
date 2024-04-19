@@ -11,7 +11,7 @@ scrape_configs:
     scrape_interval: 5s
 
     dockerswarm_sd_configs:
-      - host: http://192.168.1.3:2375
+      - host: unix:///var/run/docker.sock
         role: tasks
 
     relabel_configs:
@@ -34,7 +34,7 @@ scrape_configs:
     scrape_interval: 5s
 
     dockerswarm_sd_configs:
-      - host: http://192.168.1.3:2375
+      - host: unix:///var/run/docker.sock
         role: tasks
 
     relabel_configs:

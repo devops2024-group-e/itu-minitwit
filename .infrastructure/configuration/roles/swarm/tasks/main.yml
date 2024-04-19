@@ -39,3 +39,8 @@
   community.docker.docker_plugin:
     plugin_name: loki
     state: enable
+
+- name: Allow access to docker.sock
+  ansible.builtin.shell: chmod 666 /var/run/docker.sock
+  args:
+    executable: /bin/bash
