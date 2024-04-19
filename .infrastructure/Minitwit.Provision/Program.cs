@@ -46,6 +46,7 @@ return await Deployment.RunAsync(() =>
                                                                                 minitwitVPC.Id,
                                                                                 nodecount: 1);
     minitwitDbCluster.CreateDatabase("minitwit");
+    minitwitDbCluster.CreateDatabase("minitwit_session");
 
 
 
