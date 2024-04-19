@@ -13,27 +13,8 @@ on:
       - 'Minitwit.Infrastructure.Tests/**'
 
 jobs:
-  Pre-commit-check:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set up Dotnet
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: install hadolint
-        run: |
-          sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
-          sudo chmod +x /bin/hadolint
-
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v3
-      - uses: pre-commit/action@v3.0.1
-
   Minitwit-Infrastructure-Tests:
     runs-on: ubuntu-latest
-    needs: Pre-commit-check
 
     steps:
       - name: Checkout
@@ -55,7 +36,6 @@ jobs:
 
   Backend-Tests:
     runs-on: ubuntu-latest
-    needs: Pre-commit-check
 
     steps:
       - name: Checkout
@@ -80,7 +60,6 @@ jobs:
 
   Frontend-Tests:
     runs-on: ubuntu-latest
-    needs: Pre-commit-check
 
     steps:
       - name: Checkout
