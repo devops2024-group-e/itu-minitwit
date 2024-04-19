@@ -52,12 +52,10 @@ public class FollowerController : Controller
     /// <returns>Either Http code 404 (NotFound) or Http code 204 (Nocontent)</returns>
     ///
     [HttpPost("{username}")]
-    public async Task<IActionResult> FollowUnfollowUser([FromQuery] int latest, string username)
+    public async Task<IActionResult> FollowUnfollowUser([FromQuery] int latest, string username, [FromBody] Dictionary<string, string> dicti)
     {
-
         await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"FollowUnfollowUser added latest: {latest}");
-
         var user = await this.GetUserAsync(username);
         if (user is null)
         {
@@ -72,37 +70,30 @@ public class FollowerController : Controller
             return Forbid();
         }
 
-        string otherUsername = "";
-        string action = "follow";
-        using (StreamReader reader = new StreamReader(HttpContext.Request.Body))
+        if (dicti.Count > 1)
         {
-            string jsonstring = await reader.ReadToEndAsync();
-            string command = jsonstring.Split(':')[0];
-            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonstring);
-            if (command.Contains("unfollow"))
-            {
-                action = "unfollow";
-            }
-            otherUsername = dict[action];
+            _logger.LogWarning("The dictionary contains more than one request");
+            return BadRequest();
         }
-        var otherUser = await this.GetUserAsync(otherUsername);
 
+        string otherUsername = dicti.First().Value;
+        var otherUser = await this.GetUserAsync(otherUsername);
         if (otherUser is null)
         {
-            _logger.LogWarning($"FollowUnfollowUser returns NotFound because other user {otherUsername} does not exist");
+            _logger.LogWarning("FollowUnfollowUser returns NotFound because other username does not exist");
             return NotFound();
         }
-
         var otherUserId = otherUser.UserId;
-        if (action == "unfollow")
-        {
-            await _followerRepository.RemoveFollowerAsync(ownUserId, otherUserId);
-            _logger.LogInformation($"FollowUnfollowUser user {ownUserId} unfollows {otherUserId}");
-        }
-        else
+
+        if (dicti.ContainsKey("follow"))
         {
             await _followerRepository.AddFollowerAsync(ownUserId, otherUserId);
             _logger.LogInformation($"FollowUnfollowUser user {ownUserId} follows {otherUserId}");
+        }
+        else if (dicti.ContainsKey("unfollow"))
+        {
+            await _followerRepository.RemoveFollowerAsync(ownUserId, otherUserId);
+            _logger.LogInformation($"FollowUnfollowUser user {ownUserId} unfollows {otherUserId}");
         }
 
         _logger.LogWarning($"FollowUnfollowUser returns NoContent");
