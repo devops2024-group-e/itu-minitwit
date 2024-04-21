@@ -27,13 +27,6 @@
     interface: eth1
     port: '9323'
 
-- name: Allow service discovery
-  community.general.ufw:
-    rule: allow
-    direction: in
-    interface: eth1
-    port: '2375'
-
 - name: Allow calling prometheus
   community.general.ufw:
     rule: allow
