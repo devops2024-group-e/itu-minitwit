@@ -1,12 +1,9 @@
 using Minitwit;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Minitwit.Infrastructure;
 using Minitwit.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Community.Microsoft.Extensions.Caching.PostgreSql;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,12 +30,7 @@ builder.Services.AddOpenTelemetry()
                      .AddPrometheusExporter());
 
 // Add session settings
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    options.InstanceName = "minitwit_";
-});
-
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(5);

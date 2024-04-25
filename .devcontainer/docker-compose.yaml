@@ -17,7 +17,6 @@ services:
       - main
     environment:
       - Minitwit_ConnectionStrings__MinitwitDatabase=Host=minitwit-dev-database;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit
-      - Minitwit_ConnectionStrings__Redis=minitwit-cache:6379
 
   minitwit-db:
     build:
@@ -28,11 +27,3 @@ services:
       - main
     ports:
       - '5432:5432'
-
-  cache:
-    image: redis:7.2.4
-    container_name: minitwit-cache
-    networks:
-      - main
-    ports:
-      - '6379:6379'
