@@ -32,7 +32,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          build-args: DB_CONN=${{ secrets.DB_CONNECTION }}
+          build-args: |
+            DB_CONN=${{ secrets.DB_CONNECTION }}
+            REDIS_CONN=${{ secrets.REDIS_CONNECTION }}
           file: ./Dockerfile.frontend
           push: true
           tags: ghcr.io/devops2024-group-e/frontend.minitwit:latest
