@@ -59,3 +59,10 @@ services:
       - '9090:9090'
     networks:
       - main
+
+  cache:
+    image: redis:7.2.4
+    networks:
+      - main
+    ports:
+      - '6379:6379'
