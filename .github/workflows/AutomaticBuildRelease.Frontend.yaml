@@ -25,10 +25,10 @@ jobs:
         with:
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
 
-      - name: Install .NET 7
+      - name: Install .NET 8
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7
+          dotnet-version: 8
 
       - name: Restore dependencies
         run: dotnet restore
