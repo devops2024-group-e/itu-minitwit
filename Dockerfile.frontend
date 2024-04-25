@@ -18,6 +18,6 @@ COPY --from=build /src/Minitwit/out .
 EXPOSE 80
 
 ENV Minitwit_ConnectionStrings__MinitwitDatabase=${DB_CONN}
-ENV Minitwit_ConnectionStrings__MinitwitDatabase=${REDIS_CONN}
+ENV Minitwit_ConnectionStrings__Redis=${REDIS_CONN}
 
 ENTRYPOINT [ "./Minitwit" ]
