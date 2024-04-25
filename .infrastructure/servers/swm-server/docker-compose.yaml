@@ -10,7 +10,7 @@ services:
   minitwit-frontend:
     image: ghcr.io/devops2024-group-e/frontend.minitwit:latest
     deploy:
-      replicas: 1
+      replicas: 2
       update_config:
         delay: 10s
         order: stop-first

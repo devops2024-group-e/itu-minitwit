@@ -23,3 +23,14 @@ create table latest (
   id serial primary key,
   command_id integer not null
 );
+
+-- The below schema is found by the following session library: https://github.com/leonibr/community-extensions-cache-postgres/blob/0d7237679d4d706cfcd097adcbed6075772ab557/Extensions.Caching.PostgreSql/SqlCommands.cs#L14-L26
+create table if not exists "session"
+(
+  "Id" text COLLATE pg_catalog."default" NOT NULL,
+  "Value" bytea,
+  "ExpiresAtTime" timestamp with time zone,
+  "SlidingExpirationInSeconds" double precision,
+  "AbsoluteExpiration" timestamp with time zone,
+  CONSTRAINT "DistCache_pkey" PRIMARY KEY ("Id")
+);
