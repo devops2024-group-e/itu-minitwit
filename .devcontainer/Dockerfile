@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/dotnet:7.0
+FROM mcr.microsoft.com/devcontainers/dotnet:8.0
 
 WORKDIR /setup
 
