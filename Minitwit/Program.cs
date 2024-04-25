@@ -33,14 +33,10 @@ builder.Services.AddOpenTelemetry()
                      .AddPrometheusExporter());
 
 // Add session settings
-builder.Services.AddDistributedPostgreSqlCache(setup =>
+builder.Services.AddStackExchangeRedisCache(options =>
 {
-    setup.ConnectionString = builder.Configuration.GetConnectionString("MinitwitDatabase");
-    setup.SchemaName = "public";
-    setup.TableName = "session";
-    setup.DisableRemoveExpired = false;
-    setup.CreateInfrastructure = false;
-    setup.ExpiredItemsDeletionInterval = TimeSpan.FromMinutes(15);
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "minitwit_";
 });
 
 builder.Services.AddSession(options =>
