@@ -34,6 +34,8 @@ public class LoginController : Controller
     [HttpPost()]
     public async Task<IActionResult> LoginNow(string username, string password)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         _logger.LogInformation("Login attempt for user {username}", username);
         if (HttpContext.Session.IsAuthenticated())
         {

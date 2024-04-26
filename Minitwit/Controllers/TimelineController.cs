@@ -25,6 +25,8 @@ public class TimelineController : Controller
     [Route("{username?}")]
     public async Task<IActionResult> Index(string username)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         bool is_loggedin = HttpContext.Session.IsAuthenticated();
 
         if (!string.IsNullOrEmpty(username))
@@ -65,6 +67,8 @@ public class TimelineController : Controller
     [Route("{username}/follow")]
     public async Task<IActionResult> FollowUser(string username)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"FollowUser returns Unauthorized because user {username} is not logged in");
@@ -90,6 +94,8 @@ public class TimelineController : Controller
     [Route("{username}/unfollow")]
     public async Task<IActionResult> UnfollowUser(string username)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         if (!HttpContext.Session.IsAuthenticated())
         {
             _logger.LogWarning($"UnfollowUser returns Unauthorized because user {username} is not logged in");
@@ -140,6 +146,8 @@ public class TimelineController : Controller
 
     private async Task<TimelineViewModel?> GetUserTimelineModelAsync(string username, bool is_loggedin)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         User? profileUser = await _userRepository.GetUserAsync(username);
         if (profileUser == null)
         {
