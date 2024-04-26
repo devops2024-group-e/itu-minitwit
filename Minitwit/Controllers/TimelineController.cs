@@ -25,12 +25,12 @@ public class TimelineController : Controller
     [Route("{username?}")]
     public async Task<IActionResult> Index(string username)
     {
-        username = username.Replace('\n', '_').Replace('\r', '_');
-
         bool is_loggedin = HttpContext.Session.IsAuthenticated();
 
         if (!string.IsNullOrEmpty(username))
         {
+            username = username.Replace('\n', '_').Replace('\r', '_');
+
             var model = await GetUserTimelineModelAsync(username, is_loggedin);
             if (model == null)
             {
