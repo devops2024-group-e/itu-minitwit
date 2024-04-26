@@ -10,7 +10,7 @@ services:
   minitwit-frontend:
     image: ghcr.io/devops2024-group-e/frontend.minitwit:latest
     deploy:
-      replicas: 2
+      replicas: 1
       update_config:
         delay: 10s
         order: stop-first
@@ -59,10 +59,3 @@ services:
       - '9090:9090'
     networks:
       - main
-
-  cache:
-    image: redis:7.2.4
-    networks:
-      - main
-    ports:
-      - '6379:6379'

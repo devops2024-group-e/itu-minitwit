@@ -79,9 +79,6 @@ jobs:
       - name: Set up database
         run: docker compose -f docker-compose.yaml up minitwit-db -d
 
-      - name: Set up redis cache
-        run: docker compose -f docker-compose.yaml up cache -d
-
       - name: Set up frontend
         run: dotnet run --project Minitwit/ &
 

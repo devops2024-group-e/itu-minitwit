@@ -39,12 +39,3 @@ services:
       - main
     ports:
       - '5432:5432'
-
-
-  cache:
-    image: redis:7.2.4
-    container_name: minitwit-cache
-    networks:
-      - main
-    ports:
-      - '6379:6379'
