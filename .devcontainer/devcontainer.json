@@ -1,5 +1,5 @@
 {
-    "name": "minitwit-dotnet7",
+    "name": "minitwit-dotnet8",
     "dockerComposeFile": [
         "./docker-compose.yaml"
     ],
