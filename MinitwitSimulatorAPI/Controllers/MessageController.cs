@@ -39,6 +39,8 @@ public class MessageController : Controller
     /// <returns>A <c>User</c> object of the user with the given username.</returns>
     private async Task<User?> GetUserAsync(string username)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         _logger.LogInformation($"GetUser return user with username {username}");
         return await _userRepository.GetUserAsync(username);
     }
@@ -51,6 +53,7 @@ public class MessageController : Controller
     [HttpPost("{username}")]
     public async Task<IActionResult> AddMessage([FromQuery] int latest, string username)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
 
         await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"AddMessage added latest: {latest}");
@@ -87,6 +90,8 @@ public class MessageController : Controller
     [HttpGet("{username}")]
     public async Task<ActionResult<IEnumerable<MessageDTO>>> GetMessages([FromQuery] int latest, string username, [FromQuery] int no = 100)
     {
+        username = username.Replace('\n', '_').Replace('\r', '_');
+
         await _latestRepository.AddLatestAsync(latest);
         _logger.LogDebug($"GetMessages added latest: {latest}");
 
