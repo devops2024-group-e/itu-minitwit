@@ -129,7 +129,7 @@ public class TimelineController : Controller
 
         var authorId = HttpContext.Session.GetUserId();
         await _messageRepository.AddMessageAsync(text, authorId);
-        _logger.LogInformation($"AddMessage added message for user with id {authorId} and text {text}");
+        _logger.LogInformation($"AddMessage added message for user with id {authorId}");
 
         TempData.QueueFlashMessage("Your message was recorded");
 
