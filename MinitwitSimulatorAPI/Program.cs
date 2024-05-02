@@ -32,6 +32,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddDistributedMemoryCache();
 
+
 // Add dependencies to dependency injection
 builder.Services.AddScoped<ILatestRepository, LatestRepository>();
 builder.Services.AddScoped<IFollowerRepository, FollowerRepository>();
