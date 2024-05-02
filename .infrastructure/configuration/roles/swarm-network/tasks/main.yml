@@ -34,7 +34,7 @@
     interface: eth1
     port: '9090'
 
-- name: Deny calling prometheus
+- name: Deny calling prometheus publicly
   community.general.ufw:
     rule: deny
     direction: in
