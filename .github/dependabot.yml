@@ -17,7 +17,7 @@ updates:
       directory: "/"
       schedule:
         interval: "daily"
-    
+
     # Maintain dependencies for devcontainer
     - package-ecosystem: "devcontainers"
       directory: "/"
