@@ -26,7 +26,7 @@ datasources:
     uid: log-loki
     typeLogoUrl: public/app/plugins/datasource/loki/img/loki_icon.svg
     access: proxy
-    url: http://64.226.117.89:3100
+    url: http://209.38.228.55:3100
     user: ''
     database: ''
     basicAuth: false
