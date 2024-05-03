@@ -8,7 +8,7 @@ datasources:
     typename: Prometheus
     typeLogoUrl: public/app/plugins/datasource/prometheus/img/prometheus_logo.svg
     access: proxy
-    url: http://10.114.0.3:8080/
+    url: http://192.168.1.3:9090/
     database: ''
     user: ''
     basicAuth: false
