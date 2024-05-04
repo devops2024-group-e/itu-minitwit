@@ -1,0 +1,8 @@
+!build
+build/*
+!build/*.pdf
+!**/*.tex
+!**/*.bib
+!**/*.pdf
+!**/*.jpeg
+**/*
