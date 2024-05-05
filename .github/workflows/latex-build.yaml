@@ -1,11 +1,13 @@
 name: Build latex report
 
 on:
+  workflow_dispatch:
+    manual: true
   push:
-      branches:
-        - main
-      paths:
-        report/**
+    branches:
+      - main
+    paths:
+      report/**
 
 jobs:
   build:
