@@ -1,6 +1,5 @@
 !build
 build/*
-!build/*.pdf
 **/*.aux
 **/*.bbl
 **/*.bcf
@@ -11,7 +10,7 @@ build/*
 **/*.mtc
 **/*.mtc0
 **/*.out
-**/*.pdf
+*.pdf
 **/*.ptc1
 **/*.ptc2
 **/*.xml
@@ -19,3 +18,4 @@ build/*
 **/*.maf
 **/*.synctex.gz
 **/*.toc
+!build/*.pdf
