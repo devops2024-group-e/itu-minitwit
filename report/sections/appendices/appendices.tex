@@ -1,0 +1,27 @@
+\bgroup
+\newpage
+\cfoot{\thepage}
+\setcounter{page}{1}
+\pagenumbering{roman}
+\topskip0pt
+\begin{center}
+    \begin{figure}[H]
+        \setbox0=\vbox{
+         \caption{} % ugly hack to make appendix link in the TOC link to this page
+        }
+        \addcontentsline{toc}{section}{Appendices} % Add the appendix text to the document TOC
+    \end{figure}
+    \part{Appendices} % Start the appendix part in TOC
+    \renewcommand\baselinestretch{1}
+    \setlength{\parskip}{0.1em}
+    \parttoc % Insert the appendix TOC
+\end{center}
+\begin{appendices}
+\newpage
+% \input{sections/appendices/software-license-scan}
+% \newpage
+% \input{sections/appendices/monitoring-samples}
+% \newpage
+% \input{sections/appendices/static-code-analysis-results}
+\end{appendices}
+\egroup

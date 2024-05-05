@@ -1,0 +1,76 @@
+\documentclass[11pt, a4paper]{article}
+
+\pdfminorversion=7
+
+\usepackage[utf8]{inputenc} % Input encoding (allows æ, ø, å  fx)
+\usepackage[T1]{fontenc} % Font encoding
+\usepackage[backend=biber]{biblatex} % source tool
+\usepackage[a4paper]{geometry} % Layout (margins, page size)
+\usepackage{inconsolata} % Monospace font
+\usepackage{charter} % Font family
+\usepackage{booktabs} % beautiful tables
+\usepackage{float} % force positioning of figures
+\usepackage[labelfont=bf, textfont=it]{caption} % control figure and table captions
+\usepackage{graphicx} % insert graphics
+\usepackage{fancyhdr} % page header (and footer)
+\usepackage[titletoc]{appendix} % ... appendix
+\usepackage{minitoc} % table of contents stuff
+\usepackage[hidelinks=true, hypertexnames=false]{hyperref} % references in text (and clickable links)
+\usepackage{wrapfig} % wrap figures
+
+\graphicspath{ {./images/} }
+\addbibresource{sources.bib}
+
+\newcommand{\tmp}[1]{{\color{red}#1}}
+\newcommand{\inlinecode}[1]{\texttt{#1}}
+\newcommand{\appendixref}[1]{\hyperref[#1]{Appendix~\ref{#1}}}
+
+\renewcommand{\baselinestretch}{1.2} % Line spacing
+\setlength{\parindent}{0em} % Paragraph indent
+\setlength{\parskip}{0.75em} % Paragraph vertical spacing
+\setlength\headheight{14pt}
+
+\setcounter{tocdepth}{3} % How deep the table of contents goes
+
+\renewcommand*{\nameyeardelim}{\addcomma\space}
+
+% Make the "Part I" text invisible
+\renewcommand \thepart{}
+\renewcommand \partname{}
+
+\begin{document}
+    \begin{titlepage}
+        \input{sections/front-page}
+    \end{titlepage}
+    \newgeometry{left=2.54cm, right=2.54cm, top=2.54cm, bottom=2.54cm}
+    \pagestyle{fancy}
+    \fancyhf{}
+    \rhead{Group E, KSDSESM1KU}
+    \chead{\today}
+    \lhead{IT University of Copenhagen}
+    \cfoot{\thepage\ of \pageref{page:lastpage}}
+
+    \doparttoc % Tell to minitoc to generate a toc for the parts
+    \noptcrule
+    \bgroup
+    \setcounter{parttocdepth}{5}
+    \renewcommand\baselinestretch{1}
+    \setlength{\parskip}{0.1em}
+    \faketableofcontents % Run a fake tableofcontents command for the partocs
+    \part{} % Start the document part
+    \parttoc % Insert the document TOC
+    \egroup
+    \newpage
+
+    \input{sections/system-perspective/system-perspective}
+    \input{sections/process-perspective/process-perspective}
+    \input{sections/lessons-learned-perspective/lessons-learned-perspective}
+
+    \nocite{*}
+    \setlength\bibitemsep{1.5\itemsep}
+    \printbibliography[heading=bibnumbered]
+    \phantomsection % a fake section that the lastpage can hook onto
+    \label{page:lastpage}
+
+    \input{sections/appendices/appendices}
+\end{document}
