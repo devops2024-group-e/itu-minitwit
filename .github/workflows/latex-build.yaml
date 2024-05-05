@@ -21,22 +21,20 @@ jobs:
         with:
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
 
-      - run:
-          name: Build latex document and commit
-          command: |
-            echo "Building report"
-            cd report
-            sh ./scripts/compile-latex-docker.sh main.tex
-            # Run it twice to ensure the correct aux files are used
-            sh ./scripts/compile-latex-docker.sh main.tex
+      - name: Build latex document and commit
+        run: |
+          echo "Building report"
+          cd report
+          sh ./scripts/compile-latex-docker.sh main.tex
+          # Run it twice to ensure the correct aux files are used
+          sh ./scripts/compile-latex-docker.sh main.tex
 
-            echo "Commit and push report"
-            git config credential.helper 'cache --timeout=120'
-            git config user.name "anti-itu"
-            git config user.email "anti@itu.dk"
-            git add -A
-            git commit -m "Build LaTeX [skip ci]"
-            git push
+          echo "Commit and push report"
+          git config user.name "anti-itu"
+          git config user.email "anti@itu.dk"
+          git add -A
+          git commit -m "Build LaTeX [skip ci]"
+          git push
 
       # - name: Changelog
       #   uses: scottbrenner/generate-changelog-action@master
