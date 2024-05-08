@@ -36,6 +36,19 @@ jobs:
           git commit -m "Build LaTeX [skip ci]"
           git push
 
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.1.0 # Optional fallback tag to use when no tag can be found
+          prefix: report-v
+
+      - name: 'Get next minor version'
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
       - name: Changelog
         uses: scottbrenner/generate-changelog-action@master
         id: Changelog
@@ -48,8 +61,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Report-v${{ steps.bump.outputs.newVersion }}
-          release_name: Report v${{ steps.bump.outputs.newVersion }}
+          tag_name: report-v${{ steps.semvers.outputs.minor }}
+          release_name: report v${{ steps.semvers.outputs.minor }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
