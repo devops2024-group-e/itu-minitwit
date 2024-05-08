@@ -1,3 +1,12 @@
 \section{Lessons Learned}
 
 \subsection{Lesson 2: Shift from Vagrant to Ansible-Pulumi}
+Another lesson we have learned during this project is the importance of choosing the right tools for a project.
+At the start of the project, we had chosen to provision our VMs with Vagrant, inspired by the exercises from the course.
+When realizing later in the project that we would have to switch Digital Ocean account at some point due to running out of credit, we had to streamline the setup of our VMs.
+The choice of Configuration Management tool fell upon Ansible, which was supposed to call the Vagrant files from a config server, provisioning the web and monitoring servers.
+However, when having more complicated automation and collaboration needs for our project, it turned out that Vagrant was not the right tool for the job.
+After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant saves local metadata to maintain some state, which was making the provisioning from Ansible and the config server fail\cite{issue178-vagrant-ansible}. Furthermore, Vagrant does not seem to be supported with GitHub Actions - possibly also due to how it handles state.
+We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code.
+The choice fell upon Pulumi in the end.
+It was a valuable lesson to see how it made a difference when we took the time to investigate different tools and their properties so we could make an informed decision based on the knowledge of our system's needs.
