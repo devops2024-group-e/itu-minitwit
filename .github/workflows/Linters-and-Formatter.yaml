@@ -18,7 +18,7 @@ jobs:
 
       - name: Restore Dotnet projects
         run: |
-          dotnet restore Minitwit.sln
+          dotnet restore ./Minitwit.sln
 
       - name: install hadolint
         run: |
