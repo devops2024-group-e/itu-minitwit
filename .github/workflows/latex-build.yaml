@@ -39,7 +39,7 @@ jobs:
       - name: Get Previous Tag
         id: previoustag
         run: |
-          echo 'tag=$(git tag -l --sort committerdate | grep "report-v*" | cut -f2 -d"v" | tail -n 1)' >> $GITHUB_OUTPUT
+          echo "tag=$(git tag -l --sort committerdate | grep 'report-v*' | cut -f2 -d'v' | tail -n 1)" >> $GITHUB_OUTPUT
 
       - name: 'Get next minor version'
         id: semvers
