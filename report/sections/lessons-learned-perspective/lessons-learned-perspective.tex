@@ -1,5 +1,18 @@
 \section{Lessons Learned}
 
+\subsection{Lesson 1: Getting Hacked}
+Just a couple of hours after attending the lecture on security, we got hacked, leading us to experience firsthand how important it is to incorporate security in a CI/CD pipeline.
+
+The first suspicion we got was when we discovered, through our monitoring, that the response time of our server was suddenly very slow. This led us to our Digital Ocean dashboard which showed that the server was using 100\% CPU power, which is highly unusual.
+
+From that point the group scoured the server for clues as to what was happening, finding countless calls to \texttt{masscan} essentially drowning our server, as well as mysterious installations and what looked like a call to a remote script via a cronjob.
+
+After a few failed attempts to evict the adversary it was decided to destroy the server, as we fortunately had already implemented our Infrastructure as Code, so provisioning and deploying a new server could be done in under half an hour.
+
+After some introspection into our system, we assume that the adversary had gotten access via some ports that we were unaware were exposed. The ports became exposed in an attempt to make the network function between servers in a docker swarm, which seems to override the firewall.
+
+Learning from this, we have worked to close exposed ports from Docker and finding alternative solutions to setting up the network. Another key takeaway is that because we had the necessary monitoring in place, to figure out that the server was being targeted, as well as having our Infrastructure as Code, we were able to detect and react to the attack fairly quickly, giving us only a few hours of downtime.
+
 \subsection{Lesson 2: Shift from Vagrant to Ansible-Pulumi}
 Another lesson we have learned during this project is the importance of choosing the right tools for a project.
 At the start of the project, we had chosen to provision our VMs with Vagrant, inspired by the exercises from the course.
@@ -10,3 +23,4 @@ After many hours of attempting to get Vagrant to work with Ansible, we found out
 We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code.
 The choice fell upon Pulumi in the end.
 It was a valuable lesson to see how it made a difference when we took the time to investigate different tools and their properties so we could make an informed decision based on the knowledge of our system's needs.
+
