@@ -1,0 +1,83 @@
+\section{Security Assessment}
+\subsection{Risk Identification}
+\subsubsection{Asset Identification}
+By browsing through our setup and documentation, we identified the following list of assets:
+\begin{itemize}
+    \item Web application
+    \item Public GitHub repository
+    \item Digital Ocean servers
+    \item Tools
+    \begin{itemize}
+        \item Ansible
+        \item Code Climate
+        \item Docker, Docker Compose \& Docker Swarm
+        \item GitHub Actions
+        \item Grafana
+        \item Linters
+        \item Loki
+        \item Pulumi
+        \item Sonar Cloud
+    \end{itemize}
+\end{itemize}
+\subsubsection{Threat Source Identification}
+To help us identify possible threats to the system, we have consulted the OWASP \textit{Top 10 Web Application Security Risks}\cite*{OWASP}, which describes the following threats:
+\begin{enumerate}
+    \item Broken Access Control
+    \item Cryptographic failures
+    \item Injection attacks
+    \item Insecure Design
+    \item Security misconfiguration
+    \item Vulnerable and outdated components
+    \item Identification and authentication failures
+    \item Software and Data integrity failures
+    \item Security Logging and Monitoring Failures
+    \item Server Side Request Forgery
+\end{enumerate}
+\subsubsection{Risk Scenario Construction}
+Based on the information gathered from the two previous steps, we have constructed the following risk scenarios and outlined which of the OWASP top 10 risks affecting the scenario:
+\begin{enumerate}
+    \item \textbf{\underline{URL Tampering}}
+
+    The attacker can construct URL in the \textbf{web application} with user ID such that they bypass login and are able to write message from another user’s account.
+
+    This would be an issue of \textit{Broken Access Control} and \textit{Server Side Request Forgery}.
+    \item \textbf{\underline{Log Injection}}
+
+    The attacker can fabricate log information via injection attack in the \textbf{web application} as a means to hide their activity and ill-intentioned actions.
+
+    This would be an issue of \textit{Security Logging and Monitoring Failures} and \textit{Injection attacks}.
+    \item \textbf{\underline{Password Brute Forcing}}
+
+    The attacker can brute force login credentials in the \textbf{web application} by taking advantage of no timeouts and weaker hash implementation.
+
+    This would be an issue of \textit{Cryptographic failures} and \textit{Identification and authentication failures}.
+    \item \textbf{\underline{Depricated Dependencies}}
+
+    The attacker can identify weak, outdated or depricated tools and dependencies in the system's CI/CD pipeline via \textbf{GitHub Actions}, which is publicly availble through the \textbf{GitHub repository}.
+
+    This would be an issue of \textit{Vulnerable and outdated components} and \textit{Software and Data integrity failures}.
+    \item \textbf{\underline{Open Ports}}
+
+    The attacker can scan the public IP addresses of the \textbf{Digital Ocean} servers to find unnecessarily or unexpectedly open ports with known vulnerabilities, which can be exploited in further attacks.
+
+    This would be an issue of \textit{Security misconfiguration}.
+    \item \textbf{\underline{SQL Injection}}
+
+    The attacker can target the login page of the \textbf{web application} with SQL-injection attacks to strike the database.
+
+    This would be an issue of \textit{Injection attacks}.
+    \item \textbf{\underline{Exposed secrets}}
+
+    The attacker can get access to the system or associated tools via secrets found written in the code in the public \textbf{GitHub repository}.
+
+    This would be an issue of \textit{Identification and authentication failures} and \textit{Security misconfiguration}.
+\end{enumerate}
+\subsection{Risk Analysis}
+\subsubsection{Likelihood Analysis}
+placeholder
+\subsubsection{Impact Analysis}
+placeholder
+\subsubsection{Risk Matrix}
+placeholder
+\subsubsection{Action Plan}
+placeholder

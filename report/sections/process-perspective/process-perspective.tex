@@ -14,7 +14,7 @@ Based on our security assessment, which can be found in appendix ?, we construct
 \end{figure}
 We decided to focus on the issues in the red zone, as they were the most pressing. Due to the group not having enough knowledge about how the simulator worked in regards to creating users in terms of passwords, we didn't move further with scenario 3, whereas the solution would have been to incorporate 2FA, password requirements and time-out limitation for an actual system in production.
 
-For scenario 3, we made sure to sanitize user inputs, as they beforehand were put directly into the log, which could be exploited to hide malicius activity. We thereby hardened the system against injection attacks.
+For scenario 3, we made sure to sanitize user inputs, as they beforehand were put directly into the log, which could be exploited to hide ill-intentioned actions. We thereby hardened the system against injection attacks.
 With scenario 4, we chose to integrate the tool \textit{dependabot} into our CI/CD pipeline to watch out for outdated dependencies. This helps us ensure that an adversary isn't able to take advantage of the team not being aware of vulnerabilities in variuos used tools.
 
 Scenario 5 was deemed the biggest risk, as this was most likely the reason for us being hacked, which we have written more about in our lesson about being hacked. We used the tool \textit{nmap} to check for open ports, where we tried to close the open port used for prometheus. It was unclear if we were successful as \textit{nmap} kept showing the port as open despite seeing the firewall configuration saying otherwise on the server itself.
