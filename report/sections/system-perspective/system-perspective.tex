@@ -1,1 +1,19 @@
 \section{System Perspective}
+\subsection{Current state}
+Table \ref{current-table} describes the status of the system after the simulator has been shut down.
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{ |c|c| }
+            \hline
+            Total requests & 34233 \\
+            Requests secured & 34233 \\
+            Total unhandled exceptions & 18 \\
+            P99 min response time & 94.2 ms \\
+            P99 max response time & 716 ms \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption{System metrics}
+    \label{current-table}
+\end{table}
+Furthermore, the static analysis tool Sonarcloud assesses that the quality of the overall code is good (see appendix \ref{appendix:sonarcloud}).
