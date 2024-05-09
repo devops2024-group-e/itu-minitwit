@@ -36,12 +36,10 @@ jobs:
           # git commit -m "Build LaTeX [skip ci]"
           # git push
 
-      - name: 'Get Previous tag'
+      - name: Get Previous Tag
         id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        with:
-          fallback: 0.1.0 # Optional fallback tag to use when no tag can be found
-          prefix: report-v
+        run: |
+          echo 'tag=$(git tag -l --sort committerdate | grep "report-v*" | cut -f2 -d"v" | tail -n 1)' >> $GITHUB_OUTPUT
 
       - name: 'Get next minor version'
         id: semvers
