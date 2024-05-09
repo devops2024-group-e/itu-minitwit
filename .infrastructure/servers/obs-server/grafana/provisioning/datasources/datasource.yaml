@@ -9,8 +9,8 @@ datasources:
     typeLogoUrl: public/app/plugins/datasource/prometheus/img/prometheus_logo.svg
     access: proxy
     url: http://192.168.1.3:9090/
-    database: ''
-    user: ''
+    database: ""
+    user: ""
     basicAuth: false
     jsonData:
       httpMethod: POST
@@ -26,9 +26,9 @@ datasources:
     uid: log-loki
     typeLogoUrl: public/app/plugins/datasource/loki/img/loki_icon.svg
     access: proxy
-    url: http://192.168.1.5:3100
-    user: ''
-    database: ''
+    url: http://loki:3100
+    user: ""
+    database: ""
     basicAuth: false
     isDefault: false
     readonly: false
