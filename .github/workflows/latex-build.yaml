@@ -47,16 +47,17 @@ jobs:
         with:
           version: ${{ steps.previoustag.outputs.tag }}
 
-      - name: Changelog
-        uses: scottbrenner/generate-changelog-action@master
-        id: Changelog
-        env:
-          REPO: ${{ github.repository }}
+      # - name: Changelog
+      #   uses: scottbrenner/generate-changelog-action@master
+      #   id: Changelog
+      #   env:
+      #     REPO: ${{ github.repository }}
 
       - name: Echo next version
         env:
           NEXTSEMVER: report-v${{ steps.semvers.outputs.minor }}
         run: |
+          echo $NEXTSEMVER
 
 
       # - name: Create Release
