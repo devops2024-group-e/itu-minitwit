@@ -16,9 +16,7 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore Dotnet projects
-        run: |
-          dotnet restore ./Minitwit.sln
+
 
       - name: install hadolint
         run: |
@@ -26,5 +24,10 @@ jobs:
           sudo chmod +x /bin/hadolint
 
       - uses: actions/checkout@v4
+
+      - name: Restore Dotnet projects
+        run: |
+          dotnet restore ./Minitwit.sln
+
       - uses: actions/setup-python@v5
       - uses: pre-commit/action@v3.0.1
