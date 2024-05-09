@@ -1,0 +1,214 @@
+\section{Decision Log}
+\subsection{Language: C\#}
+
+We decided to use C# for refactorization. We did this due to C# being object-oriented and a stable language. C# is used by many companies and is therefore known to many. Because C# is is used by many it also exists good documentation easily accessible.
+There exist both micro web-frameworks and more advanced front-end frameworks for C# in case we want to develop the application further.
+C# is also a part of the .NET platform, which allows for language interoperability and access to the Core framework used for web application.
+
+\subsection{Micro web-framework: Razor pages}
+
+Initially we decided to work with Scriban as the micro web framework, as opposed to e.g. razor pages, because the refactorization from the original version of minitwit seemed more direct in Scriban. This is due to the fact that Scriban works with .html templates, like we have in the original version, whereas razor pages integrates C# in html, which would lead to more “merging” of code.
+Scribans parser and render is also both faster and uses less memory than other templates.
+After trying to find information on Scriban, the group had trouble figuring out how to set it up properly. Comparing the amount of documentation for Scriban versus Razor pages, we then decided to switch the micro web-framework to Razor pages, as this would allow us to start working with the material faster.
+Razor pages also has simple context of structure and is flexible to fit with any application. Another reason for choosing Razor pages is that each page is self-contained, with the view and code organized together.  This makes Razor pages more organized and easier to work with. With the documentation, flexibility and the organization, Razor pages felt like a good choice for a micro web-framework.
+
+\subsection{Work log: Notion}
+
+To start of with, we decided to keep our work log/diary in Github, since this automatically provides us with useful information, e.g. dates and authors. Also the work log will follow the code completely, and we can see which code belongs with what log points. However, we realized after a few weeks that this didn’t work as intended. The reason was that the action of making a pull request and requesting a review after just a tiny addition to the log seemed too complicated.
+As a consequence we ended up keeping our log in Notion and then moving it to GitHub afterwards, which was just double the work and definitely not the intention from the start.
+Therefore, we decided to move the log to Notion, which also has the advantage that everyone can follow each others writing in real time and collaborate in writing simultaneously.
+
+\subsection{Database connection: Entity Framework}
+
+We have chosen entity framework for our database connection as it works well with .NET. Entity Framework has the possibility of generating a model from an already existing database. Furthermore, it lets us load data using C# classes and it supports LINQ. Also it works well with SQLite.
+
+\subsection{Server host: Digital Ocean}
+
+We have chosen Digital Ocean as our cloud hosting service, as it is a cheap cloud hosting service that allows for developers to have quite a lot of control over their server hosting. Furthermore, a lot of popular cloud hosting alternatives have a tendency to be more expensive (typically not by a lot) and with this increased expense they have a lot of options, which can also be configured. As some of the students in the group have limited experience working with cloud servers, we believed Digital Ocean would be a good choice, as it is free, and there are a lot of guides and good documentation.
+
+\subsection{CI/CD: GitHub actions}
+
+For CI/CD we chose GitHub actions. The reason is that we are already using the GitHub platform and that it is well documented. Furthermore, it is easy to configure secrets and refer to them from the .yaml file. Also, it collaborates nicely with Digital ocean which hosts our server.
+
+\subsection{Database: Sqlite ➡️ Postgres}
+
+We have chosen to use postgres when we had to start create our dockerfile. We looked for a microsoft or another official docker image from a good source(that is from a big known company, that we can trust). But we couldn’t find one. We saw that Helge used something he created himself. So we had to choose among some of the databases that has been containerized. So that was the first two requirements. The third requirement is that we need relational database. This remove well known document databases like MongoDB. At the end we had two good options. Microsoft SQL and Postgres.
+
+Feature wise they offer the same things. They are both good at handling concurrent requests and have transactions. They both offer the possibility to add indexes, and to have multiple servers act as a cluster in order to handle even more requests.
+
+We chose the solution that we have had experience with before. Both in our previous course *Introduction to Database Systems*, and in previous projects done at ITU. We have had SOOO many new technologies. So it felt almost relieving to not use a new one again.
+
+\subsection{Monitoring: Grafana}
+
+Looking for a tool to visualize the metrics of dotnet applications and maybe other tools in our tech stack as well required a versatile tool. That is, we needed to have a tool that we could search and visualize the current status of our application. Obviously a lot of tools can handle this. For that reason it is nice to see that `Open Telemetry` is announced and widely used. Both as a collector and as an exporter.
+
+So a hard requirement is that the monitoring system has to be able to integrate with Open Telemetry in order to make it easier to change monitoring system if required.
+
+Also we would prefer to have a open source, free of charge product that is being maintained.
+
+\subsection{Metrics collector: Prometheus}
+
+There has not been that much thought process about Prometheus. It is open source and can collaborate with the open telemetry exporter. Also it is able to connect to the docker metrics as well.
+
+\subsection{Database migration: Digital ocean}
+
+We have considered hosting a separate server on digital ocean, and using digital oceans own database service. We considered digital oceans options, due to the wide array of databases that they support. However, when researching about trouble shooting, and problems using this solution, we found very few answers from crowd sourced platforms such as stackoverflow, and a lot of guides from the digital ocean docs themselves.
+
+\subsection{Logging stack: Grafana + Loki + Promtail}
+
+We believe that the amount of applications used can get very bloated. Therefore, we have decided to use Grafana Loki, as we have already setup Grafana last week when implementing monitoring.
+
+\subsection{Configuration management: Ansible}
+
+We realise now that we need a tool that easily manages the desired state of our running VM’s. Especially now that we are going to create more and that we have to move our infrastructure before the 19th of April to another DigitalOcean account.
+
+For that reason we need a simple way to have a configuration of our VM’s defined that manages our provisioning. Our requirements are the following:
+
+- Simple setup
+- Should be pushable i.e. as soon as we have changed the configuration then it should push the desired state out to our servers
+- Keeps track of it already had been running a specific portion of the provisioning scripts
+- Does not require us to learn a new language
+
+We have been looking at different players in the market. Especially we have been looking at the CNCF and asking colleagues. Here are some of the products we looked at:
+
+- Ansible
+- Fabric - Not really a configuration management system but a “simple” push based script system
+- Chef
+
+\subsubsection{Fabric}
+
+Fabric seemed nice, however it lacked some of the basic things that we wanted to solve, which was the idempotence of the desired state of the VM. This we would have to script ourselves. Also we would have to add another language to our repo, that is python, which would require us to again setup our development container to have both dotnet and python. Our experience with that was that it was very hard to get right, and we finally have a setup now that works on all of our laptops. So we didn’t want to break that now.
+
+\subsubsection{Chef}
+
+Chef is a configuration management system, just like Ansible as well. It provides a hybrid solution of pull and push based. That is, we push the configuration management changes to a central server which and then the VMs will pull the changes from the server (probably after some interval).
+
+As can be seen this requires also that the VM’s has the Chef Client installed and configured to point at the Chef Server. This provides obviously the nice feature that chef server do not have to know which servers to configure. It is up to the Chef clients to know where to pull the configurations from.
+
+The downside of this setup is the complexity. Seems like a lot of things that needs to be taken care of. And the fact that we would have a load overhead by adding clients to our small web server VM’s would maybe
+
+In order to create a configuration we would have to create what they call cookbooks. This is written in Ruby as i can see. The nice thing about this is that there are testing frameworks implemented. This provides a nice way to be sure that the configuration should work can configure as we intend it. However, playing with Vagrant it has become obvious that our group does not have a lot of knowledge in Ruby and we would currently rather invest time in becoming better at the observability tools that we have rather than learning a new language.
+
+From a Security point of view it uses some of the protocols that we have already opened for. That is it uses standard HTTP protocol to communicate between the server and nodes, and authorizes through certificates.
+
+\subsubsection{Ansible}
+
+Some of the nice features with Ansible is that the setup seems very simple.
+
+- One server to distribute to a list of servers
+- No additional clients to install
+- No code for defining configurations, it uses a yaml to define the configuration of the VMs
+
+Obviously the downside is that there is a central server that needs to have a list of the created VM’s which then needs to be maintained. Furthermore, from a security perspective we would have to allow ssh and that the ansible server would have to store the private ssh key to access all of the servers. Also we have a hard time trying to understand how we are supposed to push this to the ansible server and then run it? Would that be another ssh session?
+
+Looking a bit further into it is seems like the way to automate the configurations of the server can be done with a proprietary product called Ansible Automation, which requires a license. But some has been able to create a custom github action that can push these changes to the servers. This requires that the ssh port is open to the public, which it already is.
+
+As with Chef, Ansible also has their own term for a configuration, i.e. a Playbook. The term is from American sports, where each task in the playbook is a play that constitutes the playbook. Each play in the playbook is idempotent. That is, it seems to provide simple idempotence, which is fine in most cases, but it some cases it may require some more advanced idempotence.
+
+\subsubsection{Why do we choose Ansible?}
+
+We chose ansible because the setup seems simple. It provides the features that we need i.e. a nice and easy setup that does not require a new client to be installed on our application servers. Configurations described in yaml and not in some other language as ruby and python.
+
+\subsection{Adding E2E and integration tests early}
+
+We had early on been handed some integrations test and E2E tests for namely the frontend and Simulator API. This was very nice when we had to develop our system to begin with. But we quickly realised that in order to be comfortable and to ensure that our future changes in the software did not break our interface with the simulator then we had to add them to our CI pipeline via github workflows.
+
+However, we again realised that having them in python would make it harder for us to extend our tests or create more tests as we progress further in our maintenance cycle that we needed to refactor it to C#.
+
+\subsection{Infrastructure as Code (IaC): Pulumi}
+
+We have lately been a bit frustrated at Vagrant. It seems like it lacks some collaborative features that makes it hard to work with. Also, trying to make it collaborate with a configuration management tool like Ansible proved to be very hard and very time consuming considering that it should “just be plug and play”. So we didn’t make that work either. So to eliminate a pain that we currently have, we are looking towards encoding our infrastructure as code now. What is our requirements?
+
+- Should be easy to work with
+    - That is, we would prefer to keep the configuration in **Yaml** or **C#** as we do not want to increase complexity of learning a new language again
+- Can use it in a **Github Actions Workflow** such that we can create changes in the minitwit repo, create a PR, and then push changes in production when everything is working
+- This is not a hard requirement, but it would be nice if we can use an **Open Source** tool.
+- A tool which can work for multiple Cloud Providers, such that we can change provider if we want to. But since we are at digitalocean(which we are pretty happy with so far) then we want them to support DigitalOcean.
+
+We looked at the following options:
+
+- Vagrant - Is it still a good option or not?
+- Terraform - (As stated in a later lecture is something that we are going to look at)
+- Pulumi - A tool we stumbled upon in a DigitalOcean video
+- OpenTofu
+- Write code ourselves with a custom client to DigitalOcean
+
+\subsubsection{Vagrant}
+
+Is a very nice tool for creating infrastructure quickly. What we have experienced so far is that it is hard to collaborate with. It saves metadata files on the local machine to sort of keep some state. It only pushes the creators ssh key to the server, and not the other ssh key, making us copy paste ssh keys to the server manually. Last but not least it is written in a language that none of us have experience with(Ruby).
+There is not any github action for using Vagrant, which we think has something to do with the way that it handles its state. Looking at Vagrants comparison between Vagrant and Terraform(which is also a tool made by hashicorp) the following is stated:
+
+> *Vagrant is a tool for managing development environments and Terraform is a tool for building infrastructure…. and more features provided by Vagrant to ease development environment usage… Vagrant is for development environments.
+-* https://developer.hashicorp.com/vagrant/intro/vs/terraform
+>
+
+By this description Hashicorp haven’t intended to build Vagrant for the scenario that we use it for today. That is, they do not and will not improve the tool in the direction that we intend it to be. Furthermore, it does not make sense for use to keep Vagrant to setup a local development environment because we already have docker and docker compose that takes perfectly care of that.
+
+\subsubsection{Terraform}
+
+As we can see in the above section, Terraform is a product that is used for the specific functionality that we want to. It can integrate with our github workflow. It does so with Terraform cloud to keep the state of the infrastructure. It can create infrastructure on multiple cloud vendors. It also has support for DigitalOcean.
+
+One of the downsides is that they introduce their own language HCL. This is something that we do not want to have. We want to limit the amount of languages that our repo contain to a minimum. Although we can see that they actually have what they call CDK (Cloud development kit) for Terraform. But we doubt that is their first priority to maintain. The nice thing about it is that it can add testing to Terraform.
+
+Also Terraform is not open source, which makes it hard to trust the tool. A quick search on the internet is that others have forked a former repo of Terraform and created a Terraform look a like(OpenTofu) which reveals that the community do not trust Hashicorps development of the tool now that they have transitioned from Open Source to a BSL (Business Source License).
+
+\subsubsection{Pulumi}
+
+Pulumi is similar to Terraform, in the way that it also provides a cloud solution to keep state of the infrastructure. It does not offer a new fancy language to write the infrastructure, but instead offers SDK’s in languages that we already know. Both Pulumi and Terraform follows what is called Desired State Infrastructure. That is they try to keep the infrastructure in the desired state that the code describes.
+
+It contains support for CI / CD tools. So we can integrate it into our existing workflows. In contrast to Terraform it is open source. It seems to be widely adopted and is known for being easy for developers to get started.
+
+\subsubsection{OpenTofu}
+
+OpenTofu is a forked version of Terraform. It keeps the structure in HCL. What makes this interesting is that the community has actively taken a decision to maintain this project in order for it not be a BSL tool, distancing them from Hashicorps decision with Terraform. This can be seen in the [OpenTofu Manifesto](https://opentofu.org/manifesto/). The nice thing about OpenTofu is that it has later been adopted in the Linux Foundation and for sure here to stay.
+
+As it is a copy of Terraform it has some of the same nice features and downsides. This can be seen by having their own custom language again to describe the infrastructure called OpenTofu Language. OpenTofu has not done the same thing as Terraform in terms of create CDK’s. That means the only option is the OpenTofu Language.
+
+The downside is that we are unsure whether there is support for digitalocean as a provider. There has to be, but it is not clear and we will need to spend time and look into it.
+
+\subsubsection{Write C\# code with DigitalOcean client}
+
+This option may not be the best option. Compared to the others we will have a hard coupling to DigitalOcean. This will make it hard for use to change provider in the future if it is required. This will also require us to keep an eye out for the changes to the general api and make adjustments to the custom client that we would have to make. We could also find a client that is made for us written in C#, but then we would have to find one that is being maintained.
+
+The realisation that we have here is that the maintenance of just written code for the infrastructure becomes a project in it self. We would have to manage a lot of other dependencies, which is taken care of from the other projects. Also we do not have any testing capabilities as the other tools have.
+
+Also we will not benefit from things that others may have created. A large community for an open source tool allows for sharing solutions and code for that specific tool. We do not really have that option here, as we are going to create a complete new tool with this option.
+
+\subsection{Scaling: Docker swarm}
+
+We need to add some sort of horizontal scaling to our system.
+
+**Our requirements**
+
+- Opensource
+- Works well with ansible/docker/pulumi.
+
+\subsubsection{Docker swarm}
+
+https://docs.ansible.com/ansible/latest/collections/community/docker/docker_swarm_module.html
+
+- Opensource
+- It is based on the Docker API, and therefore is **lightweight**, and **easy to use**.
+- Docker swarm allows for limited scaling, and isn’t recommended for big systems, so if minitwit ever became a bigger service, this could potentially become a problem.
+- It is easy to add new nodes to existing clusters as both manager and worker
+- Compared to other tools like kubernetes
+- Simple to install compared to Kubernetes
+- Same common language as we’re already using to navigate in the structure
+- Limited guides on interactions between docker swarm and ansible.
+
+\subsubsection{Building our own redundant load balancer:}
+
+- Time consuming to create
+- Less information on how to build it
+- Probably harder to add new nodes than for docker swarm
+
+\subsubsection{Kubernetes}
+
+- Takes more planning to implement than docker swarm
+- Has a quite steep learning curve
+- It can sustain and manage large architectures and complex workloads.
+- Has a GUI
+
+\subsection{Upgrade/Update Strategy: Rolling updates}
+
+Rolling updates is the default update strategy in Docker Swarm and therefore the one we have chosen so as to not make the implementation more complicated and “home-made” than it needs to be.
