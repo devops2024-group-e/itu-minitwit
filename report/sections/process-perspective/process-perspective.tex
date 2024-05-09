@@ -4,3 +4,11 @@ hallo \cite{devopshandbook}
 For monitoring we use Grafana. Our board shows requests duration, errors rate, top 10 unhandled exception endpoints and more (for visualization of the board, see appendix \ref{appendix:grafana}). We have used the board to get an overview of where to put our focus, ie. which endpoints to improve, which errors to fix, etc. Moreover, we have gained insights into the health of the system and gotten an impression of how the backend and frontend handle the requests.
 
 For logging, we use Grafana and Loki. It seemed obvious to continue our work with Grafana in order to keep the system setup as simple as possible. The logs are divided into Information, Warning, Debug and Error. All logging statements are placed in the controllers, such that we have information about the users' whereabouts in the system. For example, we log when a user logins whether successful or unsuccessful.
+
+\subsection{Scaling}
+For our project we decided on using horizontal scaling, we wanted something that was open source and could work well with what we already used in the system. We settled on Docker Swarm over building a custom load balancer or adopting Kubernetes, primarily due to its simplicity and compatibility.To implement Docker swarm we created a new server in our system and added a manager and a worker node to the swarm. 
+
+The implementation of Docker Swarm went smoothly. However, when attempting to scale by adding another frontend replica, we encountered challenges. In order for the two replicas to work together we needed to handle distributed sessions to remember who is logged in even though the frontend replica is switched. We tried adding a session table in the database and using the package PostgreSQL but it didn’t work. We also tried to set up a redis docker image to handle the distributed sessions but we encountered the same problems as before. At this point we decided to go back to using one frontend replica because we couldn’t put more time into this single problem. 
+
+For the update strategy we went with rolling updates. One of the advantages with this was that it’s the update strategy by default for Docker swarm and chose to not make the implementation more complicated than it needs to be. 
+

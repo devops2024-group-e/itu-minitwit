@@ -1,4 +1,13 @@
 \section{System Perspective}
+
+\subsection{Design and Architecture}
+The diagram provides an overview of our system infrastructure. It includes a single Virtual Private Network with an IP range spanning from 192.168.1.1 to 192.168.1.254. Within this network, we operate a database cluster consisting of a single node. This node is connected with two servers: "minitwit-obs-1," utilized for system monitoring via Grafana, Loki, Prometheus, among others, and our Docker Swarm cluster, featuring both a manager and a worker node.
+
+Both our monitoring and cluster servers are visibly exposed to the internet within the diagram. Additionally, the database server is accessible from the internet but has constraints to only talk to our servers and therefore not accept requests from any other host.
+
+
+
+
 \subsection{Current state}
 Table \ref{current-table} describes the status of the system after the simulator has been shut down.
 \begin{table}[H]
