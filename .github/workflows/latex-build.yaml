@@ -29,12 +29,12 @@ jobs:
           # Run it twice to ensure the correct aux files are used
           sh ./scripts/compile-latex-docker.sh main.tex
 
-          echo "Commit and push report"
-          git config user.name "anti-itu"
-          git config user.email "anti@itu.dk"
-          git add -A
-          git commit -m "Build LaTeX [skip ci]"
-          git push
+          # echo "Commit and push report"
+          # git config user.name "anti-itu"
+          # git config user.email "anti@itu.dk"
+          # git add -A
+          # git commit -m "Build LaTeX [skip ci]"
+          # git push
 
       - name: 'Get Previous tag'
         id: previoustag
