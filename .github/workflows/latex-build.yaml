@@ -21,38 +21,48 @@ jobs:
         with:
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
 
-      - run:
-          name: Build latex document and commit
-          command: |
-            echo "Building report"
-            cd report
-            sh ./scripts/compile-latex-docker.sh main.tex
-            # Run it twice to ensure the correct aux files are used
-            sh ./scripts/compile-latex-docker.sh main.tex
+      - name: Build latex document and commit
+        run: |
+          echo "Building report"
+          cd report
+          sh ./scripts/compile-latex-docker.sh main.tex
+          # Run it twice to ensure the correct aux files are used
+          sh ./scripts/compile-latex-docker.sh main.tex
 
-            echo "Commit and push report"
-            git config credential.helper 'cache --timeout=120'
-            git config user.name "anti-itu"
-            git config user.email "anti@itu.dk"
-            git add -A
-            git commit -m "Build LaTeX [skip ci]"
-            git push
+          echo "Commit and push report"
+          git config user.name "anti-itu"
+          git config user.email "anti@itu.dk"
+          git add -A
+          git commit -m "Build LaTeX [skip ci]"
+          git push
 
-      # - name: Changelog
-      #   uses: scottbrenner/generate-changelog-action@master
-      #   id: Changelog
-      #   env:
-      #     REPO: ${{ github.repository }}
+      - name: Get Previous Tag
+        id: previoustag
+        run: |
+          git fetch --tags origin
+          echo "tag=$(git tag -l --sort committerdate | grep 'report-v*' | cut -f2 -d'v' | tail -n 1)" >> $GITHUB_OUTPUT
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: Report-v${{ steps.bump.outputs.newVersion }}
-      #     release_name: Report v${{ steps.bump.outputs.newVersion }}
-      #     body: |
-      #       ${{ steps.Changelog.outputs.changelog }}
-      #     draft: false
-      #     prerelease: false
+      - name: 'Get next minor version'
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+        env:
+          REPO: ${{ github.repository }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: report-v${{ steps.semvers.outputs.minor }}
+          release_name: report v${{ steps.semvers.outputs.minor }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
