@@ -29,20 +29,17 @@ jobs:
           # Run it twice to ensure the correct aux files are used
           sh ./scripts/compile-latex-docker.sh main.tex
 
-          # echo "Commit and push report"
-          # git config user.name "anti-itu"
-          # git config user.email "anti@itu.dk"
-          # git add -A
-          # git commit -m "Build LaTeX [skip ci]"
-          # git push
+          echo "Commit and push report"
+          git config user.name "anti-itu"
+          git config user.email "anti@itu.dk"
+          git add -A
+          git commit -m "Build LaTeX [skip ci]"
+          git push
 
       - name: Get Previous Tag
         id: previoustag
         run: |
           git fetch --tags origin
-          echo "$(git tag -l --sort committerdate)"
-          echo "========"
-          echo "tag=$(git tag -l --sort committerdate | grep 'report-v*' | cut -f2 -d'v' | tail -n 1)"
           echo "tag=$(git tag -l --sort committerdate | grep 'report-v*' | cut -f2 -d'v' | tail -n 1)" >> $GITHUB_OUTPUT
 
       - name: 'Get next minor version'
@@ -51,28 +48,21 @@ jobs:
         with:
           version: ${{ steps.previoustag.outputs.tag }}
 
-      # - name: Changelog
-      #   uses: scottbrenner/generate-changelog-action@master
-      #   id: Changelog
-      #   env:
-      #     REPO: ${{ github.repository }}
-
-      - name: Echo next version
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
         env:
-          NEXTSEMVER: report-v${{ steps.semvers.outputs.minor }}
-        run: |
-          echo $NEXTSEMVER
+          REPO: ${{ github.repository }}
 
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: report-v${{ steps.semvers.outputs.minor }}
-      #     release_name: report v${{ steps.semvers.outputs.minor }}
-      #     body: |
-      #       ${{ steps.Changelog.outputs.changelog }}
-      #     draft: false
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: report-v${{ steps.semvers.outputs.minor }}
+          release_name: report v${{ steps.semvers.outputs.minor }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
