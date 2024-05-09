@@ -29,22 +29,12 @@ We chose the solution that we have had experience with before, that being postgr
 
 %Vi ville ikke selv manage en database i docker og derefter docker swarm(som helt sikkert ville introducere nye problemer). Derudover var det rart at separere vores applications server og database fra hindanden så der også er mere compute resourcer dedikeret til database
 
-
-
-
-
 \subsection{Monitoring: Grafana} %TODO
 Looking for a tool to visualize the metrics of dotnet applications and maybe other tools in our tech stack as well required a versatile tool. That is, we needed to have a tool that we could search and visualize the current status of our application. Obviously a lot of tools can handle this. For that reason it is nice to see that `Open Telemetry` is announced and widely used. Both as a collector and as an exporter. 
 
 So a hard requirement is that the monitoring system has to be able to integrate with Open Telemetry in order to make it easier to change monitoring system if required. 
 
 Also we would prefer to have a open source, free of charge product that is being maintained. 
-
-
-
-
-
-
 
 \subsection{Metrics collector: Prometheus}
 There has not been that much thought process about Prometheus. It is open source and can collaborate with the open telemetry exporter. It is also able to connect to the docker metrics as well. Furthermore, this tool was recommended by the lecturer of the course.
@@ -55,16 +45,6 @@ We have considered hosting a separate server on digital ocean, and using digital
 \subsection{Logging stack: Grafana + Loki + Promtail} % TODO
 
 We believe that the amount of applications used can get very bloated. Therefore, we have decided to use Grafana Loki, as we have already use grafana to monitor the system.
-
-
-
-
-
-
-
-
-
-
 
 \subsection{Configuration management: Ansible}
 We realise now that we need a tool that easily manages the desired state of our running VM’s. Especially now that we are going to create more and that we have to move our infrastructure before the 19th of April to another DigitalOcean account. For that reason we need a simple way to have a configuration of our VM’s defined that manages our provisioning. Our requirements are the following:
@@ -118,7 +98,6 @@ As with Chef, Ansible also has their own term for a configuration, i.e. a Playbo
 
 We chose ansible because the setup seems simple. It provides the features that we need i.e. a nice and easy setup that does not require a new client to be installed on our application servers. Configurations described in yaml and not in some other language as ruby and python. 
 
-
 \subsection{Adding E2E and integration tests early}
 
 We had early on been handed some integrations test and E2E tests for namely the frontend and Simulator API. This was very nice when we had to develop our system to begin with. But we quickly realised that in order to be comfortable and to ensure that our future changes in the software did not break our interface with the simulator then we had to add them to our CI pipeline via github workflows.
@@ -151,7 +130,6 @@ We looked at the following options:
 
 Is a very nice tool for creating infrastructure quickly. What we have experienced so far is that it is hard to collaborate with. It saves metadata files on the local machine to sort of keep some state. It only pushes the creators ssh key to the server, and not the other ssh key, making us copy paste ssh keys to the server manually. Last but not least it is written in a language that none of us have experience with(Ruby).
 There is not any github action for using Vagrant, which we think has something to do with the way that it handles its state. Looking at Vagrants comparison between Vagrant and Terraform(which is also a tool made by hashicorp) the following is stated: 
-
 
 %TODO
 > *Vagrant is a tool for managing development environments and Terraform is a tool for building infrastructure…. and more features provided by Vagrant to ease development environment usage… Vagrant is for development environments.
