@@ -14,8 +14,7 @@ The system includes a single Virtual Private Network with an IP 192.168.1.0/24. 
 Both our monitoring and cluster servers are visibly exposed to the internet. Additionally, the database server is accessible from the internet but has constraints to only talk to our servers and therefore not accept requests from any other host.
 
 \subsection{Interactions of Subsystems}
-Our system consists of three subsystems, namely SimulatorAPI, Minitwit, and Minitwit.Infrastructure. The SimulatorAPI and Minitwit subsystems, as can be seen in figure \ref{fig:subsystem-interaction}, are similar in structure, but differ since SimulatorAPI is a REST service and Minitwit is a website. Both controllers use the package in the subsystem Minitwit.Infrastructure to query for data using the Repository pattern.
-%cite
+Our system consists of two main subsystems, namely the REST SimulatorAPI and the webapplication Minitwit. As can be seen in figure \ref{fig:subsystem-interaction}, The SimulatorAPI and Minitwit subsystems are similar in structure. However when looking at the processes behind the structures in Figure \ref{fig:frontend-interaction} and \ref{fig:backend-interaction} it is apparant that these two differ a great deal.
 
 \begin{figure}[H]
     \begin{center}
@@ -25,7 +24,9 @@ Our system consists of three subsystems, namely SimulatorAPI, Minitwit, and Mini
     \label{fig:subsystem-interaction}
 \end{figure}
 
-As can be seen in figure \ref{fig:frontend-interaction} the controller for Minitwit handles a lot of logic in order to present the correct information to the user. However for SimulatorAPI, in figure \ref{fig:backend-interaction} there is little to non logic, and it only calls the repository to fetch the user messages.
+Because the two main subsystems are inherently different we wanted to implement a database abstraction layer such that we had a uniform way of querying the database. Therefore, both controllers use the Repository package from the subsystem Minitwit.Infrastructure to query the database using the Repository pattern.
+%cite
+Due to the different specifications for the Minitwit and SimulatorAPI, the controller for Minitwit is more complex. As can be seen in figure \ref{fig:frontend-interaction} the controller for Minitwit has to present information in a GUI, whereas the SimulatorAPI only calls the repository to fetch the user messages, as can be seen in figure \ref{fig:backend-interaction}.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Fronted-Sequence-Diagram.png}
@@ -40,9 +41,6 @@ As can be seen in figure \ref{fig:frontend-interaction} the controller for Minit
     \caption{SimulatorAPI: Sequence diagram of a user call to get messages}
     \label{fig:backend-interaction}
 \end{figure}
-\subsubsection{Minitwit.Infrastructure}
-In the previous section we saw that the controller logic is very different but needs to call the same queries.
-Minitwit.Infrastructure is implemented to share duplicate code between the SimulatorAPI and Minitwit. This can be seen with the interaction of the package Repositories which leverages the Repository Pattern to abstract the logic of handling database queries and make it testable.
 
 
 \subsection{Current state}
