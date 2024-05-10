@@ -14,7 +14,7 @@ The system includes a single Virtual Private Network with an IP 192.168.1.0/24. 
 Both our monitoring and cluster servers are visibly exposed to the internet. Additionally, the database server is accessible from the internet but has constraints to only talk to our servers and therefore not accept requests from any other host.
 
 \subsection{Interactions of Subsystems}
-Our system consists of three subsystems, namely SimulatorAPI, Minitwit, and Minitwit.Infrastructure. The SimulatorAPI and Minitwit subsystems, as can be seen in figure \ref{fig:subsystem-interaction}, are similar in structure, but differ since SimulatorAPI is a REST service and Minitwit is a website. Both controllers use the package in the subsystem Minitwit.Infrastructure to query for data using the Repository pattern.
+Our system consists of three subsystems, namely SimulatorAPI, Minitwit, and Minitwit.Infrastructure. The SimulatorAPI and Minitwit subsystems, as can be seen in figure \ref{fig:subsystem-interaction}, are similar in structure, but differ since SimulatorAPI is a REST service and Minitwit is a website. Both controllers use the package in the subsystem Minitwit.Infrastructure to query for data using the Repository pattern\cite{repo_pattern}.
 %cite
 
 \begin{figure}[H]
