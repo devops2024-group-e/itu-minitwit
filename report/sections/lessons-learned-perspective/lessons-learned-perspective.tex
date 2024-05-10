@@ -1,1 +1,34 @@
 \section{Lessons Learned}
+
+\subsection{Lesson 1: Getting Hacked}
+Just a couple of hours after attending the lecture on security, we got hacked, leading us to experience firsthand how important it is to incorporate security in a CI/CD pipeline.
+
+The first suspicion we got was when we discovered, through our monitoring, that the response time of our server was suddenly very slow. This led us to our Digital Ocean dashboard which showed that the server was using 100\% CPU power, which is highly unusual.
+
+From that point the group scoured the server for clues as to what was happening, finding countless calls to \texttt{masscan} essentially drowning our server, as well as mysterious installations and what looked like a call to a remote script via a cronjob.
+
+After a few failed attempts to evict the adversary it was decided to destroy the server, as we fortunately had already implemented our Infrastructure as Code, so provisioning and deploying a new server could be done in under half an hour.
+
+After some introspection into our system, we assume that the adversary had gotten access via some ports that we were unaware were exposed. The ports became exposed in an attempt to make the network function between servers in a docker swarm, which seems to override the firewall.
+
+Learning from this, we have worked to close exposed ports from Docker and finding alternative solutions to setting up the network. Another key takeaway is that because we had the necessary monitoring in place, to figure out that the server was being targeted, as well as having our Infrastructure as Code, we were able to detect and react to the attack fairly quickly, giving us only a few hours of downtime.
+
+\subsection{Lesson 2: Shift from Vagrant to Ansible-Pulumi}
+Another lesson we have learned during this project is the importance of choosing the right tools for a project.
+At the start of the project, we had chosen to provision our VMs with Vagrant, inspired by the exercises from the course.
+When realizing later in the project that we would have to switch Digital Ocean account at some point due to running out of credit, we had to streamline the setup of our VMs.
+The choice of Configuration Management tool fell upon Ansible, which was supposed to call the Vagrant files from a config server, provisioning the web and monitoring servers.
+However, when having more complicated automation and collaboration needs for our project, it turned out that Vagrant was not the right tool for the job.
+After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant saves local metadata to maintain some state, which was making the provisioning from Ansible and the config server fail\cite{issue178-vagrant-ansible}. Furthermore, Vagrant does not seem to be supported with GitHub Actions - possibly also due to how it handles state.
+We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code.
+The choice fell upon Pulumi in the end.
+It was a valuable lesson to see how it made a difference when we took the time to investigate different tools and their properties so we could make an informed decision based on the knowledge of our system's needs.
+
+\subsection{DevOps Style}
+When reflecting on how we as a group incorporated the style of devops into our way of working, we recalled the \textit{Three Ways}, which were the characterising principles for processes and behaviour in devops, that consisted of \textit{Flow}, \textit{Feedback} and \textit{Continual Learning and Experimentation}\cite{devopshandbook}.
+
+In regards to the principle of flow, it wasn't hard to adopt the ideas of making our work visible and reducing batch sizes, as all members of the group has previously worked agile in some way, which also embodies those same ideas. Using a kanban board to track our tasks and their progress not only helped us stay on target, but also helped us with confining each task such that it could be deployed continuously\cite{devopshandbook}.
+
+For the principle of feedback, the concept of peer reviewing via pull requests on GitHub was new to some, which helped install a sense of ownership over the application. Automating the process of not only testing, but also building and deploying the entire application in a continous fashion also allowed for errors to be found and handled with quickly compared to earlier projects we have worked on, where it was easy for the issues to pile up on each other.
+
+Lastly, with the principle of continual learning and experimentation, having a safe system of work\cite{devopshandbook} was crucial for us to learn and grow in a secure environment, which in turn allowed for greater experimentation in how to improve the system and its setup. By keeping logs and guides easily available, each member would have the same oppertunity to gain a deeper and better understanding of system as a whole.
