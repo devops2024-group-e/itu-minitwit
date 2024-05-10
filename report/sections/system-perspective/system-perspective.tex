@@ -1,41 +1,43 @@
-\section{System Perspective}
+\section{System's Perspective}
 
 \subsection{Design and Architecture}
-The diagram provides an overview of our system infrastructure:
+Figure \ref{fig:systemoverview} provides an overview of our system infrastructure:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{images/system-overview2.png}
-    \caption{System overview}
-    \label{fig:enter-label}
-\end{figure}
-It includes a single Virtual Private Network with an IP range spanning from 192.168.1.1 to 192.168.1.254. Within this network, we operate a database cluster consisting of a single node. This node is connected with two servers: "minitwit-obs-1," utilized for system monitoring via Grafana, Loki, Prometheus, among others, and our Docker Swarm cluster, featuring both a manager and a worker node.
+    \caption{Overview of the system}
+    \label{fig:systemoverview}
 
-Both our monitoring and cluster servers are visibly exposed to the internet within the diagram. Additionally, the database server is accessible from the internet but has constraints to only talk to our servers and therefore not accept requests from any other host.
+\end{figure}
+The system includes a single Virtual Private Network with an IP 192.168.1.0/24. Within this network, we operate a database cluster consisting of a single node. This node is connected to the Docker Swarm cluster, featuring both a manager and a worker node.
+
+Both our monitoring and cluster servers are visibly exposed to the internet. Additionally, the database server is accessible from the internet but has constraints to only talk to our servers and therefore not accept requests from any other host.
 
 \subsection{Interactions of Subsystems}
-Our system consist of three subsystems, namely SimulatorAPI, Minitwit, and Minitwit.Infrastructure. As can be seen in figure \ref{fig:subsystem-interaction} SimulatorAPI and Minitiwt are similar in structure, but differ in the way they present the output. Both controllers use the package in the subsystem Minitwit.Infrastructure query for data with the Repository Pattern.
+Our system consists of three subsystems, namely SimulatorAPI, Minitwit, and Minitwit.Infrastructure. The SimulatorAPI and Minitwit subsystems, as can be seen in figure \ref{fig:subsystem-interaction}, are similar in structure, but differ since SimulatorAPI is a REST service and Minitwit is a website. Both controllers use the package in the subsystem Minitwit.Infrastructure to query for data using the Repository pattern.
+%cite
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Subsystem-Interaction.png}
     \end{center}
-    \caption{An overview of subsystems and how they interact}
+    \caption{An overview of the subsystems and how they interact}
     \label{fig:subsystem-interaction}
 \end{figure}
 
-Although the two subsystems may look the same they handle request very differently. As can be seen in figure \ref{fig:frontend-interaction} the controller handles a lot of logic in order to present the correct information to the user. However, in figure \ref{fig:backend-interaction} there is little to non logic, and it only call the repository to fetch the user messages.
+As can be seen in figure \ref{fig:frontend-interaction} the controller for Minitwit handles a lot of logic in order to present the correct information to the user. However for SimulatorAPI, in figure \ref{fig:backend-interaction} there is little to non logic, and it only calls the repository to fetch the user messages.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Fronted-Sequence-Diagram.png}
     \end{center}
-    \caption{Sequence diagram of a user call the index page}
+    \caption{Minitwit: Sequence diagram of a user call to the index page}
     \label{fig:frontend-interaction}
 \end{figure}
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Backend-Sequence-Diagram.png}
     \end{center}
-    \caption{Sequence diagram of a user call the index page}
+    \caption{SimulatorAPI: Sequence diagram of a user call to get messages}
     \label{fig:backend-interaction}
 \end{figure}
 \subsubsection{Minitwit.Infrastructure}
