@@ -24,7 +24,7 @@ Our system consists of two main subsystems, namely the REST SimulatorAPI and the
     \label{fig:subsystem-interaction}
 \end{figure}
 
-Because the two main subsystems are inherently different we wanted to implement a database abstraction layer such that we had a uniform way of querying the database. Therefore, both controllers use the Repository package from the subsystem Minitwit.Infrastructure to query the database using the Repository pattern.
+Because the two main subsystems are inherently different we wanted to implement a database abstraction layer such that we had a uniform way of querying the database. Therefore, both controllers use the Repository package from the subsystem Minitwit.Infrastructure to query the database using the Repository pattern\cite{repo_pattern}.
 %cite
 Due to the different specifications for the Minitwit and SimulatorAPI, the controller for Minitwit is more complex. As can be seen in figure \ref{fig:frontend-interaction} the controller for Minitwit has to present information in a GUI, whereas the SimulatorAPI only calls the repository to fetch the user messages, as can be seen in figure \ref{fig:backend-interaction}.
 \begin{figure}[H]
