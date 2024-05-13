@@ -59,6 +59,17 @@ We have considered hosting a separate server on Digital Ocean, and using Digital
 
 We believe that the amount of applications used can get very bloated. Therefore, we have decided to use Grafana-Loki, as we have already setup Grafana last week when implementing monitoring.
 
+\subsection{Quality of code analysis: SonarCloud}
+
+SonarCloud is a cloud based code analysis service, which can be integrated into a GitHub repository, in order to analyse the code in said repository. We added this software as it was an exercise in the course.
+
+\subsection{Linters: Pre-commit + Hadolint + Dotnet-Format}
+Pre-Commit is a framework for managing pre-commit hooks. This can be used for automatically fixing code format and removing debug statements.We chose this tool as multiple actions can be integrated into one hook. As we were tasked with integrating 3 linters into the system.
+
+Hadolint is an open-source Dockerfile linter, that enforces best practices when building docker image. Due to the nature of the server setup, we have quite a few Dockerfiles. Therefore, we found it fitting to have a Dockerfile linter. From the alternative presented (\href{https://github.com/RedCoolBeans/dockerlint}{Dockerlinter}) Hadolint seems to be the more popular one as it is haskell based rather than node.js based.
+
+Dotnet-Format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can configured in an .editorconfig file.
+
 \subsection{Configuration management: Ansible}
 
 We realise now that we need a tool that easily manages the desired state of our running VMs. Especially now that we are going to create more VMs and that we have to move our infrastructure before the 19th of April to another Digital Ocean account.
