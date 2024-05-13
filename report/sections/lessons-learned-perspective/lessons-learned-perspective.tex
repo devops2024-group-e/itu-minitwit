@@ -20,7 +20,7 @@ We realized later that we would have to switch Digital Ocean account at some poi
 
 The choice of Configuration Management tool fell upon Ansible, which was supposed to be called by Vagrant in a config server, provisioning the web and monitoring servers.
 However, it turned out that Vagrant was not the right tool for the job when having more complicated automation and collaboration needs for our project.
-After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant saves local metadata to maintain some state, which was making the provisioning from Ansible and the config server fail\cite{issue178-vagrant-ansible}. Upon further research we also found out that the creators of Vagrant had created the tool for setting up development enviroments and not for maintaining production infrastructure. Furthermore, Vagrant does not seem to be supported with GitHub Actions, which is likely due to how it handles state.
+After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant saves local metadata to maintain some state, which was making the provisioning from Ansible and the config server fail\cite{issue178-vagrant-ansible}. Upon further research we also found out that the creators of Vagrant had created the tool for setting up development enviroments and not for maintaining production infrastructure\cite{vagrant_vs_terraform}. Furthermore, Vagrant does not seem to be supported with GitHub Actions, which is likely due to how it handles state.
 
 We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code,
 where the choice fell upon Pulumi.
