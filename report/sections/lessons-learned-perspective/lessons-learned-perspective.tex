@@ -22,9 +22,8 @@ The choice of Configuration Management tool fell upon Ansible, which was suppose
 However, it turned out that Vagrant was not the right tool for the job when having more complicated automation and collaboration needs for our project.
 After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant saves local metadata to maintain some state, which was making the provisioning from Ansible and the config server fail\cite{issue178-vagrant-ansible}. Upon further research we also found out that the creators of Vagrant had created the tool for setting up development enviroments and not for maintaining production infrastructure\cite{vagrant_vs_terraform}. Furthermore, Vagrant does not seem to be supported with GitHub Actions, which is likely due to how it handles state.
 
-We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code,
-where the choice fell upon Pulumi.
-This taught us the importance of thoroughly researching the available tools to navigate through their advantages and drawbacks. 
+We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code, where the choice fell upon Pulumi.
+This taught us the importance of thoroughly researching the available tools to navigate through their advantages and drawbacks.
 It was a valuable lesson to see the difference it made when taking the time to investigate different tools and their properties in order to make an informed decision based on the knowledge of our system's needs.
 
 \subsection{DevOps Style}
