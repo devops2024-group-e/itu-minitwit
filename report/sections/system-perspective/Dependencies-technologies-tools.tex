@@ -1,5 +1,33 @@
+\subsection{Dependencies, Technologies and tools}
+
 % All dependencies of your *ITU-MiniTwit* systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
+A comprehensive list of tools containing the full reasoning for their use, can be found in appendix \ref{TODO}
 
-
-
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|p{0.3\textwidth}|p{0.2\textwidth} | p{0.4\textwidth}|}
+        \hline
+        \textbf{Purpose} & \textbf{Technology/Tool} & \textbf{Description}\\
+        \hline
+         Work log & \href{https://www.notion.so/help/guides/category/documentation}{Notion} & Notion is a web hosted workspace, that allows users to collaboratively manage projects, notes, and other types of documents in a markdown format in real-time.\\
+         &&\\
+         && Initially, we opted to maintain our work log on Github wikis due to it's integration with the repository. However, this approach proved cumbersome as the process of making pull requests and seeking reviews for minor log updates became overly complex. Consequently, we transitioned to Notion.\\ 
+         \hline
+         Programming language & \href{https://learn.microsoft.com/en-us/dotnet/csharp/}{C\#} &
+         C\#  is an object-oriented programming language, that supports development for a variety of application types such as web-application.\\
+         && \\
+         && For refactorisation of the application we chose C\# , due to it's widespread use in the industry, making it very well documented. Furthermore, the familiarity of object-oriented programming paradigms among developers served as a supplementary factor in the decision\\
+         \hline
+         Micro Web-Framework & \href{https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio}{Razor Pages} & Razor pages is a simple web application programming model provided by ASP.NET. It uses C\# and simple markup syntax in order to build web pages, and is generally the recommended framework for page-focused, serverside web applications in .NET core.\\
+         && \\
+         && Initially, we attempted using Scriban, due to it's superior efficiency in terms of speed and memory usage, and it's compatibility with html templates. However, due to the lack of online resources, we switched to Razor Pages, which offered simpler configuration and an abundance of documentation, but required more code rebasing.\\
+         \hline
+         Database Connection & \href{https://learn.microsoft.com/en-us/ef/core/}{Entity Framework} & Entity Framework serves as a object-relational mapper, which allows developers to work with databases using .NET objects, and eliminates the need for data-access code, by using LINQ in order to interact with the data. Furthermore, EF Core supports a plethora of database engines, such as Postgres and SQLite.\\
+         &&\\
+         && We opted for Entity Framework due to the reasons stated above.\\
+         \hline
+    \end{tabular}
+    \caption{Caption}
+    \label{tab:tools1}
+\end{table}
