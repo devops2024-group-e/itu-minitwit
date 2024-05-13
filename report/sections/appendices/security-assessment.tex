@@ -136,7 +136,7 @@ Based on the points made about the likelihood and impact of each risk scenario, 
 \subsubsection{Action Plan}
 We discussed the results of the security assessment and decided on focusing on the risk scenarios placed in the red area of the risk matrix.
 
-For the open ports, we went through our firewall settings and scanned our main server's IP address to see the current open ports. We tried to close the port we had open for Prometheus, but got conflicting results, when we checked the firewall istelf compared to the scan of the IP address.
+For the open ports, we went through our firewall settings, which were handled by the Ansible ufw module. Here we scanned our main server's IP address with \textit{nmap} to see the current open ports. We tried to close the port we had open for Prometheus, but got conflicting results when we checked the firewall itself compared to the scan of the IP address. The cause of this is expected to be Docker bypassing the firewall through IP tables.
 
 For the log injection, we went through our code and ensured that all user data was sanitized before added to the log, such that it could not be tampered with.
 
