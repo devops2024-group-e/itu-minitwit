@@ -13,21 +13,17 @@ Steps taken:
     \item We copied the source code from the server
 \end{enumerate}
 
-% \begin{Shaded}
-%     \begin{Highlighting}[]
-%         \ExtensionTok{$}\NormalTok{ scp }\AttributeTok{{-}r}\NormalTok{ student@164.90.160.52:/home/student/itu{-}minitwit \textasciitilde{}/Desktop/}
-%     \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    scp -r student@164.90.160.52:/home/student/itu-minitwit ~/Desktop/
+\end{minted}
 
 \begin{enumerate}
     \item We also copied the database which was saved as a \texttt{*.db} file with
 \end{enumerate}
 
-% \begin{Shaded}
-%     \begin{Highlighting}[]
-%         \ExtensionTok{$}\NormalTok{ scp student@164.90.160.52:/tmp/minitwit.db \textasciitilde{}/Desktop/itu{-}minitwit}
-%     \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    $ scp student@164.90.160.52:/tmp/minitwit.db \textasciitilde{}/Desktop/itu{-}minitwit
+\end{minted}
 
 \begin{enumerate}
     \setcounter{enumi}{2}
@@ -35,11 +31,9 @@ Steps taken:
     \item We clone the minitwit repo
 \end{enumerate}
 
-% \begin{Shaded}
-%     \begin{Highlighting}[]
-%         \ExtensionTok{$}\NormalTok{ git clone https://github.com/devops2024{-}group{-}e/itu{-}minitwit.git}
-%     \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    $ git clone https://github.com/devops2024-group-e/itu-minitwit.git
+\end{minted}
 
 \begin{enumerate}
     \def\labelenumi{\arabic{enumi}.}
@@ -114,22 +108,19 @@ Steps taken:
     \item Added an in memory user (let us call it a dummy user) as we do not have the database connected for now and we just want to see if the UI logic actually works when a user tries to login
     \item Adding a session that should store the \texttt{userid} as it does in the python application. We do this by adding the following lines as settings in the \texttt{Program.cs}:
 
-    % \begin{Shaded}
-    %     \begin{Highlighting}[]
-    %     \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddDistributedMemoryCache}\OperatorTok{();}
+    \begin{minted}{csharp}
+        builder.Services.AddDistributedMemoryCache();
 
-    %     \NormalTok{    builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddSession}\OperatorTok{(}\NormalTok{options }\OperatorTok{=\textgreater{}}
-    %         \OperatorTok{\{}
-    %     \NormalTok{        options}\OperatorTok{.}\FunctionTok{IdleTimeout} \OperatorTok{=}\NormalTok{ TimeSpan}\OperatorTok{.}\FunctionTok{FromMinutes}\OperatorTok{(}\DecValTok{5}\OperatorTok{);}
-    %     \NormalTok{        options}\OperatorTok{.}\FunctionTok{Cookie}\OperatorTok{.}\FunctionTok{HttpOnly} \OperatorTok{=} \KeywordTok{true}\OperatorTok{;}
-    %     \NormalTok{        options}\OperatorTok{.}\FunctionTok{Cookie}\OperatorTok{.}\FunctionTok{IsEssential} \OperatorTok{=} \KeywordTok{true}\OperatorTok{;}
-    %         \OperatorTok{\});}
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(5);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
 
-    %         \OperatorTok{...}
 
-    %     \NormalTok{    app}\OperatorTok{.}\FunctionTok{UseSession}\OperatorTok{();}
-    %     \end{Highlighting}
-    % \end{Shaded}
+        app.UseSession();
+    \end{minted}
     \item Now we can get and set session data by using \texttt{this.HttpContext.Session.SetString()} and \texttt{this.HttpContext.Session.GetString()} in a \texttt{PageModel} class
     \item Add if statement that if the login is successful then it should store \texttt{userid} and redirect to \texttt{/Timeline} (Timeline should take care if it should show a public or user timeline)
 \end{enumerate}
@@ -191,13 +182,11 @@ endpoints}
 
 Since we tried to use the ``pure'' razor template we had some trouble trying to create the exact same endpoints that was present in the \texttt{{[}minitwit.py{]}(http://minitwit.py)} and \texttt{minitwit\_tests.py}. We tried to create our own custom routing via:
 
-% \begin{Shaded}
-%     \begin{Highlighting}[]
-%         \NormalTok{services}\OperatorTok{.}\FunctionTok{AddRazorPagesOptions}\OperatorTok{(}\NormalTok{options }\OperatorTok{=\textgreater{}} \OperatorTok{\{}
-%         \NormalTok{        options}\OperatorTok{.}\FunctionTok{Conventions}\OperatorTok{.}\FunctionTok{AddPageRoute}\OperatorTok{(}\StringTok{"\textless{}Ref to page\textgreater{}"}\OperatorTok{,} \StringTok{"new/route/to/page"}\OperatorTok{);}
-%         \OperatorTok{\});}
-%     \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{csharp}
+    services.AddRazorPagesOptions(options => {
+        options.Conventions.AddPageRoute("<Ref to page>", "new/route/to/page");
+    });
+\end{minted}
 
 However, the above solution to our endpoint path problems couldn't mitigate the issue. For that reason we looked at what we could do in order to solve our issue. And in the official documentation we found another way to create Razor pages with the MVC architecture. So we decided to pivot and create an MVC project. Luckily we could copy the contents of both \texttt{*.cshtml} pages and \texttt{*.cshtml.cs} files from one project to another.
 
@@ -226,8 +215,7 @@ Steps taken:
     \item We started making the vagrantfile more personalized to our program and included what we need. Like dotnet, sqlite etc.
 \end{enumerate}
 
-\subsubsection{Setting up a simulation
-API}
+\subsubsection{Setting up a simulation API}
 \label{log:setting-up-a-simulation-api}
 
 \begin{enumerate}
@@ -255,8 +243,7 @@ Possible issues if recreating:
     \item Note that when running the \texttt{scaffold-db.sh}, it may transform the model classes to use \texttt{byte{[}{]}} types instead of the original \texttt{string}.
 \end{enumerate}
 
-\subsubsection{Managing the database through the dotnet
-App}
+\subsubsection{Managing the database through the dotnet App}
 \label{log:managing-the-database-through-the-dotnet-app}
 
 In the process of refactoring from python to C\#, we still had some
@@ -281,27 +268,22 @@ We did the changes by in the following order:
     \item Then we changed the \texttt{Makefile} at init to use the \texttt{{[}control.sh{]}(http://control.sh)\ init}.
     \item Now that we can create the database with dotnet, we removed the \texttt{{[}minitwit.py{]}(http://minitwit.py)}
     \item After that we looked into how we can get the connectionstring from configuration. We found out that .NET Framework has created some different providers that we can use. Since there already was two settings files, namely \texttt{appsettings.json} and \texttt{appsettings.Development.json} we decided to use them, and incorporate the possibility to override them using the Environment Variables with a \texttt{Minitwit\_*} prefix. So we included this in the \texttt{program.cs}.
-
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \CommentTok{// Register source of configurations}
-    % \NormalTok{builder}\OperatorTok{.}\FunctionTok{Configuration}
-        % \OperatorTok{.}\FunctionTok{AddJsonFile}\OperatorTok{(}\StringTok{"appsettings.json"}\OperatorTok{,}\NormalTok{ optional}\OperatorTok{:} \KeywordTok{false}\OperatorTok{,}\NormalTok{ reloadOnChange}\OperatorTok{:} \KeywordTok{true}\OperatorTok{)}
-        % \OperatorTok{.}\FunctionTok{AddJsonFile}\OperatorTok{(}\NormalTok{$}\StringTok{"appsettings.\{builder.Environment.EnvironmentName\}.json"}\OperatorTok{,}\NormalTok{ optional}\OperatorTok{:} \KeywordTok{true}\OperatorTok{)}
-        % \OperatorTok{.}\FunctionTok{AddEnvironmentVariables}\OperatorTok{(}\NormalTok{prefix}\OperatorTok{:} \StringTok{"Minitwit\_"}\OperatorTok{);}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{csharp}
+        // Register source of configurations
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables(prefix: "Minitwit_");
+    \end{minted}
     \item Then we added the connection-string in the settings files.
     \item And included the connection-string at startup of Entity Framework in the application with
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddDbContext}\OperatorTok{\textless{}}\NormalTok{MinitwitContext}\OperatorTok{\textgreater{}(}\NormalTok{options }\OperatorTok{=\textgreater{}}
-    % \OperatorTok{\{}
-    % \NormalTok{    options}\OperatorTok{.}\FunctionTok{UseSqlite}\OperatorTok{(}\NormalTok{builder}\OperatorTok{.}\FunctionTok{Configuration}\OperatorTok{.}\FunctionTok{GetConnectionString}\OperatorTok{(}\StringTok{"MinitwitDatabase"}\OperatorTok{));}
-    % \OperatorTok{\});}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{csharp}
+        builder.Services.AddDbContext<MinitwitContext>(options =>
+        {
+            options.UseSqlite(builder.Configuration.GetConnectionString("MinitwitDatabase"));
+        });
+    \end{minted}
     \item Last but not least. To finish the changes with the database we changed the database schema to have a composite primary key. Usually this would be a good idea to do in a SQL Schema. But since the database is being initialized by EntityFramework, then this description was changed in the \texttt{MinitwitContext.cs} file. To be more specific we added a line with \texttt{HasKey(e\ =\textgreater{}\ new\ \{\ e.WhoId,\ e.WhomId\ \});} to the Follower entity.
     \item But this change has to be reflected on the \texttt{Follower.cs} model as well. So we had to remove the possibility that the \texttt{WhoId} and \texttt{WhomId} could be \texttt{null}
 \end{enumerate}
@@ -354,14 +336,12 @@ Steps taken:
     \item We wrote a guide on how to create and access the server using vagrant: \href{https://www.notion.so/Connecting-to-the-Digital-Ocean-server-using-vagrant-5b8564d3a0fd40bdbc2c326705f1f8dc?pvs=21}{Connecting to the Digital Ocean server using vagrant}
     \item Later this approach was changed by adding the following to the \texttt{.ssh/config} file.
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \ExtensionTok{host}\NormalTok{ devops}
-    %     \ExtensionTok{Hostname}\NormalTok{ 161.35.78.128}
-    %     \ExtensionTok{User}\NormalTok{ root}
-    %     \ExtensionTok{Identityfile}\NormalTok{ \textasciitilde{}/.ssh/do\_ssh\_key}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{bash}
+        host devops
+            Hostname 161.35.78.128
+            User root
+            Identityfile ~/.ssh/do_ssh_key
+    \end{minted}
     Which meant the server could be reached by simply typing \texttt{ssh\ devops}.
 \end{enumerate}
 
@@ -372,38 +352,30 @@ Steps taken:
     \item We created dockerfiles and docker hub repositories for the frontend, the backend, and the database.
     \item We built these images locally and then pushed them to pinkvinus repo on dockerhub.
     \item However, we realised that we didn't like to have the images publicly available to we created our docker images with \texttt{ghcr.io/devops2024-group-e/\textless{}image\ name\textgreater{}:\textless{}version\ tag\textgreater{}}. We need the first part of the docker image name tag because it references to the registry where it should push and later get the docker image from. So an example of a command in the shell we used is:
-
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}f}\NormalTok{ Dockerfile.backend . }\AttributeTok{{-}t}\NormalTok{ ghcr.io/devops2024{-}group{-}e/backend.minitwit:latest}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{bash}
+        docker build -f Dockerfile.backend . -t ghcr.io/devops2024-group-e/backend.minitwit:latest
+    \end{minted}
     \item The way we published the images to see if it worked was with the following commands in order:
+\begin{minted}{bash}
+    docker build -f Dockerfile.backend . -t ghcr.io/devops2024-group-e/backend.minitwit:latest
+    docker build -f Dockerfile.frontend . -t ghcr.io/devops2024-group-e/frontend.minitwit:latest
+    docker build -f Dockerfile.database . -t ghcr.io/devops2024-group-e/db.minitwit:latest
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}f}\NormalTok{ Dockerfile.backend . }\AttributeTok{{-}t}\NormalTok{ ghcr.io/devops2024{-}group{-}e/backend.minitwit:latest}
-    % \ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}f}\NormalTok{ Dockerfile.frontend . }\AttributeTok{{-}t}\NormalTok{ ghcr.io/devops2024{-}group{-}e/frontend.minitwit:latest}
-    % \ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}f}\NormalTok{ Dockerfile.database . }\AttributeTok{{-}t}\NormalTok{ ghcr.io/devops2024{-}group{-}e/db.minitwit:latest}
+    # Authenticate to the github private container registry
+    docker login ghcr.io -u <github username> -p <github token>
 
-    % \CommentTok{\# Authenticate to the github private container registry}
-    % \ExtensionTok{docker}\NormalTok{ login ghcr.io }\AttributeTok{{-}u} \OperatorTok{\textless{}}\NormalTok{github username}\OperatorTok{\textgreater{}}\NormalTok{ {-}p }\OperatorTok{\textless{}}\NormalTok{github token}\OperatorTok{\textgreater{}}
-
-    % \CommentTok{\# Push the build images to the container registry}
-    % \ExtensionTok{docker}\NormalTok{ push ghcr.io/devops2024{-}group{-}e/backend.minitwit:latest}
-    % \ExtensionTok{docker}\NormalTok{ push ghcr.io/devops2024{-}group{-}e/frontend.minitwit:latest}
-    % \ExtensionTok{docker}\NormalTok{ push ghcr.io/devops2024{-}group{-}e/db.minitwit:latest}
-    % \end{Highlighting}
-    % \end{Shaded}
+    # Push the build images to the container registry
+    docker push ghcr.io/devops2024-group-e/backend.minitwit:latest
+    docker push ghcr.io/devops2024-group-e/frontend.minitwit:latest
+    docker push ghcr.io/devops2024-group-e/db.minitwit:latest
+\end{minted}
     \item We ran the docker images locally first and it worked perfectly. We could connect to the database and everything. We tested this by performing:
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}p}\NormalTok{ 5432:5432 }\AttributeTok{{-}{-}name}\NormalTok{ database }\AttributeTok{{-}d}\NormalTok{ ghcr.io/devops2024{-}group{-}e/db.minitwit:latest}
-    % \ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}p}\NormalTok{ 80:80 }\AttributeTok{{-}{-}name}\NormalTok{ frontend }\AttributeTok{{-}d}\NormalTok{ ghcr.io/devops2024{-}group{-}e/frontend.minitwit:latest}
-    % \ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}p}\NormalTok{ 8080:8080 }\AttributeTok{{-}{-}name}\NormalTok{ backend }\AttributeTok{{-}d}\NormalTok{ ghcr.io/devops2024{-}group{-}e/backend.minitwit:latest}
-    % \end{Highlighting}
-    % \end{Shaded}
+\begin{minted}{bash}
+    docker run -p 5432:5432 --name database -d ghcr.io/devops2024-group-e/db.minitwit:latest
+    docker run -p 80:80 --name frontend -d ghcr.io/devops2024-group-e/frontend.minitwit:latest
+    docker run -p 8080:8080 --name backend -d ghcr.io/devops2024-group-e/backend.minitwit:latest
+\end{minted}
     And then we tried to poke around in the website to see if it actually   had access to the database. We also used the \texttt{minitwit\_test.py} to test that the site still worked accordingly.
     \item Now we add a \texttt{remote-server} directory that contains the scripts that deploys and setups the server. In there we create \texttt{{[}init.sh{]}(http://init.sh)} which create the docker containers when the server is being created and we create \texttt{{[}deploy.sh{]}(http://deploy.sh)} which is used when a new image of backend and frontend has been created.
     \item We then used vagrant up to see if it worked. It created the server\ldots{} but. It cannot create and use the containers based on the docker images we have created because it has been built by the platform \texttt{linux/arm64} but the server needs \texttt{linux/amd64}.
@@ -427,14 +399,11 @@ Steps taken:
     \begin{enumerate}
         \item Also modifying the \texttt{{[}deploy.sh{]}(http://deploy.sh)} script to:
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \BuiltInTok{echo} \VariableTok{$DOCKER\_PASSWORD} \KeywordTok{|} \ExtensionTok{docker}\NormalTok{ login ghcr.io }\AttributeTok{{-}u} \VariableTok{$DOCKER\_USERNAME} \AttributeTok{{-}{-}password{-}stdin}
-    % \ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}{-}platform}\NormalTok{ linux/amd64 }\AttributeTok{{-}p}\NormalTok{ 80:80 }\AttributeTok{{-}d}\NormalTok{ ghcr.io/devops2024{-}group{-}e/frontend.minitwit}
-    % \ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}{-}platform}\NormalTok{ linux/amd64 }\AttributeTok{{-}p}\NormalTok{ 8080:8080 }\AttributeTok{{-}d}\NormalTok{ ghcr.io/devops2024{-}group{-}e/backend.minitwit}
-    % \end{Highlighting}
-    % \end{Shaded}
-
+\begin{minted}{bash}
+    echo $DOCKER_PASSWORD | docker login ghcr.io -u $DOCKER_USERNAME --password-stdin
+    docker run --platform linux/amd64 -p 80:80 -d ghcr.io/devops2024-group-e/frontend.minitwit
+    docker run --platform linux/amd64 -p 8080:8080 -d ghcr.io/devops2024-group-e/backend.minitwit
+\end{minted}
     \end{enumerate}
 \end{enumerate}
 
@@ -482,15 +451,12 @@ We then played around with the best option for which types of pull requests shou
 \label{log:fix-last-step-of-workflow-deploy-step}
 
 The workflow prints the following in the deploy step:
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{Error:}\NormalTok{ Cannot perform an interactive login from a non TTY device}
-% \ExtensionTok{no}\NormalTok{ configuration file provided: not found}
-% \ExtensionTok{no}\NormalTok{ configuration file provided: not found}
-% \ExtensionTok{no}\NormalTok{ configuration file provided: not found}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    Error: Cannot perform an interactive login from a non TTY device
+    no configuration file provided: not found
+    no configuration file provided: not found
+    no configuration file provided: not found
+\end{minted}
 
 \begin{enumerate}
     \item Found that the issue could be related to not providing credentials to the \texttt{—password-stdin} flag of \texttt{docker\ login.}
@@ -535,12 +501,10 @@ Steps taken:
     \item Execute \texttt{schema.sql} on minitwit database
     \item Create role and add permissions to select, delete, update, and insert records in the public schema on minitwit database
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \KeywordTok{CREATE} \KeywordTok{ROLE}\NormalTok{ minitwit\_app\_executer;}
-    % \KeywordTok{GRANT} \KeywordTok{SELECT}\NormalTok{, }\KeywordTok{UPDATE}\NormalTok{, }\KeywordTok{INSERT}\NormalTok{, }\KeywordTok{DELETE} \KeywordTok{ON} \KeywordTok{ALL} \KeywordTok{TABLES} \KeywordTok{IN} \KeywordTok{SCHEMA} \KeywordTok{public} \KeywordTok{TO}\NormalTok{ minitwit\_app\_executer;}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{sql}
+        CREATE ROLE minitwit_app_executer;
+        GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO minitwit_app_executer;
+    \end{minted}
     \item We(or I, Andreas) got tired and decided to not perform the migration until we have more time\ldots{}
 \end{enumerate}
 
@@ -570,25 +534,20 @@ Steps taken:
 
 Added:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{dotnet}\NormalTok{ add package OpenTelemetry.Exporter.Prometheus.AspNetCore }\AttributeTok{{-}{-}version}\NormalTok{ 1.4.0{-}rc.4}
-% \ExtensionTok{dotnet}\NormalTok{ add package OpenTelemetry.Extensions.Hosting}
-
-% \ExtensionTok{dotnet}\NormalTok{ add package OpenTelemetry.Instrumentation.AspNetCore}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    dotnet add package OpenTelemetry.Exporter.Prometheus.AspNetCore --version 1.4.0-rc.4
+    dotnet add package OpenTelemetry.Extensions.Hosting
+    dotnet add package OpenTelemetry.Instrumentation.AspNetCore
+\end{minted}
 
 Added to Program.cs:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{builder.Services.AddOpenTelemetry()}
-%   \ExtensionTok{.WithMetrics}\ErrorTok{(}\ExtensionTok{b}\NormalTok{ =}\OperatorTok{\textgreater{}}\NormalTok{ b.AddPrometheusExporter}\ErrorTok{(}\KeywordTok{));}
+\begin{minted}{csharp}
+    builder.Services.AddOpenTelemetry()
+    .WithMetrics(b => b.AddPrometheusExporter());
 
-% \FunctionTok{app.UseOpenTelemetryPrometheusScrapingEndpoint()}\KeywordTok{;}
-% \end{Highlighting}
-% \end{Shaded}
+    app.UseOpenTelemetryPrometheusScrapingEndpoint();
+\end{minted}
 
 \subsubsection{Add monitoring code to frontend:}
 \label{log:add-monitoring-code-to-frontend}
@@ -598,25 +557,21 @@ adding monitoring to the backend. The following code got added to:
 
 \textbf{Minitwit.csproj}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \OperatorTok{\textless{}}\NormalTok{PackageReference Include}\OperatorTok{=}\StringTok{"OpenTelemetry.Exporter.Prometheus.AspNetCore"}\NormalTok{ Version}\OperatorTok{=}\StringTok{"1.7.0{-}rc.1"} \OperatorTok{/\textgreater{}}
-% \OperatorTok{\textless{}}\NormalTok{PackageReference Include}\OperatorTok{=}\StringTok{"OpenTelemetry.Extensions.Hosting"}\NormalTok{ Version}\OperatorTok{=}\StringTok{"1.7.0"} \OperatorTok{/\textgreater{}}
-% \OperatorTok{\textless{}}\NormalTok{PackageReference Include}\OperatorTok{=}\StringTok{"OpenTelemetry.Instrumentation.AspNetCore"}\NormalTok{ Version}\OperatorTok{=}\StringTok{"1.7.1"} \OperatorTok{/\textgreater{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{xml}
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.7.0-rc.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
+\end{minted}
 
 \textbf{Program.cs}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddOpenTelemetry}\OperatorTok{()}
-%   \OperatorTok{.}\FunctionTok{WithMetrics}\OperatorTok{(}\NormalTok{b }\OperatorTok{=\textgreater{}}\NormalTok{ b}\OperatorTok{.}\FunctionTok{AddAspNetCoreInstrumentation}\OperatorTok{()}
-%                      \OperatorTok{.}\FunctionTok{AddPrometheusExporter}\OperatorTok{());}
+\begin{minted}{csharp}
+    builder.Services.AddOpenTelemetry()
+        .WithMetrics(b => b.AddAspNetCoreInstrumentation()
+                            .AddPrometheusExporter());
 
-% \NormalTok{app}\OperatorTok{.}\FunctionTok{UseOpenTelemetryPrometheusScrapingEndpoint}\OperatorTok{();}
-% \end{Highlighting}
-% \end{Shaded}
+    app.UseOpenTelemetryPrometheusScrapingEndpoint();
+\end{minted}
 
 \subsubsection{Fix unresolved issues from last week:}
 \label{log:fix-unresolved-issues-from-last-week}
@@ -675,11 +630,10 @@ Adding log messages to the code:
     \item In the controllers in Minitwit and SimulatorApi statements like the one below have been added where it makes sense:
 \end{itemize}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{\_logger}\OperatorTok{.}\FunctionTok{LogDebug}\OperatorTok{(}\NormalTok{$}\StringTok{"FollowUnfollowUser returns Forbid because user is not logged in"}\OperatorTok{);}
-% \end{Highlighting}
-% \end{Shaded}
+
+\begin{minted}{csharp}
+    _logger.LogDebug($"FollowUnfollowUser returns Forbid because user is not logged in");
+\end{minted}
 
 \subsubsection{Setting up Loki and Promtail:}
 \label{log:setting-up-loki-and-promtail}
@@ -710,11 +664,9 @@ do\_ssh\_key}\label{make-file-to-config-management-server-called-do_ssh_key}}
 
 First I added the following line to \texttt{.bashrc}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \BuiltInTok{export} \VariableTok{CONF\_DO\_TOKEN}\OperatorTok{=}\NormalTok{dop\_v1\_0221256529632baf8d30514aff483ab4ca0caa263c2a0f63f93a07da4ef6c7e4}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    export CONF_DO_TOKEN=<some token>
+\end{minted}
 
 Then I added the following to the
 
@@ -785,12 +737,10 @@ issues:
     \item Add a requirements file to ensure that we install specific versions of collections
     \item Build and run docker image locally with
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \ExtensionTok{docker}\NormalTok{ build }\AttributeTok{{-}t}\NormalTok{ ansible:latest .}
-    % \ExtensionTok{docker}\NormalTok{ run }\AttributeTok{{-}it} \AttributeTok{{-}{-}rm}\NormalTok{ ansible:latest bash}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{bash}
+        docker build -t ansible:latest .
+        docker run -it --rm ansible:latest bash
+    \end{minted}
 
     \begin{itemize}
         \item Run \texttt{ansible\ -\/-version} to see that ansible is indeed installed
@@ -808,55 +758,51 @@ issues:
     \end{itemize}
     \item Create a new github workflow that uses the custom github action. We do so by referencing the path
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \KeywordTok{{-}}\AttributeTok{ }\FunctionTok{name}\KeywordTok{:}\AttributeTok{ Provision and deploy web servers}
-    % \AttributeTok{  }\FunctionTok{uses}\KeywordTok{:}\AttributeTok{ .github/actions/ansible{-}run{-}playbook}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{yaml}
+        - name: Provision and deploy web servers
+          uses: .github/actions/ansible-run-playbook
+    \end{minted}
     \item Add parameters to the github action
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \FunctionTok{inputs}\KeywordTok{:}
-    % \AttributeTok{  }\FunctionTok{dotoken}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The Digital Ocean token\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{dosshkeyname}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The name of the ssh key in Digital Ocean\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{sshkey}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The private ssh key to access servers\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{dockeruser}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The username for the docker registry\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{dockerpassword}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The password for the docker registry\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{inventoryfile}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The working directory to run the command in\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{playbook}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The playbook to run\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \AttributeTok{  }\FunctionTok{working{-}directory}\KeywordTok{:}
-    % \AttributeTok{    }\FunctionTok{description}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}The working directory to run the command in\textquotesingle{}}
-    % \AttributeTok{    }\FunctionTok{required}\KeywordTok{:}\AttributeTok{ }\CharTok{true}
-    % \FunctionTok{runs}\KeywordTok{:}
-    % \AttributeTok{  }\FunctionTok{using}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}docker\textquotesingle{}}
-    % \AttributeTok{  }\FunctionTok{image}\KeywordTok{:}\AttributeTok{ }\StringTok{\textquotesingle{}Dockerfile\textquotesingle{}}
-    % \AttributeTok{  }\FunctionTok{args}\KeywordTok{:}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.sshkey\}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.dockeruser \}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.dockerpassword \}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.dotoken \}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.dosshkeyname \}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.inventoryfile \}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.playbook \}\}}
-    % \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ $\{\{ inputs.working{-}directory \}\}}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{yaml}
+        inputs:
+            dotoken:
+                description: 'The Digital Ocean token'
+                required: true
+            dosshkeyname:
+                description: 'The name of the ssh key in Digital Ocean'
+                required: true
+            sshkey:
+                description: 'The private ssh key to access servers'
+                required: true
+            dockeruser:
+                description: 'The username for the docker registry'
+                required: true
+            dockerpassword:
+                description: 'The password for the docker registry'
+                required: true
+            inventoryfile:
+                description: 'The working directory to run the command in'
+                required: true
+            playbook:
+                description: 'The playbook to run'
+                required: true
+            working-directory:
+                description: 'The working directory to run the command in'
+                required: true
+            runs:
+            using: 'docker'
+            image: 'Dockerfile'
+            args:
+                - ${{ inputs.sshkey}}
+                - ${{ inputs.dockeruser }}
+                - ${{ inputs.dockerpassword }}
+                - ${{ inputs.dotoken }}
+                - ${{ inputs.dosshkeyname }}
+                - ${{ inputs.inventoryfile }}
+                - ${{ inputs.playbook }}
+                - ${{ inputs.working-directory }}
+    \end{minted}
 
     \item Add arguments in the workflow with the \texttt{with} keyword
     \item Run the workflow
@@ -884,12 +830,10 @@ issues:
             \item Try move the installed modules to a known directory - running workflow again still fails with cannot find the module
             \item Reference the collection in the web-playbook.yaml - running workflow again stil fails with cannot find the module:
 
-            % \begin{Shaded}
-            % \begin{Highlighting}[]
-            % \FunctionTok{collections}\KeywordTok{:}
-            % \AttributeTok{    community.docker:\textless{}version\textgreater{}}
-            % \end{Highlighting}
-            % \end{Shaded}
+            \begin{minted}{yaml}
+                collections:
+	                community.docker:<version>
+            \end{minted}
 
             \item Rollback to use \texttt{ansible} instead of \texttt{ansible-core} and replace the docker compose module with a \texttt{shell} module and run \texttt{docker\ compose\ up\ -d}
 
@@ -906,42 +850,40 @@ issues:
     \begin{itemize}
         \item We reference the custom github action from the repo \texttt{ansible-action} by doing multiple checkouts and reference to the path it is checked out to:
 
-        % \begin{Shaded}
-        % \begin{Highlighting}[]
-        % \AttributeTok{ }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{name}\KeywordTok{:}\AttributeTok{ Login to GitHub Container Registry}
-        % \AttributeTok{        }\FunctionTok{uses}\KeywordTok{:}\AttributeTok{ docker/login{-}action@v3}
-        % \AttributeTok{        }\FunctionTok{with}\KeywordTok{:}
-        % \AttributeTok{          }\FunctionTok{registry}\KeywordTok{:}\AttributeTok{ ghcr.io}
-        % \AttributeTok{          }\FunctionTok{username}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.DOCKER\_USER \}\}}
-        % \AttributeTok{          }\FunctionTok{password}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.DOCKER\_PWD \}\}}
+        \begin{minted}{yaml}
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                registry: ghcr.io
+                username: ${{ secrets.DOCKER_USER }}
+                password: ${{ secrets.DOCKER_PWD }}
 
-        % \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{name}\KeywordTok{:}\AttributeTok{ Checkout repository}
-        % \AttributeTok{        }\FunctionTok{uses}\KeywordTok{:}\AttributeTok{ actions/checkout@v4}
-        % \AttributeTok{        }\FunctionTok{with}\KeywordTok{:}
-        % \AttributeTok{          }\FunctionTok{path}\KeywordTok{:}\AttributeTok{ main}
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                path: main
 
-        % \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{name}\KeywordTok{:}\AttributeTok{ Fetch Ansible Playbook action}
-        % \AttributeTok{        }\FunctionTok{uses}\KeywordTok{:}\AttributeTok{ actions/checkout@v4}
-        % \AttributeTok{        }\FunctionTok{with}\KeywordTok{:}
-        % \AttributeTok{          }\FunctionTok{repository}\KeywordTok{:}\AttributeTok{ devops2024{-}group{-}e/ansible{-}action}
-        % \FunctionTok{          sparse{-}checkout}\KeywordTok{: }\CharTok{|}
-        % \NormalTok{            .github/actions/ansible{-}run{-}playbook}
-        % \AttributeTok{          }\FunctionTok{sparse{-}checkout{-}cone{-}mode}\KeywordTok{:}\AttributeTok{ }\CharTok{false}
-        % \AttributeTok{          }\FunctionTok{path}\KeywordTok{:}\AttributeTok{ action}
+            - name: Fetch Ansible Playbook action
+              uses: actions/checkout@v4
+              with:
+                repository: devops2024-group-e/ansible-action
+                sparse-checkout: |
+                  .github/actions/ansible-run-playbook
+                sparse-checkout-cone-mode: false
+                path: action
 
-        % \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{name}\KeywordTok{:}\AttributeTok{ Provision and deploy web servers}
-        % \AttributeTok{        }\FunctionTok{uses}\KeywordTok{:}\AttributeTok{ ./action/.github/actions/ansible{-}run{-}playbook}
-        % \AttributeTok{        }\FunctionTok{with}\KeywordTok{:}
-        % \AttributeTok{          }\FunctionTok{dotoken}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.DIGITAL\_OCEAN\_TOKEN \}\}}
-        % \AttributeTok{          }\FunctionTok{dosshkeyname}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.DIGITAL\_OCEAN\_ANSIBLE\_SSH\_KEY\_NAME \}\}}
-        % \AttributeTok{          }\FunctionTok{sshkey}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.ANSIBLE\_SSH\_KEY \}\}}
-        % \AttributeTok{          }\FunctionTok{dockeruser}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.DOCKER\_USER \}\}}
-        % \AttributeTok{          }\FunctionTok{dockerpassword}\KeywordTok{:}\AttributeTok{ $\{\{ secrets.DOCKER\_PWD \}\}}
-        % \AttributeTok{          }\FunctionTok{inventoryfile}\KeywordTok{:}\AttributeTok{ inventory.ansible}
-        % \AttributeTok{          }\FunctionTok{playbook}\KeywordTok{:}\AttributeTok{ web{-}playbook.yaml}
-        % \AttributeTok{          }\FunctionTok{working{-}directory}\KeywordTok{:}\AttributeTok{ main/.infrastructure}
-        % \end{Highlighting}
-        % \end{Shaded}
+            - name: Provision and deploy web servers
+              uses: ./action/.github/actions/ansible-run-playbook
+              with:
+                dotoken: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+                dosshkeyname: ${{ secrets.DIGITAL_OCEAN_ANSIBLE_SSH_KEY_NAME }}
+                sshkey: ${{ secrets.ANSIBLE_SSH_KEY }}
+                dockeruser: ${{ secrets.DOCKER_USER }}
+                dockerpassword: ${{ secrets.DOCKER_PWD }}
+                inventoryfile: inventory.ansible
+                playbook: web-playbook.yaml
+                working-directory: main/.infrastructure
+        \end{minted}
     \end{itemize}
 \end{itemize}
 
@@ -949,16 +891,11 @@ issues:
 \label{log:add-three-different-linters}
 
 Installing precommit:
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{brew install pre}\OperatorTok{{-}}\NormalTok{commit}
-
-% \NormalTok{pre}\OperatorTok{{-}}\NormalTok{commit sample}\OperatorTok{{-}}\NormalTok{config }\OperatorTok{\textgreater{}} \OperatorTok{.}\FunctionTok{pre}\OperatorTok{{-}}\NormalTok{commit}\OperatorTok{{-}}\NormalTok{config}\OperatorTok{.}\FunctionTok{yaml}
-
-% \NormalTok{dotnet tool install }\OperatorTok{{-}}\NormalTok{g dotnet}\OperatorTok{{-}}\NormalTok{format }\OperatorTok{{-}{-}}\NormalTok{version }\StringTok{"7.*"} \OperatorTok{{-}{-}}\NormalTok{add}\OperatorTok{{-}}\NormalTok{source https}\OperatorTok{:}\CommentTok{//pkgs.dev.azure.com/dnceng/public/\_packaging/dotnet7/nuget/v3/index.json}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    brew install pre-commit
+    pre-commit sample-config > .pre-commit-config.yaml
+    dotnet tool install -g dotnet-format --version "7.*" --add-source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json
+\end{minted}
 
 We also add the different linters to the config.yaml file.
 
@@ -1043,55 +980,45 @@ When the tests have been written the UI testing setup is also included in github
 \label{log:fix-timestamps-in-database}
 
 First we want to create a test environment such that we can try and do migrations in our own local setup. We do so by dumping the data we currently have in the database on our docker container as the following:
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{pg\_dump} \AttributeTok{{-}U}\NormalTok{ minitwit\_sa }\AttributeTok{{-}f}\NormalTok{ dump.sql }\AttributeTok{{-}{-}column{-}inserts} \AttributeTok{{-}{-}data{-}only}\NormalTok{ minitwit}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    pg_dump -U minitwit_sa -f dump.sql --column-inserts --data-only minitwit
+\end{minted}
 
 We could have done this in a smarter way but now we want to extract that dump file from the container:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{docker}\NormalTok{ exec }\AttributeTok{{-}it}\NormalTok{ database /bin/sh }\AttributeTok{{-}c} \StringTok{"cat dump.sql"} \OperatorTok{\textgreater{}}\NormalTok{ dump.sql}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    docker exec -it database /bin/sh -c "cat dump.sql" > dump.sql
+\end{minted}
 
 And then we want to copy that file to our local machine with the following command(executed from our local machine, which has a ssh config with a reference to our prod server called \texttt{devops}):
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{scp}\NormalTok{ devops:/minitwit/dump.sql ./dump.sql}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    scp devops:/minitwit/dump.sql ./dump.sql
+\end{minted}
 
 Now because i have to try out different things, i have created a make file with two ``commands'' namely \texttt{db-up} and \texttt{db-down}. This is to quickly refresh the database. For that reason a \texttt{db-refresh} is also created that leverages these two commands:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \OtherTok{.PHONY:}\DataTypeTok{ db{-}down}
-% \DecValTok{db{-}down:}
-% \NormalTok{    docker exec {-}it minitwit{-}dev{-}database /bin/sh {-}c }\StringTok{"psql {-}U minitwit{-}sa minitwit {-}c \textquotesingle{}TRUNCATE TABLE follower, \textbackslash{}"}\NormalTok{user\textbackslash{}}\StringTok{", message, latest\textquotesingle{}"}
+\begin{minted}{bash}
+    .PHONY: db-down
+    db-down:
+        docker exec -it minitwit-dev-database /bin/sh -c "psql -U minitwit-sa minitwit -c 'TRUNCATE TABLE follower, \"user\", message, latest'"
 
-% \OtherTok{.PHONY:}\DataTypeTok{ db{-}up}
-% \DecValTok{db{-}up:}
-% \NormalTok{    docker cp ./dump.sql minitwit{-}dev{-}database:/db{-}setup/dump.sql}
-% \NormalTok{    docker exec {-}it minitwit{-}dev{-}database /bin/sh {-}c }\StringTok{"psql {-}U minitwit{-}sa minitwit \textless{} /db{-}setup/dump.sql"}\NormalTok{ \textgreater{} /dev/null}
+    .PHONY: db-up
+    db-up:
+        docker cp ./dump.sql minitwit-dev-database:/db-setup/dump.sql
+        docker exec -it minitwit-dev-database /bin/sh -c "psql -U minitwit-sa minitwit < /db-setup/dump.sql" > /dev/null
 
-% \OtherTok{.PHONY:}\DataTypeTok{ db{-}refresh}
-% \DecValTok{db{-}refresh:}\DataTypeTok{ db{-}down db{-}up}
-% \end{Highlighting}
-% \end{Shaded}
+    .PHONY: db-refresh
+    db-refresh: db-down db-up
+
+\end{minted}
 
 Now i can begin the work. First i look if we can just change the type in our table \texttt{message} from \texttt{integer} to \texttt{bigint}. We do so with the following query:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{ALTER TABLE message}
-% \NormalTok{    ALTER COLUMN pub\_date TYPE bigint;}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{sql}
+    ALTER TABLE message
+	ALTER COLUMN pub_date TYPE bigint;
+\end{minted}
 
 That was allowed by the local test database without any issues. And since the datatype was a \texttt{integer} before it has converted it to a \texttt{bigint} before, because it has the same values a before.
 
@@ -1146,31 +1073,25 @@ Problems i ran into:
 \begin{itemize}
     \item I need both sdk 7 and 8, because 7 are used for developing our application since they run in dotnet 7. However, pre-commit uses .net 8 to call the .net formatter. For that reason we need to install sdk 8 in the devcontainer. We tried to use the .net install script but it installed the sdk in a wrong location, so then we used the \texttt{-\/-install-dir} flag to specify the location to install the SDK but for some reason that didn't work either. So we instead installed it at another location and copied the files to the existing installation of dotnet. The script looks like the following:
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \CommentTok{\#!/bin/bash}
+    \begin{minted}{bash}
+        #!/bin/bash
 
-    % \FunctionTok{wget}\NormalTok{ https://dot.net/v1/dotnet{-}install.sh }\AttributeTok{{-}O}\NormalTok{ dotnet{-}install.sh}
-    % \FunctionTok{chmod}\NormalTok{ +x ./dotnet{-}install.sh}
-    % \ExtensionTok{./dotnet{-}install.sh} \AttributeTok{{-}{-}version}\NormalTok{ latest }\AttributeTok{{-}{-}install{-}dir} \StringTok{"/usr/share/dotnet{-}new"}
+        wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+        chmod +x ./dotnet-install.sh
+        ./dotnet-install.sh --version latest --install-dir "/usr/share/dotnet-new"
 
-    % \FunctionTok{sudo}\NormalTok{ cp }\AttributeTok{{-}u} \AttributeTok{{-}r}\NormalTok{ /usr/share/dotnet{-}new/}\PreprocessorTok{*}\NormalTok{ /usr/share/dotnet/}
-    % \end{Highlighting}
-    % \end{Shaded}
+        sudo cp -u -r /usr/share/dotnet-new/* /usr/share/dotnet/
+    \end{minted}
 
     \item I could tell that my team members couldn't use the devcontainer because they have another cpu, so i found a command that could fix this. The command \texttt{dpkg\ -\/-print-architecture} finds the correct cpu architecture such that the image can run on different systems.
+    \begin{minted}{bash}
+        wget -q -O /bin/hadolint "https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Linux-$(dpkg --print-architecture)"
+    \end{minted}
 
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \FunctionTok{wget} \AttributeTok{{-}q} \AttributeTok{{-}O}\NormalTok{ /bin/hadolint }\StringTok{"https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint{-}Linux{-}}\VariableTok{$(}\ExtensionTok{dpkg} \AttributeTok{{-}{-}print{-}architecture}\VariableTok{)}\StringTok{"}
-    % \end{Highlighting}
-    % \end{Shaded}
     \item I didn't have the permission to use hadolint, so i gave the permission in the image with the following command:
-    % \begin{Shaded}
-    % \begin{Highlighting}[]
-    % \FunctionTok{chmod}\NormalTok{ +x /bin/hadolint}
-    % \end{Highlighting}
-    % \end{Shaded}
+    \begin{minted}{bash}
+        chmod +x /bin/hadolint
+    \end{minted}
 \end{itemize}
 
 \subsection{Adding scaling to the project}
@@ -1195,21 +1116,18 @@ Problems i ran into:
 \end{itemize}
 
 We created a new server in the program
+\begin{minted}{bash}
+    $ apt install docker.io
+    # the ip address here is the private ip for the manager server. (found on digital ocean)
+    $ docker swarm init --advertise-addr  192.168.1.6
+    Swarm initialized: current node (qvekvmy3xdpftrheics2kt05v) is now a manager.
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{$}\NormalTok{ apt install docker.io}
-% \CommentTok{\# the ip address here is the private ip for the manager server. (found on digital ocean)}
-% \ExtensionTok{$}\NormalTok{ docker swarm init }\AttributeTok{{-}{-}advertise{-}addr}\NormalTok{  192.168.1.6 }
-% \ExtensionTok{Swarm}\NormalTok{ initialized: current node }\ErrorTok{(}\ExtensionTok{qvekvmy3xdpftrheics2kt05v}\KeywordTok{)} \ExtensionTok{is}\NormalTok{ now a manager.}
+    To add a worker to this swarm, run the following command:
 
-% \ExtensionTok{To}\NormalTok{ add a worker to this swarm, run the following command:}
+        docker swarm join --token SWMTKN-1-5bsq5avkideo5oqx6n4b5oth1nhqyg96msjp2igiome125afai-8xk1y3dmymf75zgcia1yrpj2c 192.168.1.6:2377
 
-%     \ExtensionTok{docker}\NormalTok{ swarm join }\AttributeTok{{-}{-}token}\NormalTok{ SWMTKN{-}1{-}5bsq5avkideo5oqx6n4b5oth1nhqyg96msjp2igiome125afai{-}8xk1y3dmymf75zgcia1yrpj2c 192.168.1.6:2377}
-
-% \ExtensionTok{To}\NormalTok{ add a manager to this swarm, run }\StringTok{\textquotesingle{}docker swarm join{-}token manager\textquotesingle{}}\NormalTok{ and follow the instructions.}
-% \end{Highlighting}
-% \end{Shaded}
+    To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+\end{minted}
 
 Now we have a swarm manager and a single worker in the swarm
 
@@ -1228,129 +1146,106 @@ Here we quickly realized that in order to implement an update strategy, we would
 This is the second try, essentially, in migrating the database. We have now noticed a nice and useful guide on how to do it created by \href{https://docs.digitalocean.com/products/databases/postgresql/how-to/import-databases/}{DigitalOcean}.
 
 So the first thing we do is to test it out. So we run our Pulumi workflow to setup our test environment. We then create some scripts to push the dump file that Andreas has of last weeks database to the test server by saying:
+\begin{minted}{bash}
+    scp dump.sql devops-test:/minitwit/dump.sql
+    ssh devops-test
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{scp}\NormalTok{ dump.sql devops{-}test:/minitwit/dump.sql}
-% \FunctionTok{ssh}\NormalTok{ devops{-}test}
+    docker cp /minitwit/dump.sql database:/db-setup/dump.sql
 
-% \ExtensionTok{docker}\NormalTok{ cp /minitwit/dump.sql database:/db{-}setup/dump.sql}
-
-% \ExtensionTok{docker}\NormalTok{ exec database /bin/bash }\AttributeTok{{-}c} \StringTok{"psql {-}U minitwit{-}sa minitwit \textless{} /db{-}setup/dump.sql"}
-% \end{Highlighting}
-% \end{Shaded}
+    docker exec database /bin/bash -c "psql -U minitwit-sa minitwit < /db-setup/dump.sql"
+\end{minted}
 
 Now that the database has data, we begin using the guide from digitalocean. The setup current is the application server called \texttt{minitwit-test-web-02} and a managed database cluster with a database called \texttt{minitwit}.
 
 According to the guide, we can create the following script:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \CommentTok{\#!/bin/bash}
+\begin{minted}{bash}
+    #!/bin/bash
 
-% \CommentTok{\# First we need to run pg\_dump for the old database server and save the dump file}
-% \BuiltInTok{echo} \StringTok{"Fetch Database dump from source database"}
-% \ExtensionTok{pg\_dump} \AttributeTok{{-}h}\NormalTok{ 164.92.253.253 }\AttributeTok{{-}U}\NormalTok{ minitwit{-}sa }\AttributeTok{{-}p}\NormalTok{ 5432 }\AttributeTok{{-}Fc}\NormalTok{ minitwit }\OperatorTok{\textgreater{}}\NormalTok{ ./minitwit{-}dump.pgsql}
+    # First we need to run pg_dump for the old database server and save the dump file
+    echo "Fetch Database dump from source database"
+    pg_dump -h 164.92.253.253 -U minitwit-sa -p 5432 -Fc minitwit > ./minitwit-dump.pgsql
 
-% \CommentTok{\# Secondly we need to run pg\_restore on the new database with the dump file that we have just saved}
-% \BuiltInTok{echo} \StringTok{"Restoring database on target database"}
-% \ExtensionTok{pg\_restore} \AttributeTok{{-}d} \OperatorTok{\textless{}}\NormalTok{Connection uri string from DO}\OperatorTok{\textgreater{}}\NormalTok{ {-}{-}jobs 4 ./minitwit{-}dump.pgsql}
-% \end{Highlighting}
-% \end{Shaded}
+    # Secondly we need to run pg_restore on the new database with the dump file that we have just saved
+    echo "Restoring database on target database"
+    pg_restore -d <Connection uri string from DO> --jobs 4 ./minitwit-dump.pgsql
+\end{minted}
 
 We noticed that if we had to run this on our local laptop then we had to allow the app server to have connections from the public on port \texttt{5432} so we ran the following command on the app server:
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{ssh}\NormalTok{ devops{-}test}
-% \ExtensionTok{ufw}\NormalTok{ allow in on eth0 to any port 5432}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    ssh devops-test
+    ufw allow in on eth0 to any port 5432
+\end{minted}
 
 Another thing is that we had to create a file called \texttt{\textasciitilde{}/.pgpass} . Notice the squiqqly line. According to the postgres documentation it needs to be placed in there. We then add the following content in order to authenticate to the source database:
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{164.92.253.253:5432:minitwit:minitwit{-}sa:}\OperatorTok{\textless{}}\NormalTok{Password of the db user}\OperatorTok{\textgreater{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    164.92.253.253:5432:minitwit:minitwit-sa:<Password of the db user>
+\end{minted}
 
 Running the above resulted in an error saying that the \texttt{minitwit-sa} user does not exist. So we create that user in the DigitalOcean UI.
 
 Now that we try to run it again, it fails with the following error:
+\begin{minted}{sql}
+    pg_restore: error: could not execute query: ERROR:  relation "follower" already exists
+    Command was: CREATE TABLE public.follower (
+        who_id integer NOT NULL,
+        whom_id integer NOT NULL
+    );
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{pg\_restore:}\NormalTok{ error: could not execute query: ERROR:  relation }\StringTok{"follower"}\NormalTok{ already exists}
-% \ExtensionTok{Command}\NormalTok{ was: CREATE TABLE public.follower }\ErrorTok{(}
-%     \ExtensionTok{who\_id}\NormalTok{ integer NOT NULL,}
-%     \ExtensionTok{whom\_id}\NormalTok{ integer NOT NULL}
-% \KeywordTok{);}
 
-% \ExtensionTok{pg\_restore:}\NormalTok{ error: could not execute query: ERROR:  permission denied for schema public}
-% \ExtensionTok{Command}\NormalTok{ was: ALTER TABLE public.follower OWNER TO }\StringTok{"minitwit{-}sa"}\KeywordTok{;}
+    pg_restore: error: could not execute query: ERROR:  permission denied for schema public
+    Command was: ALTER TABLE public.follower OWNER TO "minitwit-sa";
 
-% \ExtensionTok{pg\_restore:}\NormalTok{ error: could not execute query: ERROR:  relation }\StringTok{"latest"}\NormalTok{ already exists}
-% \ExtensionTok{Command}\NormalTok{ was: CREATE TABLE public.latest }\ErrorTok{(}
-%     \FunctionTok{id}\NormalTok{ integer NOT NULL,}
-%     \ExtensionTok{command\_id}\NormalTok{ integer NOT NULL}
-% \KeywordTok{);}
-% \ExtensionTok{...}
-% \end{Highlighting}
-% \end{Shaded}
+    pg_restore: error: could not execute query: ERROR:  relation "latest" already exists
+    Command was: CREATE TABLE public.latest (
+        id integer NOT NULL,
+        command_id integer NOT NULL
+    );
+\end{minted}
 
 Looking at this could mean that we should refresh that database. So we delete the database and add it again. We then run our script again, and it now fails with the permission denied.
 
 Reading the documentation provided by docker they specify that in some situations you should run the commands with \texttt{—no-owner} when doing \texttt{pg\_restore}. This will not set the owner of the tables. Trying to run the script again removes the permission errors. However, we now encounter the following error:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ExtensionTok{pg\_restore:}\NormalTok{ error: a worker process died unexpectedly}
-% \end{Highlighting}
-% \end{Shaded}
-
+\begin{minted}{bash}
+    pg_restore: error: a worker process died unexpectedly
+\end{minted}
 By searching through the internet we see one at stackoverflow with a similar \href{https://dba.stackexchange.com/questions/257398/pg-restore-with-jobs-flag-results-in-pg-restore-error-a-worker-process-di}{issue}. We look at the version of postgres installed on our local laptop. But ours is \texttt{16.2} according to the \texttt{pg\_dump\ -\/-version} output. So we did the second option of removing the \texttt{-\/-jobs\ 4} flag. We run it again. And it works!!!
 
 We try to login to the server via pgadmin4 in context of the \texttt{minitwit-sa} which was not the user who created the tables and inserted the data. By doing some select statements on the tables we could see that \texttt{minitwit-sa} does not have access. We give the \texttt{minitwit-sa} access to all tables in the public schema by executing the following query as \texttt{doadmin}:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \KeywordTok{GRANT} \KeywordTok{SELECT}\NormalTok{, }\KeywordTok{UPDATE}\NormalTok{, }\KeywordTok{INSERT}\NormalTok{, }\KeywordTok{DELETE} \KeywordTok{ON} \KeywordTok{ALL} \KeywordTok{TABLES} \KeywordTok{IN} \KeywordTok{SCHEMA} \KeywordTok{public} \KeywordTok{TO} \OtherTok{"minitwit{-}sa"}\NormalTok{;}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{sql}
+    GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO "minitwit-sa";
+\end{minted}
 
 This seems to work! Now the \texttt{minitwit-sa} can select the tables.
 
 After trying to insert and delete entries with the \texttt{minitwit-sa} we saw that it does not have permission to lookup sequences to provide the next id for a user or anything else. So we execute the following command to fix this(as \texttt{doadmin} on the minitwit database):
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \KeywordTok{GRANT} \KeywordTok{USAGE}\NormalTok{, }\KeywordTok{SELECT} \KeywordTok{ON} \KeywordTok{ALL}\NormalTok{ SEQUENCES }\KeywordTok{IN} \KeywordTok{SCHEMA} \KeywordTok{public} \KeywordTok{TO} \OtherTok{"minitwit{-}sa"}\NormalTok{;}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{sql}
+    GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "minitwit-sa";
+\end{minted}
 
 The final script now looks like this:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{\#!}\OperatorTok{/}\NormalTok{bin}\OperatorTok{/}\NormalTok{bash}
+\begin{minted}{bash}
+    #!/bin/bash
 
-% \NormalTok{ssh devops }\OtherTok{"/bin/bash {-}c \textquotesingle{}ufw allow in on eth0 to any port 5432\textquotesingle{}"}
+    ssh devops "/bin/bash -c 'ufw allow in on eth0 to any port 5432'"
 
-% \NormalTok{\# }\FunctionTok{First}\NormalTok{ we need }\KeywordTok{to}\NormalTok{ run pg\_dump }\ControlFlowTok{for} \KeywordTok{the} \KeywordTok{old} \KeywordTok{database}\NormalTok{ server }\KeywordTok{and}\NormalTok{ save }\KeywordTok{the} \FunctionTok{dump} \KeywordTok{file}
-% \NormalTok{echo }\OtherTok{"Fetch Database dump from source database"}
-% \NormalTok{pg\_dump }\OperatorTok{{-}}\NormalTok{h }\OperatorTok{\textless{}}\NormalTok{web server ip}\OperatorTok{\textgreater{}} \OperatorTok{{-}}\NormalTok{U minitwit}\OperatorTok{{-}}\NormalTok{sa }\OperatorTok{{-}}\NormalTok{p }\DecValTok{5432} \OperatorTok{{-}}\NormalTok{Fc minitwit }\OperatorTok{\textgreater{}}\NormalTok{ .}\OperatorTok{/}\NormalTok{minitwit}\OperatorTok{{-}}\FunctionTok{dump}\NormalTok{.pgsql}
+    # First we need to run pg_dump for the old database server and save the dump file
+    echo "Fetch Database dump from source database"
+    pg_dump -h <web server ip> -U minitwit-sa -p 5432 -Fc minitwit > ./minitwit-dump.pgsql
 
-% \NormalTok{\# Secondly we need }\KeywordTok{to}\NormalTok{ run pg\_restore }\KeywordTok{on} \KeywordTok{the} \KeywordTok{new} \KeywordTok{database} \KeywordTok{with} \KeywordTok{the} \FunctionTok{dump} \KeywordTok{file}\NormalTok{ that we have just saved}
-% \NormalTok{echo }\OtherTok{"Restoring database on target database"}
-% \NormalTok{pg\_restore }\OperatorTok{{-}}\NormalTok{d }\OperatorTok{\textless{}}\NormalTok{DO URI connectionstring}\OperatorTok{\textgreater{}} \CommentTok{{-}{-}no{-}owner ./minitwit{-}dump.pgsql \# look like postgresql://doadmin:AVNS\_rJEiEqnQXPwDK4\_N\_mb@minitwit{-}test{-}db{-}01{-}7035523{-}do{-}user{-}15869692{-}0.c.db.ondigitalocean.com:25060/minitwit?sslmode=require}
+    # Secondly we need to run pg_restore on the new database with the dump file that we have just saved
+    echo "Restoring database on target database"
+    pg_restore -d <DO URI connectionstring> --no-owner ./minitwit-dump.pgsql # look like postgresql://doadmin:AVNS_rJEiEqnQXPwDK4_N_mb@minitwit-test-db-01-7035523-do-user-15869692-0.c.db.ondigitalocean.com:25060/minitwit?sslmode=require
 
-% \NormalTok{psql }\OperatorTok{{-}}\NormalTok{h minitwit}\OperatorTok{{-}}\NormalTok{test}\OperatorTok{{-}}\NormalTok{db}\OperatorTok{{-}}\DecValTok{01}\OperatorTok{{-}}\DecValTok{7035523}\OperatorTok{{-}}\NormalTok{do}\OperatorTok{{-}}\FunctionTok{user}\OperatorTok{{-}}\DecValTok{15869692}\OperatorTok{{-}}\FloatTok{0.}\NormalTok{c.db.ondigitalocean.com }\OperatorTok{{-}}\NormalTok{p }\DecValTok{25060} \OperatorTok{{-}}\NormalTok{U doadmin }\OperatorTok{{-}}\NormalTok{d minitwit }\OperatorTok{{-}}\NormalTok{c }\StringTok{\textquotesingle{}GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO "minitwit{-}sa";\textquotesingle{}}
-% \NormalTok{psql }\OperatorTok{{-}}\NormalTok{h minitwit}\OperatorTok{{-}}\NormalTok{test}\OperatorTok{{-}}\NormalTok{db}\OperatorTok{{-}}\DecValTok{01}\OperatorTok{{-}}\DecValTok{7035523}\OperatorTok{{-}}\NormalTok{do}\OperatorTok{{-}}\FunctionTok{user}\OperatorTok{{-}}\DecValTok{15869692}\OperatorTok{{-}}\FloatTok{0.}\NormalTok{c.db.ondigitalocean.com }\OperatorTok{{-}}\NormalTok{p }\DecValTok{25060} \OperatorTok{{-}}\NormalTok{U doadmin }\OperatorTok{{-}}\NormalTok{d minitwit }\OperatorTok{{-}}\NormalTok{c }\StringTok{\textquotesingle{}GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "minitwit{-}sa";\textquotesingle{}}
+    psql -h minitwit-test-db-01-7035523-do-user-15869692-0.c.db.ondigitalocean.com -p 25060 -U doadmin -d minitwit -c 'GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO "minitwit-sa";'
+    psql -h minitwit-test-db-01-7035523-do-user-15869692-0.c.db.ondigitalocean.com -p 25060 -U doadmin -d minitwit -c 'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "minitwit-sa";'
 
-% \NormalTok{ssh devops }\OtherTok{"/bin/bash {-}c \textquotesingle{}ufw deny in on eth0 to any port 5432\textquotesingle{}"}
-% \end{Highlighting}
-% \end{Shaded}
+    ssh devops "/bin/bash -c 'ufw deny in on eth0 to any port 5432'"
+\end{minted}
 
 \subsubsection{Performing the migration}
 \label{log:performing-the-migration}
@@ -1370,11 +1265,9 @@ We then export our existing dashboards to json files and save it in the \texttt{
 
 After that we declare our datasource files. We can extract them as json by doing the following:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{mkdir} \AttributeTok{{-}p}\NormalTok{ data\_sources }\KeywordTok{\&\&} \ExtensionTok{curl} \AttributeTok{{-}s} \StringTok{"http://\textless{}ip of monitoring server\textgreater{}/api/datasources"}  \AttributeTok{{-}u}\NormalTok{ admin:admin}\KeywordTok{|}\ExtensionTok{jq} \AttributeTok{{-}c} \AttributeTok{{-}M} \StringTok{\textquotesingle{}.[]\textquotesingle{}}\KeywordTok{|}\FunctionTok{split} \AttributeTok{{-}l}\NormalTok{ 1 }\AttributeTok{{-}}\NormalTok{ data\_sources/}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    mkdir -p data_sources && curl -s "http://<ip of monitoring server>/api/datasources"  -u admin:admin|jq -c -M '.[]'|split -l 1 - data_sources/
+\end{minted}
 
 We then copy them to the \texttt{provisioning/datasources} directory and change them to yaml.
 
@@ -1382,11 +1275,9 @@ Now on the test server we run \texttt{docker\ compose\ up\ -d} and check that it
 
 Now we copy the structure of the directory from the test server to the repo by using \texttt{scp} :
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{scp} \AttributeTok{{-}r}\NormalTok{ devops{-}test{-}mon:/minitwit{-}monitoring/grafana .infrastructure/monitor{-}server/grafana}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    scp -r devops-test-mon:/minitwit-monitoring/grafana .infrastructure/monitor-server/grafana
+\end{minted}
 
 By adding it to the above directory then Ansible should copy those files to the server and use it to start the grafana container.
 
@@ -1395,51 +1286,45 @@ By adding it to the above directory then Ansible should copy those files to the 
 
 We had to implement a switch between the former and the current hashing algorithm in order for the \texttt{CheckPasswordHash} method to work with both old and new users in the system. To solve this issue, we made the following chances to /MinitwitSimulatorAPI/Utils/PasswordHash.cs:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \KeywordTok{public} \KeywordTok{static} \DataTypeTok{string} \FunctionTok{Hash}\OperatorTok{(}\DataTypeTok{string}\NormalTok{ value}\OperatorTok{)}
-%     \OperatorTok{\{}
-%         \DataTypeTok{var}\NormalTok{ salt }\OperatorTok{=}\NormalTok{ RandomNumberGenerator}\OperatorTok{.}\FunctionTok{GetBytes}\OperatorTok{(}\DecValTok{16}\OperatorTok{);}
-%         \KeywordTok{return} \FunctionTok{GeneratePasswordHash}\OperatorTok{(}\NormalTok{value}\OperatorTok{,}\NormalTok{ salt}\OperatorTok{,} \StringTok{"SHA512"}\OperatorTok{);}
-%     \OperatorTok{\}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{csharp}
+    public static string Hash(string value)
+    {
+        var salt = RandomNumberGenerator.GetBytes(16);
+        return GeneratePasswordHash(value, salt, "SHA512");
+    }
+\end{minted}
 
 Here we added the string \texttt{“SHA512”} to the values being returned to help us with the switch in the next method.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \KeywordTok{private} \KeywordTok{static} \DataTypeTok{string} \FunctionTok{GeneratePasswordHash}\OperatorTok{(}\DataTypeTok{string}\NormalTok{ password}\OperatorTok{,} \DataTypeTok{byte}\OperatorTok{[]}\NormalTok{ salt}\OperatorTok{,} \DataTypeTok{string}\NormalTok{ algorithm}\OperatorTok{)}
-%     \OperatorTok{\{}
-%         \DataTypeTok{string}\NormalTok{ hashedResult}\OperatorTok{;}
-%         \DataTypeTok{string}\NormalTok{ result}\OperatorTok{;}
-%         \KeywordTok{switch} \OperatorTok{(}\NormalTok{algorithm}\OperatorTok{)}
-%         \OperatorTok{\{}
-%             \KeywordTok{case} \StringTok{"SHA512"}\OperatorTok{:}
-% \NormalTok{                hashedResult }\OperatorTok{=}\NormalTok{ Convert}\OperatorTok{.}\FunctionTok{ToHexString}\OperatorTok{(}\NormalTok{KeyDerivation}\OperatorTok{.}\FunctionTok{Pbkdf2}\OperatorTok{(}
-% \NormalTok{                    password}\OperatorTok{:}\NormalTok{ password}\OperatorTok{,}
-% \NormalTok{                    salt}\OperatorTok{:}\NormalTok{ salt}\OperatorTok{,}
-% \NormalTok{                    prf}\OperatorTok{:}\NormalTok{ KeyDerivationPrf}\OperatorTok{.}\FunctionTok{HMACSHA512}\OperatorTok{,}
-% \NormalTok{                    iterationCount}\OperatorTok{:} \DecValTok{21000}\OperatorTok{,}
-% \NormalTok{                    numBytesRequested}\OperatorTok{:} \DecValTok{32}\OperatorTok{));}
-% \NormalTok{                result }\OperatorTok{=}\NormalTok{ $}\StringTok{"SHA512$\{Convert.ToHexString(salt)\}$\{hashedResult\}"}\OperatorTok{;}
-%                 \KeywordTok{break}\OperatorTok{;}
-%             \KeywordTok{default}\OperatorTok{:}
-% \NormalTok{                hashedResult }\OperatorTok{=}\NormalTok{ Convert}\OperatorTok{.}\FunctionTok{ToHexString}\OperatorTok{(}\NormalTok{KeyDerivation}\OperatorTok{.}\FunctionTok{Pbkdf2}\OperatorTok{(}
-% \NormalTok{                    password}\OperatorTok{:}\NormalTok{ password}\OperatorTok{,}
-% \NormalTok{                    salt}\OperatorTok{:}\NormalTok{ salt}\OperatorTok{,}
-% \NormalTok{                    prf}\OperatorTok{:}\NormalTok{ KeyDerivationPrf}\OperatorTok{.}\FunctionTok{HMACSHA256}\OperatorTok{,}
-% \NormalTok{                    iterationCount}\OperatorTok{:} \DecValTok{600000}\OperatorTok{,}
-% \NormalTok{                    numBytesRequested}\OperatorTok{:} \DecValTok{32}\OperatorTok{));}
-% \NormalTok{                result }\OperatorTok{=}\NormalTok{ $}\StringTok{"\{Convert.ToHexString(salt)\}$\{hashedResult\}"}\OperatorTok{;}
-%                 \KeywordTok{break}\OperatorTok{;}
-%         \OperatorTok{\}}
-%         \KeywordTok{return}\NormalTok{ result}\OperatorTok{;}
-%     \OperatorTok{\}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{csharp}
+    private static string GeneratePasswordHash(string password, byte[] salt, string algorithm)
+    {
+        string hashedResult;
+        string result;
+        switch (algorithm)
+        {
+            case "SHA512":
+                hashedResult = Convert.ToHexString(KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA512,
+                    iterationCount: 21000,
+                    numBytesRequested: 32));
+                result = $"SHA512${Convert.ToHexString(salt)}${hashedResult}";
+                break;
+            default:
+                hashedResult = Convert.ToHexString(KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA256,
+                    iterationCount: 600000,
+                    numBytesRequested: 32));
+                result = $"{Convert.ToHexString(salt)}${hashedResult}";
+                break;
+        }
+        return result;
+    }
+\end{minted}
 
 We now check in the switch statement whether we got the \texttt{“SHA512”} string from the \texttt{Hash} method.
 
@@ -1447,29 +1332,25 @@ If we do, then we run the current hash algorithm, where we have lowered the numb
 
 If we didn't get the \texttt{“SHA512”} string, then we run the former hash algorithm, which hasn't been changed and still has the recommended number of iterations.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\begin{minted}{csharp}
+    public static bool CheckPasswordHash(string password, string hashedPassword)
+    {
+        var passwordParts = hashedPassword.Split('$');
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \KeywordTok{public} \KeywordTok{static} \DataTypeTok{bool} \FunctionTok{CheckPasswordHash}\OperatorTok{(}\DataTypeTok{string}\NormalTok{ password}\OperatorTok{,} \DataTypeTok{string}\NormalTok{ hashedPassword}\OperatorTok{)}
-%     \OperatorTok{\{}
-%         \DataTypeTok{var}\NormalTok{ passwordParts }\OperatorTok{=}\NormalTok{ hashedPassword}\OperatorTok{.}\FunctionTok{Split}\OperatorTok{(}\CharTok{\textquotesingle{}$\textquotesingle{}}\OperatorTok{);}
+        string pp;
 
-%         \DataTypeTok{string}\NormalTok{ pp}\OperatorTok{;}
-
-%         \KeywordTok{switch} \OperatorTok{(}\NormalTok{passwordParts}\OperatorTok{[}\DecValTok{0}\OperatorTok{])}
-%         \OperatorTok{\{}
-%             \KeywordTok{case} \StringTok{"SHA512"}\OperatorTok{:}
-% \NormalTok{                pp }\OperatorTok{=} \FunctionTok{GeneratePasswordHash}\OperatorTok{(}\NormalTok{password}\OperatorTok{,}\NormalTok{ Convert}\OperatorTok{.}\FunctionTok{FromHexString}\OperatorTok{(}\NormalTok{passwordParts}\OperatorTok{[}\DecValTok{1}\OperatorTok{]),} \StringTok{"SHA512"}\OperatorTok{);}
-%                 \KeywordTok{break}\OperatorTok{;}
-%             \KeywordTok{default}\OperatorTok{:}
-% \NormalTok{                pp }\OperatorTok{=} \FunctionTok{GeneratePasswordHash}\OperatorTok{(}\NormalTok{password}\OperatorTok{,}\NormalTok{ Convert}\OperatorTok{.}\FunctionTok{FromHexString}\OperatorTok{(}\NormalTok{passwordParts}\OperatorTok{[}\DecValTok{0}\OperatorTok{]),} \StringTok{"SHA256"}\OperatorTok{);}
-%                 \KeywordTok{break}\OperatorTok{;}
-%         \OperatorTok{\}}
-%         \KeywordTok{return}\NormalTok{ pp }\OperatorTok{==}\NormalTok{ hashedPassword}\OperatorTok{;}
-%     \OperatorTok{\}}
-% \end{Highlighting}
-% \end{Shaded}
+        switch (passwordParts[0])
+        {
+            case "SHA512":
+                pp = GeneratePasswordHash(password, Convert.FromHexString(passwordParts[1]), "SHA512");
+                break;
+            default:
+                pp = GeneratePasswordHash(password, Convert.FromHexString(passwordParts[0]), "SHA256");
+                break;
+        }
+        return pp == hashedPassword;
+    }
+\end{minted}
 
 We check in the switch statement whether the password include the \texttt{“SHA512”} string at the start in order to determine whether to run the current or the former hashing algorithm.
 
@@ -1529,50 +1410,43 @@ We started to add code for handling distributed sessions:
 
 We added this package PostgreSQL in \texttt{Minitwit/Minitwit.csproj}:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \OperatorTok{\textless{}}\NormalTok{PackageReference Include}\OperatorTok{=}\StringTok{"Community.Microsoft.Extensions.Caching.PostgreSql"}\NormalTok{ Version}\OperatorTok{=}\StringTok{"4.0.4"} \OperatorTok{/\textgreater{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{xml}
+    <PackageReference Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="4.0.4" />
+\end{minted}
 
 We added sessions settings in \texttt{Minitwit/project.cs}:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddDistributedPostgreSqlCache}\OperatorTok{(}\NormalTok{setup }\OperatorTok{=\textgreater{}}
-% \OperatorTok{\{}
-% \NormalTok{    setup}\OperatorTok{.}\FunctionTok{ConnectionString} \OperatorTok{=}\NormalTok{ builder}\OperatorTok{.}\FunctionTok{Configuration}\OperatorTok{.}\FunctionTok{GetConnectionString}\OperatorTok{(}\StringTok{"MinitwitDatabase"}\OperatorTok{);}
-% \NormalTok{    setup}\OperatorTok{.}\FunctionTok{SchemaName} \OperatorTok{=} \StringTok{"public"}\OperatorTok{;}
-% \NormalTok{    setup}\OperatorTok{.}\FunctionTok{TableName} \OperatorTok{=} \StringTok{"session"}\OperatorTok{;}
-% \NormalTok{    setup}\OperatorTok{.}\FunctionTok{DisableRemoveExpired} \OperatorTok{=} \KeywordTok{false}\OperatorTok{;}
-% \NormalTok{    setup}\OperatorTok{.}\FunctionTok{CreateInfrastructure} \OperatorTok{=} \KeywordTok{false}\OperatorTok{;}
-% \NormalTok{    setup}\OperatorTok{.}\FunctionTok{ExpiredItemsDeletionInterval} \OperatorTok{=}\NormalTok{ TimeSpan}\OperatorTok{.}\FunctionTok{FromMinutes}\OperatorTok{(}\DecValTok{15}\OperatorTok{);}
-% \OperatorTok{\});}
+\begin{minted}{csharp}
+    builder.Services.AddDistributedPostgreSqlCache(setup =>
+    {
+        setup.ConnectionString = builder.Configuration.GetConnectionString("MinitwitDatabase");
+        setup.SchemaName = "public";
+        setup.TableName = "session";
+        setup.DisableRemoveExpired = false;
+        setup.CreateInfrastructure = false;
+        setup.ExpiredItemsDeletionInterval = TimeSpan.FromMinutes(15);
+    });
 
-% \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddSession}\OperatorTok{(}\NormalTok{options }\OperatorTok{=\textgreater{}}
-% \OperatorTok{\{}
-% \NormalTok{    options}\OperatorTok{.}\FunctionTok{IdleTimeout} \OperatorTok{=}\NormalTok{ TimeSpan}\OperatorTok{.}\FunctionTok{FromMinutes}\OperatorTok{(}\DecValTok{5}\OperatorTok{);}
-% \NormalTok{    options}\OperatorTok{.}\FunctionTok{Cookie}\OperatorTok{.}\FunctionTok{HttpOnly} \OperatorTok{=} \KeywordTok{true}\OperatorTok{;}
-% \NormalTok{    options}\OperatorTok{.}\FunctionTok{Cookie}\OperatorTok{.}\FunctionTok{IsEssential} \OperatorTok{=} \KeywordTok{true}\OperatorTok{;}
-% \OperatorTok{\});}
-% \end{Highlighting}
-% \end{Shaded}
+    builder.Services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(5);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
+\end{minted}
 
 and added a session table in \texttt{schema.sql}:
-
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{create table }\KeywordTok{if}\NormalTok{ not exists }\StringTok{"session"}
-% \OperatorTok{(}
-%   \StringTok{"Id"}\NormalTok{ text COLLATE pg\_catalog}\OperatorTok{.}\StringTok{"default"}\NormalTok{ NOT NULL}\OperatorTok{,}
-%   \StringTok{"Value"}\NormalTok{ bytea}\OperatorTok{,}
-%   \StringTok{"ExpiresAtTime"}\NormalTok{ timestamp with time zone}\OperatorTok{,}
-%   \StringTok{"SlidingExpirationInSeconds"} \DataTypeTok{double}\NormalTok{ precision}\OperatorTok{,}
-%   \StringTok{"AbsoluteExpiration"}\NormalTok{ timestamp with time zone}\OperatorTok{,}
-% \NormalTok{  CONSTRAINT }\StringTok{"DistCache\_pkey"}\NormalTok{ PRIMARY }\FunctionTok{KEY} \OperatorTok{(}\StringTok{"Id"}\OperatorTok{)}
-% \OperatorTok{);}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{sql}
+    create table if not exists "session"
+    (
+        "Id" text COLLATE pg_catalog."default" NOT NULL,
+        "Value" bytea,
+        "ExpiresAtTime" timestamp with time zone,
+        "SlidingExpirationInSeconds" double precision,
+        "AbsoluteExpiration" timestamp with time zone,
+        CONSTRAINT "DistCache_pkey" PRIMARY KEY ("Id")
+    );
+\end{minted}
 
 We then pulled it in to main without any errors or problem from the testing. When we went to the website and tried to log in, now with two replicas, we noticed that when we did log in we could see the text ``You're now logged in'' but we still were not properly logged in and couldn't do any of the task we usually can. We could therefore see that the distributed sessions isn't working as they should.
 
@@ -1580,137 +1454,114 @@ First we checked if the database was correctly connected and could see that it w
 
 We also tried to set upp the distributed sessions with redis as image in \texttt{.devcontainer/docker-compose.yaml}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \AttributeTok{    }\KeywordTok{{-}}\AttributeTok{ main}
-% \AttributeTok{    }\FunctionTok{environment}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ Minitwit\_ConnectionStrings\_\_MinitwitDatabase=Host=minitwit{-}dev{-}database;Port=5432;Username=minitwit{-}sa;Password=123;Database=minitwit}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ Minitwit\_ConnectionStrings\_\_Redis=minitwit{-}cache:6379}
+\begin{minted}{yaml}
+        - main
+    environment:
+      - Minitwit_ConnectionStrings__MinitwitDatabase=Host=minitwit-dev-database;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit
+      - Minitwit_ConnectionStrings__Redis=minitwit-cache:6379
 
-% \AttributeTok{  }\FunctionTok{minitwit{-}db}\KeywordTok{:}
-% \AttributeTok{    }\FunctionTok{build}\KeywordTok{:}
-% \FunctionTok{@@ {-}27,3 +28,11 @@ services}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ main}
-% \AttributeTok{    }\FunctionTok{ports}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\StringTok{\textquotesingle{}5432:5432\textquotesingle{}}
+  minitwit-db:
+    build:
+@@ -27,3 +28,11 @@ services:
+      - main
+    ports:
+      - '5432:5432'
 
-% \AttributeTok{  }\FunctionTok{cache}\KeywordTok{:}
-% \AttributeTok{    }\FunctionTok{image}\KeywordTok{:}\AttributeTok{ redis:7.2.4}
-% \AttributeTok{    }\FunctionTok{container\_name}\KeywordTok{:}\AttributeTok{ minitwit{-}cache}
-% \AttributeTok{    }\FunctionTok{networks}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ main}
-% \AttributeTok{    }\FunctionTok{ports}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\StringTok{\textquotesingle{}6379:6379\textquotesingle{}}
-% \end{Highlighting}
-% \end{Shaded}
+  cache:
+    image: redis:7.2.4
+    container_name: minitwit-cache
+    networks:
+      - main
+    ports:
+      - '6379:6379'
+\end{minted}
 
 And added arguments for the secrets in \texttt{.github/workflows/Provision-and-Deploy.yaml} file:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \FunctionTok{build{-}args}\KeywordTok{: }\CharTok{|}
-% \NormalTok{            DB\_CONN=$\{\{ secrets.DB\_CONNECTION \}\}}
-% \NormalTok{            REDIS\_CONN=$\{\{ secrets.REDIS\_CONNECTION \}\}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    build-args: |
+            DB_CONN=${{ secrets.DB_CONNECTION }}
+            REDIS_CONN=${{ secrets.REDIS_CONNECTION }}
+\end{minted}
 
 and testing if it's the image is deployed in.\texttt{github/workflows/Testing.yaml}:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \AttributeTok{ }\KeywordTok{{-}}\AttributeTok{ }\FunctionTok{name}\KeywordTok{:}\AttributeTok{ Set up redis cache}
-% \AttributeTok{        }\FunctionTok{run}\KeywordTok{:}\AttributeTok{ docker compose {-}f docker{-}compose.yaml up cache {-}d}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{yaml}
+     - name: Set up redis cache
+       run: docker compose -f docker-compose.yaml up cache -d
+\end{minted}
 
 Specified it in \texttt{.infrastructure/servers/swm-server/docker-compose.yaml:}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \AttributeTok{  }\FunctionTok{cache}\KeywordTok{:}
-% \AttributeTok{    }\FunctionTok{image}\KeywordTok{:}\AttributeTok{ redis:7.2.4}
-% \AttributeTok{    }\FunctionTok{networks}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ main}
-% \AttributeTok{    }\FunctionTok{ports}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\StringTok{\textquotesingle{}6379:6379\textquotesingle{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{yaml}
+      cache:
+      image: redis:7.2.4
+      networks:
+        - main
+      ports:
+        - '6379:6379'
+\end{minted}
 
 In \texttt{Dockerfile.frontend} we added:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \AttributeTok{ARG REDIS\_CONN=""}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{text}
+    ARG REDIS_CONN=""
+\end{minted}
 
 and:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \AttributeTok{ENV Minitwit\_ConnectionStrings\_\_MinitwitDatabase=$\{REDIS\_CONN\}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{bash}
+    ENV Minitwit_ConnectionStrings__MinitwitDatabase=${REDIS_CONN}
+\end{minted}
 
 In \texttt{Minitwit/Minitwit.csproj} we added two packages:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \OperatorTok{\textless{}}\NormalTok{PackageReference Include}\OperatorTok{=}\StringTok{"Microsoft.Extensions.Caching.StackExchangeRedis"}\NormalTok{ Version}\OperatorTok{=}\StringTok{"7.0.18"} \OperatorTok{/\textgreater{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{xml}
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.18" />
+\end{minted}
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-%  \OperatorTok{\textless{}}\NormalTok{PackageReference Include}\OperatorTok{=}\StringTok{"StackExchange.Redis"}\NormalTok{ Version}\OperatorTok{=}\StringTok{"2.7.33"} \OperatorTok{/\textgreater{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{xml}
+    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+\end{minted}
 
 And in the \texttt{Minitwit/Program.cs} we changed up the code for how to handle the cached sessions:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddStackExchangeRedisCache}\OperatorTok{(}\NormalTok{options }\OperatorTok{=\textgreater{}}
-% \OperatorTok{\{}
-% \NormalTok{     options}\OperatorTok{.}\FunctionTok{Configuration} \OperatorTok{=}\NormalTok{ builder}\OperatorTok{.}\FunctionTok{Configuration}\OperatorTok{.}\FunctionTok{GetConnectionString}\OperatorTok{(}\StringTok{"Redis"}\OperatorTok{);}
-% \NormalTok{   options}\OperatorTok{.}\FunctionTok{InstanceName} \OperatorTok{=} \StringTok{"minitwit\_"}\OperatorTok{;}
-% \OperatorTok{\});}
+\begin{minted}{csharp}
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+	    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "minitwit_";
+    });
 
-% \NormalTok{builder}\OperatorTok{.}\FunctionTok{Services}\OperatorTok{.}\FunctionTok{AddSession}\OperatorTok{(}\NormalTok{options }\OperatorTok{=\textgreater{}}
-% \OperatorTok{\{}
-% \NormalTok{    options}\OperatorTok{.}\FunctionTok{IdleTimeout} \OperatorTok{=}\NormalTok{ TimeSpan}\OperatorTok{.}\FunctionTok{FromMinutes}\OperatorTok{(}\DecValTok{5}\OperatorTok{);}
-% \NormalTok{    options}\OperatorTok{.}\FunctionTok{Cookie}\OperatorTok{.}\FunctionTok{HttpOnly} \OperatorTok{=} \KeywordTok{true}\OperatorTok{;}
-% \NormalTok{    options}\OperatorTok{.}\FunctionTok{Cookie}\OperatorTok{.}\FunctionTok{IsEssential} \OperatorTok{=} \KeywordTok{true}\OperatorTok{;}
-% \OperatorTok{\});}
-% \end{Highlighting}
-% \end{Shaded}
+    builder.Services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(5);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
+\end{minted}
 
 In the \texttt{Minitwit/appsettings.Development.json} file we specified the connection string and the port:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-% \ErrorTok{"ConnectionStrings":} \FunctionTok{\{}
-%     \DataTypeTok{"MinitwitDatabase"}\FunctionTok{:} \StringTok{"Host=127.0.0.1;Port=5432;Username=minitwit{-}sa;Password=123;Database=minitwit"}
-%     \StringTok{"MinitwitDatabase"}\ErrorTok{:} \StringTok{"Host=127.0.0.1;Port=5432;Username=minitwit{-}sa;Password=123;Database=minitwit"}\FunctionTok{,}
-%     \DataTypeTok{"Redis"}\FunctionTok{:} \StringTok{"localhost:6379"}
-%   \FunctionTok{\}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{json}
+    "ConnectionStrings": {
+        "MinitwitDatabase": "Host=127.0.0.1;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit"
+        "MinitwitDatabase": "Host=127.0.0.1;Port=5432;Username=minitwit-sa;Password=123;Database=minitwit",
+        "Redis": "localhost:6379"
+    }
+\end{minted}
 
 and lastly we added this code to \texttt{docker-compose.yaml}:
 
-% \begin{Shaded}
-% \begin{Highlighting}[]
-
-% \AttributeTok{  }\FunctionTok{cache}\KeywordTok{:}
-% \AttributeTok{    }\FunctionTok{image}\KeywordTok{:}\AttributeTok{ redis:7.2.4}
-% \AttributeTok{    }\FunctionTok{container\_name}\KeywordTok{:}\AttributeTok{ minitwit{-}cache}
-% \AttributeTok{    }\FunctionTok{networks}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ main}
-% \AttributeTok{    }\FunctionTok{ports}\KeywordTok{:}
-% \AttributeTok{      }\KeywordTok{{-}}\AttributeTok{ }\StringTok{\textquotesingle{}6379:6379\textquotesingle{}}
-% \end{Highlighting}
-% \end{Shaded}
+\begin{minted}{yaml}
+  cache:
+    image: redis:7.2.4
+    container_name: minitwit-cache
+    networks:
+      - main
+    ports:
+      - '6379:6379'
+\end{minted}
 
 After this we pulled to main again and tried to log in to Minitwit again and could then see that it still didn't work and that we had the same problem as before, that we got the logged in message but still wasn't properly logged in. After all the time we put on trying to make this work we decided that the problem itself isn't so essential that we should put anymore time on it. We therefore revoked all of the changes we previously made and went back to having one replica for the frontend instead.
 
