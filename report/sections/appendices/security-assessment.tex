@@ -35,7 +35,7 @@ To help us identify possible threats to the system, we have consulted the OWASP 
     \item Server Side Request Forgery
 \end{enumerate}
 \subsubsection{Risk Scenario Construction}
-Based on the information gathered from the two previous steps, we have constructed the following risk scenarios and outlined which of the OWASP top 10 risks affect the scenario:
+Based on the information gathered from the two previous steps, we have constructed the following risk scenarios and outlined which of the OWASP top 10 risks that would affect the described scenarios:
 \begin{enumerate}
     \item \textbf{\underline{URL Tampering}}
 
@@ -75,7 +75,7 @@ Based on the information gathered from the two previous steps, we have construct
 \end{enumerate}
 \subsection{Risk Analysis}
 \subsubsection{Likelihood Analysis}
-Likelihood will be graded on the following scale:\{Rare, Unlikely, Possible, Likely, Certain\} with \textit{Rare} being the least severe and \textit{Certain} being the most severe.
+Likelihood will be graded on the following scale: \{Rare, Unlikely, Possible, Likely, Certain\} with \textit{Rare} being the least severe and \textit{Certain} being the most severe.
 \begin{enumerate}
     \item \textbf{\underline{URL Tampering}}
 
@@ -101,7 +101,7 @@ Likelihood will be graded on the following scale:\{Rare, Unlikely, Possible, Lik
     We have been conscious to ensure that secrets are either kept locally where only ourselves can access them, such as secret keys for logging into the servers, or used the "environment secrets" tool on GitHub, if secrets had to be accessed from the repository. Additionally, we have not made generic passwords, but rather used random password generators to get stronger passwords. Therefore we deemed the likelihood to be \textbf{Rare}.
 \end{enumerate}
 \subsubsection{Impact Analysis}
-Impact will be graded on the following scale:\{Insignificant, Negligible, Marginal, Critical, Catastrophic\} with \textit{Insignificant} being the least severe and \textit{Catastrophic} being the most severe.
+Impact will be graded on the following scale: \{Insignificant, Negligible, Marginal, Critical, Catastrophic\} with \textit{Insignificant} being the least severe and \textit{Catastrophic} being the most severe.
 \begin{enumerate}
     \item \textbf{\underline{URL Tampering}}
 
@@ -136,7 +136,7 @@ Based on the points made about the likelihood and impact of each risk scenario, 
 \subsubsection{Action Plan}
 We discussed the results of the security assessment and decided on focusing on the risk scenarios placed in the red area of the risk matrix.
 
-For the open ports, we went through our firewall settings and scanned our main server's IP address to see the current open ports. We tried to close the port we had open for Prometheus, but got conflicting results, when we checked the firewall istelf compared to the scan of the IP address.
+For the open ports, we went through our firewall settings, which were handled by the Ansible ufw module. Here we scanned our main server's IP address with \textit{nmap} to see the current open ports. We tried to close the port we had open for Prometheus, but got conflicting results when we checked the firewall itself compared to the scan of the IP address. The cause of this is expected to be Docker bypassing the firewall through IP tables.
 
 For the log injection, we went through our code and ensured that all user data was sanitized before added to the log, such that it could not be tampered with.
 
