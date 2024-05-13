@@ -2,29 +2,47 @@
 
 % All dependencies of your *ITU-MiniTwit* systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
-A comprehensive list of tools containing the full reasoning for their use, can be found in appendix \ref{appendix:decision-log}.\\
-
+A comprehensive list of tools containing the full reasoning for their use, can be found in appendix \ref{TODO}
 
 \begin{longtable}{|p{0.3\textwidth}|p{0.2\textwidth} | p{0.4\textwidth}|}
     \hline
-         Server host & \href{https://docs.digitalocean.com/}{Digital Ocean} & Digital Ocean (DO) is a cloud hosting service, which provides server hosting, database hosting, and a command line interface tool (doctl), which can be used in to automatically create and drop droplets (VMs).\\
-         &&\\
-         && We have chosen DO primarily due to the fact that it was recommended by the lecturer, but kept using digital ocean, due to the great documentation and online resources.\\
-         \hline
-         Database & \href{https://www.postgresql.org/docs/}{PostgreSQL} & PostgreSQL is an open-source relational database management system known for its extensibility, and adherence to SQL standarts.\\
-         &&\\
-         && Since the majority of developers in the team have previous experience with PostgreSQL, we chose to migrate from SQLite to PostgreSQL.\\
-         \hline
-         Database migration & \href{https://www.digitalocean.com/products/managed-databases}{Digital Ocean} & Digital Ocean is a cloud hosting service that provides a database hosting service, which is well documented.\\ % TODO
-         \hline
-         CI/CD & \href{https://docs.github.com/en/actions}{Github Actions} & Github actions is a CI/CD service, that allows you to automate tasks such as building, testing, and deploying your code when certain conditions are met. Github Actions is well documented, and it is quite seamless to configure secrets and refer to them in a .yaml file.\\
-         &&\\
-         && Due to it's integration with Github, we chose Github Actions, as we already use Github to store our code repository. Furthermore, it collaborates well with other tools used in the project such as Digital Ocean.\\
-         \hline
-         Monitoring & \href{https://grafana.com/}{Grafana} & Grafana is an open source monitoring service that can visualise monitoring metrics. This is done by configuring dashboards with charts and graphs, which visualise your system's performance.\\
-         &&\\
-         && Initially, we opted for \href{https://opentelemetry.io/}{OpenTelemetry} since it is a widely used metrics exporter and collector. However, due to difficulties with the setup, we switched to Grafana.\\ %TODO
-         \hline
+    \textbf{Purpose} & \textbf{Technology/Tool} & \textbf{Description}\\
+    \hline
+    Work log & \href{https://www.notion.so/help/guides/category/documentation}{Notion} & Notion is a web hosted workspace, that allows users to collaboratively manage projects, notes, and other types of documents in a markdown format in real-time.\\
+    &&\\
+    && Initially, we opted to maintain our work log on Github wikis due to it's integration with the repository. However, this approach proved cumbersome as the process of making pull requests and seeking reviews for minor log updates became overly complex. Consequently, we transitioned to Notion.\\ 
+    \hline
+    Programming language & \href{https://learn.microsoft.com/en-us/dotnet/csharp/}{C\#} &
+    C\#  is an object-oriented programming language, that supports development for a variety of application types such as web-application.\\
+    && \\
+    && For refactorisation of the application we chose C\# , due to it's widespread use in the industry, making it very well documented. Furthermore, the familiarity of object-oriented programming paradigms among developers served as a supplementary factor in the decision\\
+    \hline
+    Micro Web-Framework & \href{https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio}{Razor Pages} & Razor pages is a simple web application programming model provided by ASP.NET. It uses C\# and simple markup syntax in order to build web pages, and is generally the recommended framework for page-focused, serverside web applications in .NET core.\\
+    && \\
+    && Initially, we attempted using Scriban, due to it's superior efficiency in terms of speed and memory usage, and it's compatibility with html templates. However, due to the lack of online resources, we switched to Razor Pages, which offered simpler configuration and an abundance of documentation, but required more code rebasing.\\
+    \hline
+    Database Connection & \href{https://learn.microsoft.com/en-us/ef/core/}{Entity Framework} & Entity Framework serves as a object-relational mapper, which allows developers to work with databases using .NET objects, and eliminates the need for data-access code, by using LINQ in order to interact with the data. Furthermore, EF Core supports a plethora of database engines, such as PostgreSQL and SQLite.\\
+    &&\\
+    && We opted for Entity Framework due to the reasons stated above.\\
+    \hline
+    Server host & \href{https://docs.digitalocean.com/}{Digital Ocean} & Digital Ocean (DO) is a cloud hosting service, which provides server hosting, database hosting, and a command line interface tool (doctl), which can be used in to automatically create and drop droplets (VMs).\\
+    &&\\
+    && We have chosen DO primarily due to the fact that it was recommended by the lecturer, but kept using digital ocean, due to the great documentation and online resources.\\
+    \hline
+    Database & \href{https://www.postgresql.org/docs/}{PostgreSQL} & PostgreSQL is an open-source relational database management system known for its extensibility, and adherence to SQL standards.\\
+    &&\\
+    && Since the majority of developers in the team have previous experience with PostgreSQL, we chose to migrate from SQLite to PostgreSQL.\\
+    \hline
+    Database migration & \href{https://www.digitalocean.com/products/managed-databases}{Digital Ocean} & Digital Ocean is a cloud hosting service that provides a database hosting service, which is well documented.\\ % TODO
+    \hline
+    CI/CD & \href{https://docs.github.com/en/actions}{Github Actions} & Github actions is a CI/CD service, that allows you to automate tasks such as building, testing, and deploying your code when certain conditions are met. Github Actions is well documented, and it is quite seamless to configure secrets and refer to them in a .yaml file.\\
+    &&\\
+    && Due to it's integration with Github, we chose Github Actions, as we already use Github to store our code repository. Furthermore, it collaborates well with other tools used in the project such as Digital Ocean.\\
+    \hline
+    Monitoring & \href{https://grafana.com/}{Grafana} & Grafana is an open source monitoring service that can visualise monitoring metrics. This is done by configuring dashboards with charts and graphs, which visualise your system's performance.\\
+    &&\\
+    && Initially, we opted for \href{https://opentelemetry.io/}{OpenTelemetry} since it is a widely used metrics exporter and collector. However, due to difficulties with the setup, we switched to Grafana.\\ %TODO
+    \hline
     Metrics collector & \href{https://prometheus.io/docs/}{Prometheus} & Prometheus is a monitoring and alerting toolkit, that scrapes and stores data from a specific application, alerting developers of abnormalities in the system.\\
     &&\\
     && The only requirement we had for a metrics collector was: It had to collaborate with Grafana. Furthermore, this tool was recommended by our lecturer.\\
@@ -33,28 +51,28 @@ A comprehensive list of tools containing the full reasoning for their use, can b
     \hline
     Linter & \href{https://pre-commit.com/}{Pre-commit} & Pre-Commit is a framework for managing pre-commit hooks. This can be used for automatically fixing code format and removing debug statements.\\
     &&\\
-     && 
-         \hline
-         Linter & \href{https://github.com/hadolint/hadolint}{Hadolint} & \\
-         \hline
-         Linter & \href{https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format}{Dotnet-Format} & Dotnet-Format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can configured in an .editorconfig file.\\
-         &&\\
-         && We chose Dotnet-Format since this linter enforces C\# coding conventions, and the primary programming language used in this project is C\#.\\
-         \hline
-         Logging & \href{https://grafana.com/}{Grafana} & \\
-         \hline
-         Logging & \href{https://grafana.com/docs/loki/latest/}{Grafana Loki} & \\
-         \hline
-         Logging & Promtail & \\
-         \hline
-         Provisioning & Vagrant & \\
-         \hline
-         Configuration management & Ansible & \\
-         \hline
-         Infrastructure as code & Pulumi & \\
-         \hline
-         Scaling & Docker swarm & \\
-         \hline
-         Update strategy & Rolling updates & \\
-         \hline
+    && This tool was used in order \\
+    \hline
+    Linter & \href{https://github.com/hadolint/hadolint}{Hadolint} & \\
+    \hline
+    Linter & \href{https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format}{Dotnet-Format} & Dotnet-Format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can configured in an .editorconfig file.\\
+    &&\\
+    && We chose Dotnet-Format since this linter enforces C\# coding conventions, and the primary programming language used in this project is C\#.\\
+    \hline
+    Logging & \href{https://grafana.com/}{Grafana} & \\
+    \hline
+    Logging & \href{https://grafana.com/docs/loki/latest/}{Grafana Loki} & \\
+    \hline
+    Logging & Promtail & \\
+    \hline
+    Provisioning & Vagrant & \\
+    \hline
+    Configuration management & Ansible & \\
+    \hline
+    Infrastructure as code & Pulumi & \\
+    \hline
+    Scaling & Docker swarm & \\
+    \hline
+    Update strategy & Rolling updates & \\
+    \hline
 \end{longtable}
