@@ -50,8 +50,9 @@ For \textit{Log Injection}, we made sure to sanitize user inputs, as they previo
 
 With \textit{Depricated Dependencies}, we chose to integrate the tool \textit{dependabot} into our CI/CD pipeline to watch out for outdated dependencies in our main repository. This helps us ensure that an adversary is not able to take advantage of the team not being aware of vulnerabilities in variuos of the used tools.
 
-\textit{Open Ports} was deemed the biggest risk, as this was most likely the reason for us being hacked, which we have written more about in section \ref{section_hacked} about being hacked. We used the tool \textit{nmap} to check for open ports, where we then tried to close the open port used for Prometheus. It was unclear if we were successful as \textit{nmap} kept showing the port as open despite seeing the firewall configuration saying otherwise on the server itself.
-We also attempted to switch from HTTP to HTTPS, as it would strengthen the overall security of our application, but here we ran into several bureaucratic issues with changing the name servers for the domain, which resulted in us running out of time for the task. Ideally, this would have been accomplished to further harden our system's security.
+\textit{Open Ports} was deemed the biggest risk, as this was most likely the reason for us being hacked, which we have written about in further details in section \ref{section_hacked}. We used the tool \textit{nmap} to check for open ports, which showed the following:
+
+where we then tried to close the open port used for Prometheus. It was unclear if we were successful as \textit{nmap} kept showing the port as open despite seeing the firewall configuration saying otherwise on the server itself.
 
 \subsection{Scaling}
 We use horizontal scaling, as we wanted a more resilient application and limit downtime when deploying. We settled on Docker Swarm over building a custom load balancer or adopting Kubernetes, primarily due to its simplicity and compatibility with the existing system setup. To implement Docker swarm we created a new server in our system and added a manager and a worker node to the swarm.
