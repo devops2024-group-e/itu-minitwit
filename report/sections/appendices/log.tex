@@ -306,7 +306,7 @@ We did the changes by in the following order:
     \item But this change has to be reflected on the \texttt{Follower.cs} model as well. So we had to remove the possibility that the \texttt{WhoId} and \texttt{WhomId} could be \texttt{null}
 \end{enumerate}
 
-\section{Week 4 - 23/02/24}
+\subsection{Week 4 - 23/02/24}
 \label{log:week4}
 
 Task: Finish creating an API for the simulator to call. Setup CI/CD.
@@ -438,7 +438,7 @@ Steps taken:
     \end{enumerate}
 \end{enumerate}
 
-\section{Week 5 - 01/03/24}
+\subsection{Week 5 - 01/03/24}
 \label{log:week5}
 
 Task: Clean repository. Abstract database. Include testing in our
@@ -503,7 +503,7 @@ The workflow prints the following in the deploy step:
     \item After PR approval and merge, add script changes to the server manually
 \end{enumerate}
 
-\section{Week 6 - 08/03/24}
+\subsection{Week 6 - 08/03/24}
 \label{log:week6}
 
 Tasks: Add monitoring. Fix unresolved issues from last week. Refine
@@ -511,7 +511,7 @@ logging.
 
 Steps taken:
 
-\section{Beginning Migrate Database}
+\subsubsection{Beginning Migrate Database}
 \label{log:beginning-migrate-database}
 
 \begin{enumerate}
@@ -544,7 +544,7 @@ Steps taken:
     \item We(or I, Andreas) got tired and decided to not perform the migration until we have more time\ldots{}
 \end{enumerate}
 
-\section{Add monitoring:}
+\subsubsection{Add monitoring:}
 \label{log:add-monitoring}
 
 \begin{enumerate}
@@ -618,7 +618,7 @@ adding monitoring to the backend. The following code got added to:
 % \end{Highlighting}
 % \end{Shaded}
 
-\section{Fix unresolved issues from last week:}
+\subsubsection{Fix unresolved issues from last week:}
 \label{log:fix-unresolved-issues-from-last-week}
 
 \subsection{Fix implementation of database abstraction layer so integration tests does not fail:}
@@ -633,7 +633,7 @@ the sql statements should be changes to another sql language.
 \subsection{Fix testing workflow visualisation in github actions:}
 \label{log:fix-testing-workflow-visualisation-in-github-actions}
 
-\section{Refine logging:}
+\subsubsection{Refine logging:}
 \label{log:refine-logging}
 
 This task was downprioritized during the week, but these initial links
@@ -643,7 +643,7 @@ for inspiration has been found.
 \url{https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-7.0\#log-category}
 \url{https://stackify.com/csharp-logging-best-practices/}
 
-\section{Week 7 - 15/03/24}
+\subsection{Week 7 - 15/03/24}
 \label{log:week7}
 
 Tasks: Add logging. Provide feedback for group f.~Add configurations
@@ -755,7 +755,7 @@ and create the other servers. Here are the steps:
     \item Getting tired and frustrated at vagrant\ldots{} having a discussion with the group about vagrant the following friday
 \end{itemize}
 
-\section{Week 8 - 22/03/24}
+\subsection{Week 8 - 22/03/24}
 \label{log:week8}
 
 Tasks: Add three different linters. Setup Code Climate. Setup SonarQube.
@@ -1128,7 +1128,7 @@ Reducing the number of iterations (from 600000 to 6000) results in a much reduce
 
 Changing the hashing algorithm to SHA512 and changing the number of iterations from 600000 to 210000 as recommended for this algorithm we yields a greater variance in response time, meaning that the fastest responses are faster, and the slowest responses are bout as slow as before. However, due to the fact that we need to be able to hash our already stored passwords, we will have to create a switch in the code, s.t. we would be able to introduce this new password hashing algorithm.
 
-\section{Week 9 - 05/04/24}
+\subsection{Week 9 - 05/04/24}
 \label{log:week9}
 
 Tasks: Add scaling to the project, migrate database. Add pre-commit to
@@ -1473,7 +1473,7 @@ If we didn't get the \texttt{“SHA512”} string, then we run the former hash a
 
 We check in the switch statement whether the password include the \texttt{“SHA512”} string at the start in order to determine whether to run the current or the former hashing algorithm.
 
-\section{Week 10 - 12/04/24}
+\subsection{Week 10 - 12/04/24}
 \label{log:week10}
 
 Tasks: Switch Digital Ocean account, continue adding scaling to the project, add documentation and mapping of the system
@@ -1503,7 +1503,7 @@ We added very short descriptions to each element in the diagram as separate text
 
 In order to get cleaner code we have refactored one of the methods in the FollowerController to receive follow/unfollow information via a method parameter instead of using a streamreader and other weird stuff.
 
-\section{Week 11 - 19/04/24}
+\subsection{Week 11 - 19/04/24}
 \label{log:week11}
 
 Tasks: Add one more frontend replica. Make security assessment. Handled
@@ -1725,7 +1725,7 @@ The security assessment can be seen in a separate document.
 We got hacked as described in another document. We deleted our docker
 swarm servers with Pulumi to get rid of it.
 
-\section{Week 12 - 26/04/24}
+\subsection{Week 12 - 26/04/24}
 \label{week12}
 
 Tasks: Harden the system based on our security assessment from last week. Prepare diagrams of the system.
