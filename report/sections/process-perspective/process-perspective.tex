@@ -7,7 +7,8 @@ In order to introduce continuous integration and continuous deployment to the pr
 \begin{table}[H]
     \tiny
     \centering
-    \begin{tabular}{l|l}
+    \begin{tabular}{|l|l|}
+        \hline
         \textbf{Workflow file} & \textbf{Function}\\
         \hline
         \textit{AutomaticBuildRelease.Backend} &  Bumps the patch versioning of the \textit{MinitwitSimulatorAPI} project and creates a release on the github repository.\\
@@ -17,6 +18,7 @@ In order to introduce continuous integration and continuous deployment to the pr
         \textit{Testing} & Runs all tests on the infrastructure, the frontend, and the backend, when a PR is created, modified, and reopened.\\
         \textit{Provision-and-Deploy} & Provision and deploy swarm and observability servers using Ansible for server provision and Pulumi for infrastructure as code, on pushes to main.\\
         \textit{latex-build} & Creates a report PDF when changes have been made to the report.
+        \hline
     \end{tabular}
     \caption{The function of the workflows}
     \label{tab:workflows}
