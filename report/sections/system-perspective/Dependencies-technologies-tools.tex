@@ -3,7 +3,7 @@
 
 % All dependencies of your *ITU-MiniTwit* systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
-A comprehensive list of tools containing the full reasoning for their use, can be found in appendix \ref{appendix:decision-log}
+A comprehensive list of tools containing the full reasoning for their use, can be found in appendix \ref{appendix:decision-log}.
 
 \begin{longtable}{|p{0.3\textwidth}|p{0.2\textwidth} | p{0.4\textwidth}|}
     \hline
@@ -16,11 +16,11 @@ A comprehensive list of tools containing the full reasoning for their use, can b
     Programming language & \href{https://learn.microsoft.com/en-us/dotnet/csharp/}{C\#} &
     C\#  is an object-oriented programming language, that supports development for a variety of application types such as web-application.\\
     && \\
-    && For refactorisation of the application we chose C\# , due to it's widespread use in the industry, making it very well documented. Furthermore, the familiarity of object-oriented programming paradigms among developers served as a supplementary factor in the decision\\
+    && For refactorisation of the application we chose C\#, due to it's widespread use in the industry, making it very well documented. Furthermore, the familiarity of object-oriented programming paradigms among developers served as a supplementary factor in the decision\\
     \hline
     Micro Web-Framework & \href{https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio}{Razor Pages} & Razor pages is a simple web application programming model provided by ASP.NET. It uses C\# and simple markup syntax in order to build web pages, and is generally the recommended framework for page-focused, serverside web applications in .NET core.\\
     && \\
-    && Initially, we attempted using Scriban, due to it's superior efficiency in terms of speed and memory usage, and it's compatibility with html templates. However, due to the lack of online resources, we switched to Razor Pages, which offered simpler configuration and an abundance of documentation, but required more code rebasing.\\
+    && Initially, we attempted using Scriban, due to it's superior efficiency in terms of speed and memory usage, along with it's compatibility with html templates. However, due to the lack of online resources, we switched to Razor Pages, which offered simpler configuration and an abundance of documentation, but required more code rebasing.\\
     \hline
     Database Connection & \href{https://learn.microsoft.com/en-us/ef/core/}{Entity Framework} & Entity Framework serves as a object-relational mapper, which allows developers to work with databases using .NET objects, and eliminates the need for data-access code, by using LINQ in order to interact with the data. Furthermore, EF Core supports a plethora of database engines, such as PostgreSQL and SQLite.\\
     &&\\
@@ -30,13 +30,13 @@ A comprehensive list of tools containing the full reasoning for their use, can b
     &&\\
     && We have chosen DO primarily due to the fact that it was recommended by the lecturer, but kept using digital ocean, due to the great documentation and online resources.\\
     \hline
-    Database & \href{https://www.postgresql.org/docs/}{PostgreSQL} & PostgreSQL is an open-source relational database management system known for its extensibility, and adherence to SQL standards.\\
+    Database & \href{https://www.postgresql.org/docs/}{PostgreSQL} & PostgreSQL is an open source relational database management system known for its extensibility, and adherence to SQL standards.\\
     &&\\
     && Since the majority of developers in the team have previous experience with PostgreSQL, we chose to migrate from SQLite to PostgreSQL.\\
     \hline
     Database migration & \href{https://www.digitalocean.com/products/managed-databases}{Digital Ocean} & Digital Ocean is a cloud hosting service that provides a database hosting service, which is well documented.\\ % TODO
     \hline
-    CI/CD & \href{https://docs.github.com/en/actions}{Github Actions} & Github actions is a CI/CD service, that allows you to automate tasks such as building, testing, and deploying your code when certain conditions are met. Github Actions is well documented, and it is quite seamless to configure secrets and refer to them in a .yaml file.\\
+    CI/CD & \href{https://docs.github.com/en/actions}{Github Actions} & Github actions is a CI/CD service, that allows you to automate tasks such as building, testing, and deploying your code when certain conditions are met. Github Actions is well documented, and it is quite seamless to configure secrets and refer to them in a \texttt{.yaml} file.\\
     &&\\
     && Due to it's integration with Github, we chose Github Actions, as we already use Github to store our code repository. Furthermore, it collaborates well with other tools used in the project such as Digital Ocean.\\
     \hline
@@ -60,11 +60,11 @@ A comprehensive list of tools containing the full reasoning for their use, can b
     &&\\
     && We chose this tool as multiple actions can be integrated into one hook. As we were tasked with integrating 3 linters into the system.\\
     \hline
-    Linter & \href{https://github.com/hadolint/hadolint}{Hadolint} & Hadolint is an open-source Dockerfile linter, that enforces best practices when building docker images.\\
+    Linter & \href{https://github.com/hadolint/hadolint}{Hadolint} & Hadolint is an open source Dockerfile linter, that enforces best practices when building docker images.\\
     &&\\
     && Due to the nature of the server setup, we have quite a few Dockerfiles. Therefore, we found it fitting to have a Dockerfile linter. From the alternative presented (\href{https://github.com/RedCoolBeans/dockerlint}{Dockerlinter}) Hadolint seems to be the more popular one as it is haskell based rather than node.js based.\\
     \hline
-    Linter & \href{https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format}{Dotnet-Format} & Dotnet-Format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can configured in an .editorconfig file.\\
+    Linter & \href{https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format}{Dotnet-Format} & Dotnet-Format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can configured in an \texttt{.editorconfig} file.\\
     &&\\
     && We chose Dotnet-Format since this linter enforces C\# coding conventions, and the primary programming language used in this project is C\#.\\
     \hline
@@ -76,11 +76,11 @@ A comprehensive list of tools containing the full reasoning for their use, can b
     &&\\
     && In order to implement a logging stack we were interested in using a tool that was compatible with Grafana. Loki ensures this compatibility, as it is from the Grafana toolbox.\\
     \hline
-    Infrastructure as code & \href{https://www.pulumi.com/docs/}{Pulumi} & Pulumi is an open-source infrastructure as code SDK, that enables creation, deployment and management of infrastructure for a cloud service.\\
+    Infrastructure as code & \href{https://www.pulumi.com/docs/}{Pulumi} & Pulumi is an open source infrastructure as code SDK, that enables creation, deployment and management of infrastructure for a cloud service.\\
     &&\\
-    &&  We wanted to move away from using Vagrant to deploy as it lacks collaborative features, making development difficult. We considered 3 alternatives to Vagrant: Terraform, Pulumi, and OpenTofu. In the End we picked Pulumi, as it doesn't introduce a new programming language, it is open-source, and it works well with CI/CD tools.\\
+    &&  We wanted to move away from using Vagrant to deploy as it lacks collaborative features, making development difficult. We considered 3 alternatives to Vagrant: Terraform, Pulumi, and OpenTofu. In the End we picked Pulumi, as it doesn't introduce a new programming language, it is open source, and it works well with CI/CD tools.\\
     \hline
-    Configuration management & \href{https://docs.ansible.com/}{Ansible} & Ansible is an open-source automation software used to configure and deploy systems using Ansible playbooks written in .yaml files.\\
+    Configuration management & \href{https://docs.ansible.com/}{Ansible} & Ansible is an open source automation software used to configure and deploy systems using Ansible playbooks written in \texttt{.yaml} files.\\
     &&\\
     && We chose Ansible as it provides an easy setup and does not require a new client to be installed on our application servers. Furthermore the configurations is described in yaml thereby not introducing new languages.\\
     \hline
