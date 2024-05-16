@@ -576,16 +576,16 @@ adding monitoring to the backend. The following code got added to:
 \subsubsection{Fix unresolved issues from last week:}
 \label{log:fix-unresolved-issues-from-last-week}
 
-\subsection{Fix implementation of database abstraction layer so integration tests does not fail:}
+\subsubsection{Fix implementation of database abstraction layer so integration tests does not fail:}
 \label{log:fix-implementation-of-database-abstraction-layer-so-integration-tests-does-not-fail}
 
 Integrations tests are failing for the implementations. Might be because
 the sql statements should be changes to another sql language.
 
-\subsection{Fix integrations tests:}
+\subsubsection{Fix integrations tests:}
 \label{log:fix-integrations-tests}
 
-\subsection{Fix testing workflow visualisation in github actions:}
+\subsubsection{Fix testing workflow visualisation in github actions:}
 \label{log:fix-testing-workflow-visualisation-in-github-actions}
 
 \subsubsection{Refine logging:}
@@ -646,7 +646,7 @@ We followed this youtube video: \url{https://www.youtube.com/watch?v=pnycjg_9M-o
     \item At first we weren't getting the correct logs written by Amalie, that we knew should be displayed. We found out that this was due to following the tutorial too closely. Instead of getting our logs from /var/log/*, we had to get them from /var/lib/docker/containers. Adding the right path was the fix to our problem and we could immediately see the correct logs appearing in Grafana.
 \end{itemize}
 
-\subsection{Adding configurations management:}
+\subsubsection{Adding configurations management:}
 \label{log:adding-configurations-management}
 
 \subsubsection{Setup an Ansible control node}
@@ -835,7 +835,7 @@ issues:
 	                community.docker:<version>
             \end{minted}
 
-            \item Rollback to use \texttt{ansible} instead of \texttt{ansible-core} and replace the docker compose module with a \texttt{shell} module and run \texttt{docker\ compose\ up\ -d}
+            \item Rollback to use \texttt{ansible} instead of \texttt{ansible-core} and replace the docker compose module with a \texttt{shell} module and run \texttt{docker compose up\ -d}
 
             \begin{itemize}
                 \item This works!!!!!
@@ -894,7 +894,8 @@ Installing precommit:
 \begin{minted}{bash}
     brew install pre-commit
     pre-commit sample-config > .pre-commit-config.yaml
-    dotnet tool install -g dotnet-format --version "7.*" --add-source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json
+    dotnetformaturl="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet7/nuget/v3/index.json"
+    dotnet tool install -g dotnet-format --version "7.*" --add-source $dotnetformaturl
 \end{minted}
 
 We also add the different linters to the config.yaml file.
@@ -1063,7 +1064,7 @@ devcontainer.
 
 Steps taken:
 
-\subsection{Adding pre-commit to devcontainer}
+\subsubsection{Adding pre-commit to devcontainer}
 \label{log:adding-pre-commit-to-devcontainer}
 
 This is a task from last week that we didn't manage to finish, as it turned out to be more complicated than we first thought. It has been solved by creating a dockerfile in the devcontainer that install first .net sdk 8, python, hadolint and pre-commit.
@@ -1085,7 +1086,8 @@ Problems i ran into:
 
     \item I could tell that my team members couldn't use the devcontainer because they have another cpu, so i found a command that could fix this. The command \texttt{dpkg\ -\/-print-architecture} finds the correct cpu architecture such that the image can run on different systems.
     \begin{minted}{bash}
-        wget -q -O /bin/hadolint "https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Linux-$(dpkg --print-architecture)"
+    hadourl="https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Linux-$(dpkg --print-architecture)"
+    wget -q -O /bin/hadolint $hadourl
     \end{minted}
 
     \item I didn't have the permission to use hadolint, so i gave the permission in the image with the following command:
@@ -1094,7 +1096,7 @@ Problems i ran into:
     \end{minted}
 \end{itemize}
 
-\subsection{Adding scaling to the project}
+\subsubsection{Adding scaling to the project}
 \label{log:adding-scaling-to-the-project}
 
 \begin{itemize}
@@ -1117,30 +1119,29 @@ Problems i ran into:
 
 We created a new server in the program
 \begin{minted}{bash}
-    $ apt install docker.io
-    # the ip address here is the private ip for the manager server. (found on digital ocean)
-    $ docker swarm init --advertise-addr  192.168.1.6
-    Swarm initialized: current node (qvekvmy3xdpftrheics2kt05v) is now a manager.
+$ apt install docker.io
+# the ip address here is the private ip for the manager server. (found on digital ocean)
+$ docker swarm init --advertise-addr  192.168.1.6
+Swarm initialized: current node (qvekvmy3xdpftrheics2kt05v) is now a manager.
 
-    To add a worker to this swarm, run the following command:
+To add a worker to this swarm, run the following command:
+    docker swarm join --token SWMTKN-1-5bsq5avkideo5oqx6n4b5oth1nhqyg96msjp2igiome125afai-8xk1y3dmymf75zgcia1yrpj2c 192.168.1.6:2377
 
-        docker swarm join --token SWMTKN-1-5bsq5avkideo5oqx6n4b5oth1nhqyg96msjp2igiome125afai-8xk1y3dmymf75zgcia1yrpj2c 192.168.1.6:2377
-
-    To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 \end{minted}
 
 Now we have a swarm manager and a single worker in the swarm
 
 We have found that the lack of documentation has made it very difficult to start working with this task.
 
-\subsection{Adding update strategy}
+\subsubsection{Adding update strategy}
 \label{log:adding-update-strategy}
 
 We followed the tutorial linked to us in the lecture slides: \url{https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/}
 
 Here we quickly realized that in order to implement an update strategy, we would need a deployed service, which was a part of the `adding scaling to the project' task. We therefore decided to leave this task until the deployment had been implemented and instead fixed the issue about adding UI test for the date formation.
 
-\subsection{Migrating Database}
+\subsubsection{Migrating Database}
 \label{log:migrating-database}
 
 This is the second try, essentially, in migrating the database. We have now noticed a nice and useful guide on how to do it created by \href{https://docs.digitalocean.com/products/databases/postgresql/how-to/import-databases/}{DigitalOcean}.
@@ -1186,21 +1187,21 @@ Running the above resulted in an error saying that the \texttt{minitwit-sa} user
 
 Now that we try to run it again, it fails with the following error:
 \begin{minted}{sql}
-    pg_restore: error: could not execute query: ERROR:  relation "follower" already exists
-    Command was: CREATE TABLE public.follower (
-        who_id integer NOT NULL,
-        whom_id integer NOT NULL
-    );
+pg_restore: error: could not execute query: ERROR:  relation "follower" already exists
+Command was: CREATE TABLE public.follower (
+    who_id integer NOT NULL,
+    whom_id integer NOT NULL
+);
 
 
-    pg_restore: error: could not execute query: ERROR:  permission denied for schema public
-    Command was: ALTER TABLE public.follower OWNER TO "minitwit-sa";
+pg_restore: error: could not execute query: ERROR:  permission denied for schema public
+Command was: ALTER TABLE public.follower OWNER TO "minitwit-sa";
 
-    pg_restore: error: could not execute query: ERROR:  relation "latest" already exists
-    Command was: CREATE TABLE public.latest (
-        id integer NOT NULL,
-        command_id integer NOT NULL
-    );
+pg_restore: error: could not execute query: ERROR:  relation "latest" already exists
+Command was: CREATE TABLE public.latest (
+    id integer NOT NULL,
+    command_id integer NOT NULL
+);
 \end{minted}
 
 Looking at this could mean that we should refresh that database. So we delete the database and add it again. We then run our script again, and it now fails with the permission denied.
@@ -1226,33 +1227,14 @@ After trying to insert and delete entries with the \texttt{minitwit-sa} we saw t
     GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "minitwit-sa";
 \end{minted}
 
-The final script now looks like this:
-
-\begin{minted}{bash}
-    #!/bin/bash
-
-    ssh devops "/bin/bash -c 'ufw allow in on eth0 to any port 5432'"
-
-    # First we need to run pg_dump for the old database server and save the dump file
-    echo "Fetch Database dump from source database"
-    pg_dump -h <web server ip> -U minitwit-sa -p 5432 -Fc minitwit > ./minitwit-dump.pgsql
-
-    # Secondly we need to run pg_restore on the new database with the dump file that we have just saved
-    echo "Restoring database on target database"
-    pg_restore -d <DO URI connectionstring> --no-owner ./minitwit-dump.pgsql # look like postgresql://doadmin:AVNS_rJEiEqnQXPwDK4_N_mb@minitwit-test-db-01-7035523-do-user-15869692-0.c.db.ondigitalocean.com:25060/minitwit?sslmode=require
-
-    psql -h minitwit-test-db-01-7035523-do-user-15869692-0.c.db.ondigitalocean.com -p 25060 -U doadmin -d minitwit -c 'GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO "minitwit-sa";'
-    psql -h minitwit-test-db-01-7035523-do-user-15869692-0.c.db.ondigitalocean.com -p 25060 -U doadmin -d minitwit -c 'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "minitwit-sa";'
-
-    ssh devops "/bin/bash -c 'ufw deny in on eth0 to any port 5432'"
-\end{minted}
+The final script can be seen at \url{https://github.com/devops2024-group-e/itu-minitwit/commit/fd57686dedf9ebc366f628f52a010f662c1373a5}
 
 \subsubsection{Performing the migration}
 \label{log:performing-the-migration}
 
 This is a TODO.
 
-\subsection{Save grafana dashboards and datasource files in repo}
+\subsubsection{Save grafana dashboards and datasource files in repo}
 \label{log:save-grafana-dashboards-and-datasource-files-in-repo}
 
 So since we are going to move our digital ocean account due to the money expiring, then it will have to move the board. This step here is going to be a simple one. We will have the files that is going to keep the layout. However, the solution will not provide automation to change the endpoints of the datasource. But with this setup it should be easy to change a url and then push it again to see the live dashboards with data.
@@ -1266,7 +1248,9 @@ We then export our existing dashboards to json files and save it in the \texttt{
 After that we declare our datasource files. We can extract them as json by doing the following:
 
 \begin{minted}{bash}
-    mkdir -p data_sources && curl -s "http://<ip of monitoring server>/api/datasources"  -u admin:admin|jq -c -M '.[]'|split -l 1 - data_sources/
+    mkdir -p data_sources && \
+        curl -s "http://<ip of monitoring server>/api/datasources"  -u admin:admin | \
+        jq -c -M '.[]' | split -l 1 - data_sources/
 \end{minted}
 
 We then copy them to the \texttt{provisioning/datasources} directory and change them to yaml.
@@ -1517,11 +1501,13 @@ and:
 In \texttt{Minitwit/Minitwit.csproj} we added two packages:
 
 \begin{minted}{xml}
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.18" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis"
+        Version="7.0.18" />
 \end{minted}
 
 \begin{minted}{xml}
-    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+    <PackageReference Include="StackExchange.Redis"
+        Version="2.7.33" />
 \end{minted}
 
 And in the \texttt{Minitwit/Program.cs} we changed up the code for how to handle the cached sessions:
