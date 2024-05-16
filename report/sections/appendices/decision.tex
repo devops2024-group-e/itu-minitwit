@@ -2,28 +2,28 @@
 \label{appendix:decision-log}
 \subsection{Language: C\#}
 
-We decided to use C\# for refactorization. We did this due to C\# being object-oriented and a stable language. C\# is used by many companies and is therefore known to many. Because C\# is used by many there also exists good documentation easily accessible.
-There exist both micro web-frameworks and more advanced front-end frameworks for C\# in case we want to develop the application further.
+We decided to use C\# for refactorisation. We did this due to C\# being object-oriented and a stable language. C\# is used by many companies and is therefore known to many. Because C\# is used by many there also exists good documentation easily accessible.
+There exist both micro web-frameworks and more advanced frontend frameworks for C\# in case we want to develop the application further.
 C\# is also a part of the .NET platform, which allows for language interoperability and access to the Core framework used for web applications.
 
-\subsection{Micro web-framework: Razor Pages}
+\subsection{Micro Web Framework: Razor Pages}
 
-Initially, we decided to work with Scriban as the micro web-framework, as opposed to e.g. Razor Pages, because the refactorization from the original version of Minitwit seemed more direct in Scriban. This is due to the fact that Scriban works with \texttt{.html} templates, like we have in the original version, whereas Razor Pages integrates C\# in HTML, which would lead to more “merging” of code.
+Initially, we decided to work with Scriban as the micro web-framework, as opposed to e.g. Razor Pages, because the refactorisation from the original version of Minitwit seemed more direct in Scriban. This is due to the fact that Scriban works with \texttt{.html} templates, like we have in the original version, whereas Razor Pages integrates C\# in HTML, which would lead to more “merging” of code.
 Furthermore, Scriban's parser and render are both faster and use less memory than other templates.
 After trying to find information on Scriban, the group had trouble figuring out how to set it up properly. Comparing the amount of documentation for Scriban versus Razor Pages, we decided to switch the micro web-framework to Razor Pages, as this would allow us to start working with the material faster.
-Razor Pages also has simple context of structure and is flexible to fit with any application. Another reason for choosing Razor Pages is that each page is self-contained, with the view and code organized together. This makes Razor Pages more organized and easier to work with. With the documentation, flexibility and the organization, Razor Pages felt like a good choice for a micro web-framework.
+Razor Pages also has simple context of structure and is flexible to fit with any application. Another reason for choosing Razor Pages is that each page is self-contained, with the view and code organised together. This makes Razor Pages more organised and easier to work with. With the documentation, flexibility and the organisation, Razor Pages felt like a good choice for a micro web-framework.
 
-\subsection{Work log: Notion}
+\subsection{Work Log: Notion}
 
-To start of with, we decided to keep our work log/diary in GitHub, since this automatically provides us with useful information, e.g. dates and authors. Additionally, the work log will follow the code completely, and we can see which code belongs with what log entries. However, we realized after a few weeks that this did not work as intended. The reason was that the action of making a pull request and requesting a review after just a tiny addition to the log seemed too complicated.
+To start of with, we decided to keep our work log/diary in GitHub, since this automatically provides us with useful information, e.g. dates and authors. Additionally, the work log will follow the code completely, and we can see which code belongs with what log entries. However, we realised after a few weeks that this did not work as intended. The reason was that the action of making a pull request and requesting a review after just a tiny addition to the log seemed too complicated.
 As a consequence, we ended up keeping our log in Notion and then moving it to GitHub afterwards, which was double the work and definitely not the intention from the start.
 Therefore, we decided to properly move the log to Notion, which also has the advantage that everyone can follow each other's writing in real time and collaborate in writing simultaneously.
 
-\subsection{Database connection: Entity Framework}
+\subsection{Database Connection: Entity Framework}
 
 We have chosen Entity Framework (EF) for our database connection as it works well with .NET. EF has the possibility of generating a model from an already existing database and lets us load data using C\# classes. Additionally, EF supports LINQ and works well with SQLite.
 
-\subsection{Server host: Digital Ocean}
+\subsection{Server Host: Digital Ocean}
 
 We have chosen Digital Ocean as our cloud hosting service, as it is a cheap cloud hosting service that allows for developers to have quite a lot of control over their server hosting. Furthermore, popular cloud hosting alternatives have a tendency to be more expensive, however typically not by a lot. Even though this increased expense often comes with a lot of additional configuration options, some of the students in the group have limited experience working with cloud servers, wherefore we believed Digital Ocean would be a good choice, as it is free, and there are plenty of guides and good documentation.
 
@@ -33,7 +33,7 @@ For CI/CD we chose GitHub Actions. The reason is that we are already using the G
 
 \subsection{Database: SQLite to PostgreSQL}
 
-We chose to use PostgreSQL when we had to start creating our Dockerfile. We looked for a Microsoft or another official Docker image from a good source (that is from a big, known company, that we can trust). But we could not find one and we saw that Helge used something he created himself. Thus, we had to choose among some of the databases that has been containerized. That were the first two requirements. The third requirement is that we need a relational database. This excluded well-known document databases like MongoDB. At the end we had two good options. Microsoft SQL and PostgreSQL.
+We chose to use PostgreSQL when we had to start creating our Dockerfile. We looked for a Microsoft or another official Docker image from a good source (that is from a big, known company, that we can trust). But we could not find one and we saw that Helge used something he created himself. Thus, we had to choose among some of the databases that has been containerised. That were the first two requirements. The third requirement is that we need a relational database. This excluded well-known document databases like MongoDB. At the end we had two good options. Microsoft SQL and PostgreSQL.
 
 Feature-wise they offer the same things. They are both good at handling concurrent requests and have transactions. They both offer the possibility to add indexes, and to have multiple servers act as a cluster in order to handle even more requests.
 
@@ -41,36 +41,36 @@ We chose the solution that we have had experience with before. Both in our previ
 
 \subsection{Monitoring: Grafana}
 
-Looking for a tool to visualize the metrics of dotnet applications, and maybe other tools in our tech stack as well, required a versatile tool. That is, we needed to have a tool where we could search and visualize the current status of our application. Obviously, a lot of tools can handle this. For that reason it is nice to see that the tool OpenTelemetry is announced and widely used - both as a collector and exporter.
+Looking for a tool to visualise the metrics of dotnet applications, and maybe other tools in our tech stack as well, required a versatile tool. That is, we needed to have a tool where we could search and visualise the current status of our application. Obviously, a lot of tools can handle this. For that reason it is nice to see that the tool OpenTelemetry is announced and widely used - both as a collector and exporter.
 
 Thus, a requirement is that the monitoring system has to be able to integrate with OpenTelemetry in order to make it easier to change monitoring system if required.
 
 Furthermore, it would be prefered to have an open source and free of charge product that is being maintained.
 
-\subsection{Metrics collector: Prometheus}
+\subsection{Metrics Collector: Prometheus}
 
 There has not been an elaborate thought process about the choice of Prometheus. It is open source and can collaborate with the OpenTelemetry exporter. Additionally, it is able to connect to the Docker metrics as well.
 
-\subsection{Database migration: Digital Ocean}
+\subsection{Database Migration: Digital Ocean}
 
 We have considered hosting a separate server on Digital Ocean, and using Digital Ocean's own database service. We considered Digital Ocean's options, due to the wide array of databases that they support. However, when researching about troubleshooting, and problems using this solution, we found very few answers from crowd sourced platforms such as StackOverflow, and a lot of guides from the Digital Ocean docs themselves.
 
-\subsection{Logging stack: Grafana + Loki + Promtail}
+\subsection{Logging Stack: Grafana + Loki + Promtail}
 
 We believe that the amount of applications used can get very bloated. Therefore, we have decided to use Grafana-Loki, as we have already setup Grafana last week when implementing monitoring.
 
-\subsection{Quality of code analysis: SonarCloud}
+\subsection{Quality of Code Analysis: SonarCloud}
 
-SonarCloud is a cloud based code analysis service, which can be integrated into a GitHub repository, in order to analyse the code in said repository. We added this software as it was an exercise in the course.
+SonarCloud is a cloud-based code analysis service, which can be integrated into a GitHub repository, in order to analyse the code in said repository. We added this software as it was an exercise in the course.
 
-\subsection{Linters: Pre-commit + Hadolint + Dotnet-Format}
-Pre-Commit is a framework for managing pre-commit hooks. This can be used for automatically fixing code format and removing debug statements.We chose this tool as multiple actions can be integrated into one hook. As we were tasked with integrating 3 linters into the system.
+\subsection{Linters: Pre-commit + Hadolint + Dotnet-format}
+Pre-commit is a framework for managing pre-commit hooks. This can be used for automatically fixing code formatting and removing debug statements. We chose this tool as multiple actions can be integrated into one hook. As we were tasked with integrating three linters into the system.
 
-Hadolint is an open-source Dockerfile linter, that enforces best practices when building docker image. Due to the nature of the server setup, we have quite a few Dockerfiles. Therefore, we found it fitting to have a Dockerfile linter. From the alternative presented (\href{https://github.com/RedCoolBeans/dockerlint}{Dockerlinter}) Hadolint seems to be the more popular one as it is haskell based rather than node.js based.
+Hadolint is an open source Dockerfile linter, that enforces best practices when building a Docker image. Due to the nature of the server setup, we have quite a few Dockerfiles. Therefore, we found it fitting to have a Dockerfile linter. From the alternative presented (\href{https://github.com/RedCoolBeans/dockerlint}{Dockerlinter}), Hadolint seems to be the more popular one as it is Haskell-based rather than Node.js-based.
 
-Dotnet-Format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can configured in an .editorconfig file.
+Dotnet-format is a formatting tool, which is included in the .NET 6 SDK and onwards. It applies style preferences to a project which can be configured in an \texttt{.editorconfig} file.
 
-\subsection{Configuration management: Ansible}
+\subsection{Configuration Management: Ansible}
 
 We realise now that we need a tool that easily manages the desired state of our running VMs. Especially now that we are going to create more VMs and that we have to move our infrastructure before the 19th of April to another Digital Ocean account.
 
@@ -83,7 +83,7 @@ For that reason we need a simple way to have a configuration of our VMs defined 
     \item Does not require us to learn a new language
 \end{itemize}
 
-We have been looking at different players in the market. Especially we have been looking at the CNCF and asking colleagues. Here are some of the products we have looked at:
+We have been looking at different players in the market. Especially we have been looking at the Cloud Native Computing Foundation (CNCF) and asking colleagues. Here are some of the products we have looked at:
 
 \begin{itemize}
     \item Ansible
@@ -105,7 +105,7 @@ The downside of this setup is the complexity. It seems like a lot of things that
 
 In order to create a configuration we would have to create what they call cookbooks. This is written in Ruby as far as we can see. The nice thing about this is that there are testing frameworks implemented, which provides a way to be sure that the configuration works and configures as we intend it. However, while experimenting with Vagrant it has become obvious that our group does not have sufficient knowledge in Ruby and we would currently rather invest time in becoming better at using the observability tools that we have, rather than learning a new language.
 
-From a security point of view Chef uses some of the protocols that we have already opened ports for. That is, it uses standard HTTP protocol to communicate between the server and nodes, and authorizes through certificates.
+From a security point of view Chef uses some of the protocols that we have already opened ports for. That is, it uses standard HTTP protocol to communicate between the server and nodes, and authorises through certificates.
 
 \subsubsection{Ansible}
 
@@ -123,11 +123,11 @@ Looking a bit further into it is seems like the way to automate the configuratio
 
 As with Chef, Ansible also has their own term for a configuration, i.e. a playbook. The term is from American sports, where each task in the playbook is a play that constitutes the playbook. Each play in the playbook is idempotent. Thus, it seems to provide simple idempotence, which is fine in most cases, but it some cases it may require some more advanced idempotence.
 
-\subsubsection{Why do we choose Ansible?}
+\subsubsection{Why Do We Choose Ansible?}
 
 We chose Ansible because the setup seems simple. It provides the features that we need i.e. an easy setup that does not require a new client to be installed on our application servers. Configurations described in YAML and not in some other language like Ruby or Python.
 
-\subsection{Adding E2E and integration tests early}
+\subsection{Adding End-to-End and Integration Tests Early}
 
 Early in the project process we were given some integrations and end-to-end (E2E) tests for the frontend and Simulator API, respectively. This was beneficial when we had to develop our system to begin with, but we quickly realised that in order to be comfortable, and to ensure that our future changes in the software did not break our interface with the simulator, then we had to add them to our CI pipeline via the GitHub Actions workflows.
 
@@ -188,7 +188,7 @@ As it is a copy of Terraform it has some of the same features and downsides. Thi
 
 Another downside is the fact that we are unsure whether there is support for Digital Ocean as a provider. We would think that there would be, but it is not clear and we will need to spend time looking into it.
 
-\subsubsection{Write C\# code with Digital Ocean client}
+\subsubsection{Write C\# Code With Digital Ocean Client}
 
 This option may not be the best option. Compared to the others we will have a tight coupling to Digital Ocean. This will make it challenging for us to change provider in the future, if that is needed. This will also require us to keep an eye out for the changes to the general API and make adjustments to the custom client that we would have to make. We could also find a client that is made for us, written in C\#, but then we would have to find one that is being maintained.
 
@@ -221,7 +221,7 @@ We need to add horizontal scaling to our system.
     \item Limited guides on interactions between Docker Swarm and Ansible.
 \end{itemize}
 
-\subsubsection{Building our own redundant load balancer}
+\subsubsection{Building Our Own Redundant Load Balancer}
 \begin{itemize}
     \item Time-consuming to create
     \item Less information on how to build it
@@ -236,6 +236,6 @@ We need to add horizontal scaling to our system.
     \item Has a GUI
 \end{itemize}
 
-\subsection{Upgrade/Update Strategy: Rolling updates}
+\subsection{Upgrade/Update Strategy: Rolling Updates}
 
 Rolling updates is the default update strategy in Docker Swarm and therefore the one we have chosen so as to not make the implementation more complicated and “home-made” than it needs to be.
