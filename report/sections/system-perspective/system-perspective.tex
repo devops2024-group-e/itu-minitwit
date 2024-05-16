@@ -5,16 +5,16 @@ Figure \ref{fig:systemoverview} provides an overview of our system infrastructur
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{images/system-overview3.png}
-    \caption{Overview of the system}
+    \caption{Overview of the system infrastructure}
     \label{fig:systemoverview}
 
 \end{figure}
-The system includes a single Virtual Private Network with an IP 192.168.1.0/24. Within this network, we operate a database cluster consisting of a single node. This node is connected to the Docker Swarm cluster, featuring both a manager and a worker node.
+The system includes a single Virtual Private Network with an IP range 192.168.1.0/24. Within this network, we operate a database cluster consisting of a single node. This node is connected to the Docker Swarm cluster, featuring both a manager and a worker node.
 
-Both our monitoring and cluster servers are visibly exposed to the internet. Additionally, the database server is accessible from the internet but has constraints to only talk to our servers and therefore not accept requests from any other host.
+Both our monitoring and cluster servers are visibly exposed to the internet. Additionally, the database server is accessible from the internet, but has a constraint of only talking to our servers and therefore not accept requests from any other host.
 
 \subsection{Interactions of Subsystems}
-Our system consists of two main subsystems, namely the REST SimulatorAPI and the webapplication Minitwit. As can be seen in figure \ref{fig:subsystem-interaction}, The SimulatorAPI and Minitwit subsystems are similar in structure. However when looking at the processes behind the structures in Figure \ref{fig:frontend-interaction} and \ref{fig:backend-interaction} it is apparant that these two differ a great deal.
+Our system consists of two main subsystems, namely the REST SimulatorAPI and the webapplication Minitwit. As can be seen in Figure \ref{fig:subsystem-interaction}, the SimulatorAPI and Minitwit subsystems are similar in structure. However, when looking at the processes behind the structures in Figure \ref{fig:frontend-interaction} and \ref{fig:backend-interaction}, it is apparant that these two differ a great deal.
 
 \begin{figure}[H]
     \begin{center}
@@ -24,9 +24,9 @@ Our system consists of two main subsystems, namely the REST SimulatorAPI and the
     \label{fig:subsystem-interaction}
 \end{figure}
 
-Because the two main subsystems are inherently different we wanted to implement a database abstraction layer such that we had a uniform way of querying the database. Therefore, both controllers use the Repository package from the subsystem Minitwit.Infrastructure to query the database using the Repository pattern\cite{repo_pattern}.
+Because the two main subsystems are inherently different, we wanted to implement a database abstraction layer such that we had a uniform way of querying the database. Therefore, both controllers use the Repository package from the subsystem Minitwit.Infrastructure to query the database using the Repository pattern\cite{repo_pattern}.
 %cite
-Due to the different specifications for the Minitwit and SimulatorAPI, the controller for Minitwit is more complex. As can be seen in figure \ref{fig:frontend-interaction} the controller for Minitwit has to present information in a GUI, whereas the SimulatorAPI only calls the repository to fetch the user messages, as can be seen in figure \ref{fig:backend-interaction}.
+Due to the different specifications for the Minitwit and SimulatorAPI, the controller for Minitwit is more complex. As can be seen in Figure \ref{fig:frontend-interaction}, the controller for Minitwit has to present information in a GUI, whereas the SimulatorAPI only calls the repository to fetch the user messages, as can be seen in Figure \ref{fig:backend-interaction}.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Fronted-Sequence-Diagram.png}
@@ -44,7 +44,7 @@ Due to the different specifications for the Minitwit and SimulatorAPI, the contr
 
 \input{sections/system-perspective/Dependencies-technologies-tools.tex}
 
-\subsection{Current state}
+\subsection{Current State}
 Table \ref{current-table} describes the status of the system after the simulator has been shut down.
 \begin{table}[H]
     \begin{center}
@@ -69,4 +69,4 @@ Table \ref{current-table} describes the status of the system after the simulator
     \caption{System metrics}
     \label{current-table}
 \end{table}
-Furthermore, the static analysis tool Sonarcloud assesses that the quality of the overall code is good (see appendix \ref{appendix:sonarcloud}).
+Furthermore, the static analysis tool SonarCloud assesses that the quality of the overall code is good (see appendix \ref{appendix:sonarcloud}).

@@ -62,7 +62,7 @@ Task: Our task was to refactor minitwit to C\# and RazorPages.
 
 Steps taken:
 
-\subsubsection{Refactorization:}
+\subsubsection{Refactorisation}
 \label{log:refactorization}
 
 \textbf{index.cshtml:}
@@ -88,16 +88,16 @@ Steps taken:
 
 \begin{itemize}
     \item Created public list for messages
-    \item We copied the original .css file and added in the new .css
+    \item We copied the original \texttt{.css} file and added in the new \texttt{.css}
     \item Checking if there is messages and printing them
     \item We tried to install codegenerator - it didn't work. Line of command:
-    \item We created login.cshtml and linked it to page and model LoginModel
+    \item We created \texttt{login.cshtml} and linked it to page and model LoginModel
 \end{itemize}
 
 \textbf{Layout:}
 
 \begin{enumerate}
-    \item We created the `Shared' folder under `Pages' to hold UI that we wish to use across different pages. Here we then added \texttt{\_Layout.cshtml} and rewrote the code in \texttt{layout.html} from the python source code to match the correct format of `.cshtml' files to encompass the same UI format.
+    \item We created the `Shared' folder under `Pages' to hold UI that we wish to use across different pages. Here we then added \texttt{\_Layout.cshtml} and rewrote the code in \texttt{layout.html} from the python source code to match the correct format of \texttt{.cshtml} files to encompass the same UI format.
     \item We added the \texttt{style.css} file from the original project and  added it to the `wwwroot' folder under the name \texttt{main.css}.  This was done to connect the html and css properly, so that the refactored version of the website now matched the original one in terms of looks.
 \end{enumerate}
 
@@ -140,8 +140,8 @@ Steps taken:
     \item Trying to add switches between the different timelines. Trying to make it show different titles based on user.
 
     \begin{itemize}
-        \item I cannot make it work by ``just'' adding another if/else in time index.cs file.
-        \item I don't where the title ``Public'' on public timeline gets set as it says ``Public Timeline'' in the switch in index.cs file.
+        \item I cannot make it work by ``just'' adding another if/else in time \texttt{index.cs} file.
+        \item I don't where the title ``Public'' on public timeline gets set as it says ``Public Timeline'' in the switch in \texttt{index.cs} file.
         \item Turns out the connections we had made before relied on getting the path and doing some operations on that, but that is the wrong way to get the path. You just get the path as input to the \texttt{OnGet} method, and from there I make a simple switch and send it on to the html.
         \item A lot of help came from: \url{https://www.learnrazorpages.com/}
 
@@ -163,7 +163,7 @@ Steps taken:
 \end{itemize}
 
 \subsubsection{Connecting to a
-database:}
+Database}
 \label{log:connecting-to-a-database}
 
 \begin{enumerate}
@@ -176,8 +176,8 @@ database:}
     \item Injected dependencies - adding services to container
 \end{enumerate}
 
-\subsubsection{Issues with creating
-endpoints}
+\subsubsection{Issues with Creating
+Endpoints}
 \label{log:issues-with-creating-endpoints}
 
 Since we tried to use the ``pure'' razor template we had some trouble trying to create the exact same endpoints that was present in the \texttt{{[}minitwit.py{]}(http://minitwit.py)} and \texttt{minitwit\_tests.py}. We tried to create our own custom routing via:
@@ -197,7 +197,7 @@ Task: Our task was to create a simulation API and deploy the program
 
 Steps taken:
 
-\subsubsection{Setting up a basic VM in Digital Ocean using Vagrant}
+\subsubsection{Setting Up a Basic VM in Digital Ocean Using Vagrant}
 \label{log:setting-up-a-basic-vm-in-digital-ocean-using-vagrant}
 
 \begin{enumerate}
@@ -215,7 +215,7 @@ Steps taken:
     \item We started making the vagrantfile more personalized to our program and included what we need. Like dotnet, sqlite etc.
 \end{enumerate}
 
-\subsubsection{Setting up a simulation API}
+\subsubsection{Setting Up a Simulation API}
 \label{log:setting-up-a-simulation-api}
 
 \begin{enumerate}
@@ -243,7 +243,7 @@ Possible issues if recreating:
     \item Note that when running the \texttt{scaffold-db.sh}, it may transform the model classes to use \texttt{byte{[}{]}} types instead of the original \texttt{string}.
 \end{enumerate}
 
-\subsubsection{Managing the database through the dotnet App}
+\subsubsection{Managing the Database Through the Dotnet App}
 \label{log:managing-the-database-through-the-dotnet-app}
 
 In the process of refactoring from python to C\#, we still had some
@@ -296,7 +296,7 @@ Deploy Minitwit
 
 Steps taken:
 
-\subsubsection{API:}
+\subsubsection{API}
 \label{log:api}
 
 \begin{enumerate}
@@ -304,7 +304,7 @@ Steps taken:
     \item We also missed that every HTTP request called a method called \texttt{UpdateLatest} as the first order of business. We rewrote this function to C\# where it adds the current command ID to the data base under the table `Latest'.
 \end{enumerate}
 
-\subsubsection{CI/CD:}
+\subsubsection{CI/CD}
 \label{log:cicd}
 
 \begin{enumerate}
@@ -415,10 +415,10 @@ workflow.
 
 Steps taken:
 
-\subsubsection{Clean repository:}
+\subsubsection{Clean Repository}
 \label{log:clean-repository}
 
-\subsubsection{Abstract database:}
+\subsubsection{Abstract Database}
 \label{log:abstract-database}
 
 \begin{itemize}
@@ -436,7 +436,7 @@ Steps taken:
     \end{itemize}
 \end{enumerate}
 
-\subsubsection{Add testing to workflow:}
+\subsubsection{Add Testing to Workflow}
 \label{log:add-testing-to-workflow}
 
 We started by creating a ``skeleton'' workflow that would only run when a pull request was opened, which consisted of setting up both python and Dotnet along with their needed dependencies to then test that the correct versions had been chosen.
@@ -447,7 +447,7 @@ Test for other parts of the system will be added at a later stage, when they are
 
 We then played around with the best option for which types of pull requests should trigger this workflow. After several tries, we ended up with having no restrictions on the type, as being too specific caused the workflow not to be activated when it needed to be. This means that closing a PR and opening it again reruns the workflow whether it passed or not the first time and likewise for other situations. This ensured that we always tested the new code before merging it into main.
 
-\subsubsection{Fix last step of workflow: deploy step}
+\subsubsection{Fix Last Step of Workflow: Deploy Step}
 \label{log:fix-last-step-of-workflow-deploy-step}
 
 The workflow prints the following in the deploy step:
@@ -508,7 +508,7 @@ Steps taken:
     \item We(or I, Andreas) got tired and decided to not perform the migration until we have more time\ldots{}
 \end{enumerate}
 
-\subsubsection{Add monitoring:}
+\subsubsection{Add Monitoring}
 \label{log:add-monitoring}
 
 \begin{enumerate}
@@ -529,7 +529,7 @@ Steps taken:
     \end{enumerate}
 \end{enumerate}
 
-\subsubsection{Add monitoring code to backend:}
+\subsubsection{Add Monitoring Code to Backend}
 \label{log:add-monitoring-code-to-backend}
 
 Added:
@@ -549,7 +549,7 @@ Added to Program.cs:
     app.UseOpenTelemetryPrometheusScrapingEndpoint();
 \end{minted}
 
-\subsubsection{Add monitoring code to frontend:}
+\subsubsection{Add Monitoring Code to Frontend}
 \label{log:add-monitoring-code-to-frontend}
 
 Adding monitoring to the frontend entailed the exact same steps as
@@ -573,22 +573,22 @@ adding monitoring to the backend. The following code got added to:
     app.UseOpenTelemetryPrometheusScrapingEndpoint();
 \end{minted}
 
-\subsubsection{Fix unresolved issues from last week:}
+\subsubsection{Fix Unresolved Issues From Last Week}
 \label{log:fix-unresolved-issues-from-last-week}
 
-\subsubsection{Fix implementation of database abstraction layer so integration tests does not fail:}
+\subsubsection{Fix Implementation of Database Abstraction Layer so Integration Tests Does Not Fail}
 \label{log:fix-implementation-of-database-abstraction-layer-so-integration-tests-does-not-fail}
 
 Integrations tests are failing for the implementations. Might be because
 the sql statements should be changes to another sql language.
 
-\subsubsection{Fix integrations tests:}
+\subsubsection{Fix Integration Tests}
 \label{log:fix-integrations-tests}
 
-\subsubsection{Fix testing workflow visualisation in github actions:}
+\subsubsection{Fix Testing Workflow Visualisation in GitHub Actions}
 \label{log:fix-testing-workflow-visualisation-in-github-actions}
 
-\subsubsection{Refine logging:}
+\subsubsection{Refine Logging}
 \label{log:refine-logging}
 
 This task was downprioritized during the week, but these initial links
@@ -606,7 +606,7 @@ management.
 
 Steps taken:
 
-\subsubsection{Provide feedback for group f:}
+\subsubsection{Provide Feedback for Group F}
 \label{log:provide-feedback-for-group-f}
 
 \begin{itemize}
@@ -621,7 +621,7 @@ Steps taken:
 
 Very good job all in all!!
 
-\subsubsection{Add logging:}
+\subsubsection{Add Logging}
 \label{log:add-logging}
 
 Adding log messages to the code:
@@ -635,7 +635,7 @@ Adding log messages to the code:
     _logger.LogDebug($"FollowUnfollowUser returns Forbid because user is not logged in");
 \end{minted}
 
-\subsubsection{Setting up Loki and Promtail:}
+\subsubsection{Setting Up Loki and Promtail}
 \label{log:setting-up-loki-and-promtail}
 
 We followed this youtube video: \url{https://www.youtube.com/watch?v=pnycjg_9M-o\&t=664s\&ab_channel=Thetips4you} that explained how to set up Loki and Promtail to grafana alongside this link: \url{https://ghazanfaralidevops.medium.com/grafana-loki-promtail-complete-end-to-end-project-d698aaa636d6}
@@ -646,7 +646,7 @@ We followed this youtube video: \url{https://www.youtube.com/watch?v=pnycjg_9M-o
     \item At first we weren't getting the correct logs written by Amalie, that we knew should be displayed. We found out that this was due to following the tutorial too closely. Instead of getting our logs from /var/log/*, we had to get them from /var/lib/docker/containers. Adding the right path was the fix to our problem and we could immediately see the correct logs appearing in Grafana.
 \end{itemize}
 
-\subsubsection{Adding configurations management:}
+\subsubsection{Adding Configurations Management}
 \label{log:adding-configurations-management}
 
 \subsubsection{Setup an Ansible control node}
@@ -659,8 +659,8 @@ We followed this youtube video: \url{https://www.youtube.com/watch?v=pnycjg_9M-o
 \end{itemize}
 
 \hypertarget{make-file-to-config-management-server-called-do_ssh_key}{%
-\subsubsection{Make file to config management server called
-do\_ssh\_key}\label{make-file-to-config-management-server-called-do_ssh_key}}
+\subsubsection{Make File to Config Management Server Called
+\texttt{do\_ssh\_key}}\label{make-file-to-config-management-server-called-do_ssh_key}}
 
 First I added the following line to \texttt{.bashrc}
 
@@ -678,7 +678,7 @@ Then I added the following to the
     \item We add the previous public key to DO
 \end{itemize}
 
-\subsubsection{Create and push Ansible playbooks}
+\subsubsection{Create and Push Ansible Playbooks}
 \label{log:create-and-push-ansible-playbooks}
 
 Our strategy is to create two initial playbooks. One for our monitoring
@@ -715,7 +715,7 @@ Add UI testing. Add Integration testing. Add end to end testing.
 
 Steps taken:
 
-\subsubsection{Continuation of setting up Ansible}
+\subsubsection{Continuation of Setting Up Ansible}
 \label{log:continuation-of-setting-up-ansible}
 
 After having a talk with the other group members, we decided to not
@@ -754,7 +754,7 @@ issues:
         \item Create directory at \texttt{.github/actions/\textless{}custom-action-name\textgreater{}}
         \item Create a file called \texttt{action.yaml}
         \item Create a new dockerfile that builds on top of the docker image we have created. It only needs to create an entrypoint that executes the \texttt{{[}entrypoint.sh{]}(http://entrypoint.sh)} script
-        \item Create the \texttt{{[}entrypoint.sh{]}(http://entrypoint.sh)} script which contains a call to the \texttt{ansible-playbook} command to run the playbook. The playbook will be provided as a argument defined by the action.yaml.
+        \item Create the \texttt{{[}entrypoint.sh{]}(http://entrypoint.sh)} script which contains a call to the \texttt{ansible-playbook} command to run the playbook. The playbook will be provided as a argument defined by the \texttt{action.yaml}.
     \end{itemize}
     \item Create a new github workflow that uses the custom github action. We do so by referencing the path
 
@@ -828,7 +828,7 @@ issues:
             \item Ensure that the module is typed correctly - running workflow again fails
             \item Try install \texttt{ansible-core} that has no collections installed to be sure that it uses the collection installed through the \texttt{requirement.yaml} - running workflow again fails
             \item Try move the installed modules to a known directory - running workflow again still fails with cannot find the module
-            \item Reference the collection in the web-playbook.yaml - running workflow again stil fails with cannot find the module:
+            \item Reference the collection in the \texttt{web-playbook.yaml} - running workflow again stil fails with cannot find the module:
 
             \begin{minted}{yaml}
                 collections:
@@ -887,7 +887,7 @@ issues:
     \end{itemize}
 \end{itemize}
 
-\subsubsection{Add three different linters:}
+\subsubsection{Add Three Different Linters}
 \label{log:add-three-different-linters}
 
 Installing precommit:
@@ -898,7 +898,7 @@ Installing precommit:
     dotnet tool install -g dotnet-format --version "7.*" --add-source $dotnetformaturl
 \end{minted}
 
-We also add the different linters to the config.yaml file.
+We also add the different linters to the \texttt{config.yaml} file.
 
 We now want to add \texttt{hadolint}. We do so first by adding the
 hadolint to the \texttt{.pre-commit-config.yaml}.
@@ -916,7 +916,7 @@ installed dotnet sdk 8 and ran it again. Now it works!
 In order to have hooks that run automatically when we commit, we run
 \texttt{install\ pre-commit}.
 
-\subsubsection{Setup code climate:}
+\subsubsection{Setup Code Climate}
 \label{log:setup-code-climate}
 
 \begin{itemize}
@@ -924,7 +924,7 @@ In order to have hooks that run automatically when we commit, we run
     \item \url{https://codeclimate.com/github/devops2024-group-e/itu-minitwit}
 \end{itemize}
 
-\subsubsection{Setup SonarQube:}
+\subsubsection{Setup SonarQube}
 \label{log:setup-sonarqube}
 
 In order to analyze the software quality and technical debt of our project, we had to set up SonarQube as one of the tasks for the project work this week.
@@ -945,7 +945,7 @@ After the set up was complete, I tried to figure out how to add code coverage si
 
 I discussed this with some of the members of the team and we decided to let it be for now, since the original task was just to set up SonarCloud and to instead bring it up for discussion in our next meeting to see whether we feel like code coverage in SonarCloud is a necessity in our project work.
 
-\subsubsection{Add UI testing with Selenium:}
+\subsubsection{Add UI Testing with Selenium}
 \label{log:add-ui-testing-with-selenium}
 First we want to add Selenium to the test project along with the package for the ChromeDriver so we can do tests in Chrome browser. We also add WebDriverManager, as that seems important for getting the webdrivers to work in github actions, as well as WaitExtensions, so we can specify wait time when waiting for pageload etc.
 
@@ -971,13 +971,13 @@ All three initialise a Chrome driver and make it navigate to the localport, wher
 
 When the tests have been written the UI testing setup is also included in github actions by making sure to add a step in the \texttt{Frontend-Tests} in the \texttt{Testing.yml} that runs the PR-frontend, such that the tests can find the port they are testing on.
 
-\subsubsection{Add integration testing:}
+\subsubsection{Add Integration Testing}
 \label{log:add-integration-testing}
 
-\subsubsection{Add end to end testing:}
+\subsubsection{Add End-to-End Testing}
 \label{log:add-end-to-end-testing}
 
-\subsubsection{Fix timestamps indatabase}
+\subsubsection{Fix Timestamps in Database}
 \label{log:fix-timestamps-in-database}
 
 First we want to create a test environment such that we can try and do migrations in our own local setup. We do so by dumping the data we currently have in the database on our docker container as the following:
@@ -1035,7 +1035,7 @@ Now we want to display it in a beautiful format. We start by doing the following
     \item We tried to use the \texttt{DisplayFormatAttribute} with \texttt{Html.For} in the view but resulted in a wrong format exception all the time. So we kept the original solution with \texttt{ToString()}.
 \end{itemize}
 
-\subsubsection{Analyse and fix the slow response time of the register endpoint}
+\subsubsection{Analyse and Fix the Slow Response Time of the Register Endpoint}
 \label{log:analyse-and-fix-the-slow-response-time-of-the-register-endpoint}
 
 We have found that the password hash makes up the majority of the time it takes to add a new user to the system:
@@ -1064,7 +1064,7 @@ devcontainer.
 
 Steps taken:
 
-\subsubsection{Adding pre-commit to devcontainer}
+\subsubsection{Adding Pre-commit to Devcontainer}
 \label{log:adding-pre-commit-to-devcontainer}
 
 This is a task from last week that we didn't manage to finish, as it turned out to be more complicated than we first thought. It has been solved by creating a dockerfile in the devcontainer that install first .net sdk 8, python, hadolint and pre-commit.
@@ -1096,7 +1096,7 @@ Problems i ran into:
     \end{minted}
 \end{itemize}
 
-\subsubsection{Adding scaling to the project}
+\subsubsection{Adding Scaling to the Project}
 \label{log:adding-scaling-to-the-project}
 
 \begin{itemize}
@@ -1134,7 +1134,7 @@ Now we have a swarm manager and a single worker in the swarm
 
 We have found that the lack of documentation has made it very difficult to start working with this task.
 
-\subsubsection{Adding update strategy}
+\subsubsection{Adding Update Strategy}
 \label{log:adding-update-strategy}
 
 We followed the tutorial linked to us in the lecture slides: \url{https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/}
@@ -1229,12 +1229,12 @@ After trying to insert and delete entries with the \texttt{minitwit-sa} we saw t
 
 The final script can be seen at \url{https://github.com/devops2024-group-e/itu-minitwit/commit/fd57686dedf9ebc366f628f52a010f662c1373a5}
 
-\subsubsection{Performing the migration}
+\subsubsection{Performing the Migration}
 \label{log:performing-the-migration}
 
 This is a TODO.
 
-\subsubsection{Save grafana dashboards and datasource files in repo}
+\subsubsection{Save Grafana Dashboards and Datasource Files in Repo}
 \label{log:save-grafana-dashboards-and-datasource-files-in-repo}
 
 So since we are going to move our digital ocean account due to the money expiring, then it will have to move the board. This step here is going to be a simple one. We will have the files that is going to keep the layout. However, the solution will not provide automation to change the endpoints of the datasource. But with this setup it should be easy to change a url and then push it again to see the live dashboards with data.
@@ -1265,7 +1265,7 @@ Now we copy the structure of the directory from the test server to the repo by u
 
 By adding it to the above directory then Ansible should copy those files to the server and use it to start the grafana container.
 
-\subsection{Continuation of fixing the slow response time of the register endpoint}
+\subsection{Continuation of Fixing the Slow Response Time of the Register Endpoint}
 \label{log:continuation-of-fixing-the-slow-response-time-of-the-register-endpoint}
 
 We had to implement a switch between the former and the current hashing algorithm in order for the \texttt{CheckPasswordHash} method to work with both old and new users in the system. To solve this issue, we made the following chances to /MinitwitSimulatorAPI/Utils/PasswordHash.cs:
@@ -1345,7 +1345,7 @@ Tasks: Switch Digital Ocean account, continue adding scaling to the project, add
 
 Steps taken:
 
-\subsection{Finalization of fixing the slow response time of the register endpoint}
+\subsection{Finalisation of Fixing the Slow Response Time of the Register Endpoint}
 \label{log:finalization-of-fixing-the-slow-response-time-of-the-register-endpoint}
 
 To complete the task of fixing the slow response time in the register endpoint, we needed to create tests to make sure that the hashing algorithm worked as we had intended.
@@ -1356,7 +1356,7 @@ We ran Helge's minitwit simulator with both the former and the current version o
 
 We had some trouble getting the PR for this issue accepted on GitHub due to pre-commit in the testing workflow raising an exception we couldn't replicate locally, but this was fixed by adding dotnet 8 to the pre-commit step.
 
-\subsection{Mapping the system}
+\subsection{Mapping the System}
 \label{log:mapping-the-system}
 
 To map the system, we looked through our decision log to get an overview over the different tools we have introduced throughout the project. We also looked at Digital Ocean to get a sense of the servers and through our GitHub repository in order to recall details about how we set up certain features. We decided to do an abstract overview of the system, as this was meant to help us keep track of how everything is connected and work with each other.
@@ -1376,7 +1376,7 @@ a hacking attack!!
 
 Steps taken:
 
-\subsubsection{Add one more frontend replica:}
+\subsubsection{Add One More Frontend Replica}
 \label{log:add-one-more-frontend-replica}
 
 \begin{itemize}
@@ -1551,12 +1551,12 @@ and lastly we added this code to \texttt{docker-compose.yaml}:
 
 After this we pulled to main again and tried to log in to Minitwit again and could then see that it still didn't work and that we had the same problem as before, that we got the logged in message but still wasn't properly logged in. After all the time we put on trying to make this work we decided that the problem itself isn't so essential that we should put anymore time on it. We therefore revoked all of the changes we previously made and went back to having one replica for the frontend instead.
 
-\subsubsection{Make security assessment:}
+\subsubsection{Make Security Assessment}
 \label{log:make-security-assessment}
 
 The security assessment can be seen in a separate document.
 
-\subsubsection{Got hacked and handled it:}
+\subsubsection{Got Hacked and Handled It:}
 \label{log:got-hacked-and-handled-it}
 
 We got hacked as described in another document. We deleted our docker
@@ -1569,7 +1569,7 @@ Tasks: Harden the system based on our security assessment from last week. Prepar
 
 Steps taken:
 
-\subsubsection{Harden the system based on our security assessment from last week:}
+\subsubsection{Harden the System Based on Our Security Assessment from Last Week}
 \label{log:harden-the-system-based-on-our-security-assessment-from-last-week}
 
 \begin{itemize}
