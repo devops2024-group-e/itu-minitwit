@@ -582,3 +582,4 @@ MigrationBackup/
 db_ip.txt
 
 # End of https://www.toptal.com/developers/gitignore/api/python,macos,linux,vs
+report/main.pyg
