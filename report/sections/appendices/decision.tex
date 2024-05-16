@@ -101,7 +101,7 @@ Chef is a configuration management system, just like Ansible as well. It provide
 
 As can be seen this also requires that the VMs has the Chef Client installed and configured to point at the Chef Server. This provides the nice feature that the Chef Server do not have to know which servers to configure. It is up to the Chef Clients to know where to pull the configurations from.
 
-The downside of this setup is the complexity. It seems like a lot of things that needs to be taken care of, and the fact that we would have a load overhead by adding clients to our small web server VMs would maybe
+The downside of this setup is the complexity. It seems like a lot of things that needs to be taken care of, and we would have a load overhead by adding clients to our small web server.
 
 In order to create a configuration we would have to create what they call cookbooks. This is written in Ruby as far as we can see. The nice thing about this is that there are testing frameworks implemented, which provides a way to be sure that the configuration works and configures as we intend it. However, while experimenting with Vagrant it has become obvious that our group does not have sufficient knowledge in Ruby and we would currently rather invest time in becoming better at using the observability tools that we have, rather than learning a new language.
 
@@ -239,5 +239,3 @@ We need to add horizontal scaling to our system.
 \subsection{Upgrade/Update Strategy: Rolling updates}
 
 Rolling updates is the default update strategy in Docker Swarm and therefore the one we have chosen so as to not make the implementation more complicated and “home-made” than it needs to be.
-
-\subsection{Precommit}
