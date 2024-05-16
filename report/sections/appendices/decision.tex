@@ -1,5 +1,27 @@
 \section{Decision Log}
 \label{appendix:decision-log}
+
+\subsection{Remote Git Repo: Github}
+Looking at a remote github tool we have had a bunch of tools that we could use:
+\begin{itemize}
+    \item GitHub
+    \item Azure DevOps
+    \item BitBucket
+\end{itemize}
+
+What we want from the Remote Git Repo tool is that it of course supports having a remote git repository. But also the following is needed:
+\begin{itemize}
+    \item Tracking Work. Also having a trace of what work item is associated to what in the code.
+    \item Project collaboration. This could be some sort of visualization of workitems and in which state that they are in.
+    \item Possibility to create a release(This is a requirement from Helge to track our pace?).
+    \item Have CI / CD tools available.
+    \item Have Pull Requests or something similar, which can be used to protect pushes directly to main branch
+\end{itemize}
+
+As mentioned we have mainly looked at the three tools above. They are all very similar, and provide the same features. Especially GitHub and Azure Devops which is both owned and maintained by Microsoft. All the products above have the above requirements. However, BitBucket and Azure Devops lacks the release creation. They both a binary like form of release, where it is just some sort of an artifact that is pushed to a download link which can be downloaded. This is not what we are looking for in a release. It lacks some documentation of what has actually been included in the release. Which is exactly what GitHub offers.
+
+Also the team has experience working with GitHub since ITU in most of the courses uses that, and have made us use the ITU hosted GitHub Enterprise version. Although we do have some experience with Azure DevOps, then the general feeling is that GitHub is easier to work with, and that will become useful in the weeks ahead that we have a tool that we are comfortable with.
+
 \subsection{Language: C\#}
 
 We decided to use C\# for refactorisation. We did this due to C\# being object-oriented and a stable language. C\# is used by many companies and is therefore known to many. Because C\# is used by many there also exists good documentation easily accessible.
