@@ -33,7 +33,7 @@ Figure \ref{fig:workflows} visualises the development pipeline all the way from 
 \end{figure}
 
 \subsection{Monitoring and Logging}
-For monitoring we use Grafana. We export metrics using OpenTelemetry, collect the metrics via Prometheus, and lastly push them to Grafana. Our board shows requests duration, errors rate, top 10 unhandled exception endpoints and more (for visualisation of the board, see appendix \ref{appendix:grafana}). We have used the board to get an overview of where to put our focus, ie. which endpoints to improve, which errors to fix, etc. Moreover, we are gaining insights into the health of the system and an impression of how the backend and frontend handle requests.
+For monitoring we use Grafana. We export metrics using OpenTelemetry, collect the metrics via Prometheus, and lastly push them to Grafana. Our board shows requests duration, errors rate, top 10 unhandled exception endpoints and more (for visualisation of the board, see appendix \ref{appendix:grafana}). We have used the board to get an overview of where to put our focus, ie. which endpoints to improve, which errors to fix, etc. Moreover, we haved gained insights into the health of the system and an impression of how the backend and frontend handle requests.
 
 For logging, we use Grafana and Loki. The logs are divided into Information, Warning, Debug and Error. All logging statements are placed in the controllers, such that we have information about the users' whereabouts in the system.
 
@@ -45,20 +45,20 @@ Based on our security assessment (see appendix \ref{appendix:securityassesment})
     \caption{Risk matrix from security assessment}
     \label{fig:enter-label}
 \end{figure}
-We decided to focus on the scenarios in the red zone, as they would cause the most damage. Due to the team not having enough knowledge about how the simulator worked in regards to login and passwords, we did not move further with the \textit{Password Brute Forcing} scenario. However, possible solutions could be to incorporate 2FA, password requirements and time-out limitations for a system in production.
+We decided to focus on the scenarios in the red zone, as they would cause the most damage. Due to the team not having enough knowledge about how the simulator worked in regards to login and passwords, we did not move further with the \textit{Password Brute Forcing} scenario. However, possible solutions for a system in production include incorporating 2FA and password requirements.
 
-For \textit{Log Injection}, we made sure to sanitise user inputs, as they previously were put directly into the log, which could be exploited to hide ill-intentioned actions. We thereby hardened the system against injection attacks.
+For \textit{Log Injection}, we sanitised user inputs, as they previously were put directly into the log, which could be exploited by using injection attacks to hide ill-intentioned actions.
 
-With \textit{Depricated Dependencies}, we chose to integrate the tool Dependabot into our CI/CD pipeline to identify outdated dependencies in our main repository. This ensures that an adversary is not able to take advantage of vulnerabilities in the used tools.
+With \textit{Depricated Dependencies}, we integrated the tool Dependabot into our CI/CD pipeline to identify outdated dependencies in our main repository. This ensures that an adversary is not able to take advantage of vulnerabilities in used tools.
 
-\textit{Open Ports} was deemed the biggest risk, as this was most likely the reason we were hacked, which we have written about in further detail in section \ref{section_hacked}. We used the tool \texttt{nmap} to scan the IP address of our application and check for open ports, which showed the following:
+\textit{Open Ports} was deemed the biggest risk, as this was presumably the reason we were hacked, which we have written about in further detail in section \ref{section_hacked}. We used the tool \texttt{nmap} to scan the IP address of our application and check for open ports, which showed the following:
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{images/nmap.png}
     \caption{Open ports found by nmap}
     \label{fig:matrix}
 \end{figure}
-We tried to close port 9090, which was used for Prometheus, but it was unclear if we were successful as \texttt{nmap} kept showing the port as open, despite seeing the firewall configuration say otherwise on the server itself. This was likely caused by Docker bypassing our firewall, which was handled by the Ansible \texttt{ufw} module, through IP tables.
+We tried to close port 9090, which was used for Prometheus, but it was unclear if we succeeded as \texttt{nmap} and the firewall configurations contradicted each other. This was likely caused by Docker bypassing our firewall, which was handled by the Ansible \texttt{ufw} module, through IP tables.
 
 \subsection{Scaling}
 We use horizontal scaling, as we wanted a more resilient application and limit downtime when deploying. We settled on Docker Swarm over building a custom load balancer or adopting Kubernetes, due to its simplicity and compatibility with the existing system setup. To implement Docker Swarm we created a new server in our system and added a manager and a worker node to the Swarm.
