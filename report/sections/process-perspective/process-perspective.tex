@@ -49,7 +49,7 @@ We decided to focus on the scenarios in the red zone, as they would cause the mo
 
 For \textit{Log Injection}, we sanitised user inputs, as they previously were put directly into the log, which could be exploited by using injection attacks to hide ill-intentioned actions.
 
-With \textit{Depricated Dependencies}, we integrated the tool Dependabot into our CI/CD pipeline to identify outdated dependencies in our main repository. This ensures that an adversary is not able to take advantage of vulnerabilities in used tools.
+With \textit{Deprecated Dependencies}, we integrated the tool Dependabot into our CI/CD pipeline to identify outdated dependencies in our main repository. This ensures that an adversary is not able to take advantage of vulnerabilities in used tools.
 
 \textit{Open Ports} was deemed the biggest risk, as this was presumably the reason we were hacked, which we have written about in further detail in section \ref{section_hacked}. We used the tool \texttt{nmap} to scan the IP address of our application and check for open ports, which showed the following:
 \begin{figure}[H]
