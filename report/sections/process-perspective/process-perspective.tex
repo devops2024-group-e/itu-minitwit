@@ -33,7 +33,7 @@ Figure \ref{fig:workflows} visualises the development pipeline all the way from 
 \end{figure}
 
 \subsection{Monitoring and Logging}
-For monitoring we use Grafana. We export metrics using OpenTelemetry, collect the metrics via Prometheus, and lastly push them to Grafana. Our board shows requests duration, errors rate, top 10 unhandled exception endpoints and more (for visualisation of the board, see appendix \ref{appendix:grafana}). We have used the board to get an overview of where to put our focus, ie. which endpoints to improve, which errors to fix, etc. Moreover, we haved gained insights into the health of the system and an impression of how the backend and frontend handle requests.
+For monitoring we use Grafana. We export metrics using OpenTelemetry, collect the metrics via Prometheus, and lastly push them to Grafana. Our board shows requests duration, errors rate, top 10 unhandled exception endpoints and more (for visualisation of the board, see appendix \ref{appendix:grafana}). We have used the board to get an overview of where to put our focus, ie. which endpoints to improve, which errors to fix, etc. Moreover, we have gained insights into the health of the system and an impression of how the backend and frontend handle requests.
 
 For logging, we use Grafana and Loki. The logs are divided into Information, Warning, Debug and Error. All logging statements are placed in the controllers, such that we have information about the users' whereabouts in the system.
 
