@@ -12,7 +12,7 @@ After a few failed attempts to evict the adversary it was decided to destroy the
 
 After some introspection into our system, we assume that the adversary got access via some open ports that we were unaware of. The ports became exposed in an attempt to make the network function between servers in a Docker Swarm, which seems to override the firewall.
 
-Learning from this, we have worked to close exposed ports from Docker and finding alternative solutions to setting up the network. Another key takeaway is that since we had the necessary monitoring in place to figure out that the server was being targeted, as well as having implemented infrastructure as code, we were able to detect and react to the attack fairly quickly, giving us only about one and a half hour of downtime.
+Learning from this, we have worked to close exposed ports from Docker and find alternative solutions to setting up the network. Another key takeaway is that since we had the necessary monitoring in place to figure out that the server was being targeted, as well as having implemented infrastructure as code, we were able to detect and react to the attack fairly quickly, giving us only about one and a half hour of downtime.
 
 \subsection{Lesson 2: Shift from Vagrant to Ansible-Pulumi}
 At the beginning of the project, we had chosen to provision our VMs with Vagrant, inspired by the exercises from the course.
@@ -20,7 +20,7 @@ We realised later that we would have to switch Digital Ocean account at some poi
 
 The choice of configuration management tool fell upon Ansible, which was supposed to be called by Vagrant in a config server, provisioning the web and monitoring servers.
 However, it turned out that Vagrant was not the right tool for the job, when having more complicated automation and collaboration needs for our project.
-After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant was very comlicated to work with in our current setup\cite{issue178-vagrant-ansible}. Upon further investigation, we discovered that Vagrant was originally designed by its creators to set up development environments, rather than for maintaining production infrastructure\cite{vagrant_vs_terraform}.
+After many hours of attempting to get Vagrant to work with Ansible, we found out that Vagrant was very complicated to work with in our current setup\cite{issue178-vagrant-ansible}. Upon further investigation, we discovered that Vagrant was originally designed by its creators to set up development environments, rather than for maintaining production infrastructure\cite{vagrant_vs_terraform}.
 
 We decided to cut our losses with Vagrant and search for a more suitable tool that could help us write our infrastructure as code, where the choice fell upon Pulumi.
 This taught us the importance of thoroughly researching the available tools to navigate through their advantages and drawbacks.
@@ -31,6 +31,6 @@ When reflecting on how we, as a group, incorporated the style of DevOps into our
 
 In regards to the principle of flow, it was not hard to adopt the ideas of making our work visible and reducing batch sizes, as the group have previously worked in an Agile framework in other courses, which also embodies those same ideas. Using a kanban board to track our tasks and their progress not only helped us stay on target, but also helped us with confining each task, such that it could be deployed continuously\cite{devopshandbook}.
 
-For the principle of feedback, the concept of peer reviewing via pull requests on GitHub helped install a sense of ownership over the application. Automating the process of not only testing, but also building and deploying the entire application in a continous fashion, allowed for errors to be found and mitigated quickly compared to earlier projects we have worked on, where it was easy for the issues to pile up.
+For the principle of feedback, the concept of peer reviewing via pull requests on GitHub helped install a sense of ownership over the application. Automating the process of not only testing, but also building and deploying the entire application in a continuous fashion, allowed for errors to be found and mitigated quickly compared to earlier projects we have worked on, where it was easy for the issues to pile up.
 
-Lastly, with the principle of continual learning and experimentation, having a safe system of work\cite{devopshandbook} was crucial for us to learn and grow in a secure environment, which in turn allowed for greater experimentation in the improvement the systems setup. By keeping weekly work logs (see appendix \ref{appendix_log}) and guides easily available, each member had the same oppertunity of better understanding of the system as a whole.
+Lastly, with the principle of continual learning and experimentation, having a safe system of work\cite{devopshandbook} was crucial for us to learn and grow in a secure environment, which in turn allowed for greater experimentation in the improvement of the systems setup. By keeping weekly work logs (see appendix \ref{appendix_log}) and guides easily available, each member had the same opportunity of better understanding of the system as a whole.
