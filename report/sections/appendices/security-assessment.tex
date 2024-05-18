@@ -52,9 +52,9 @@ Based on the information gathered from the two previous steps, we have construct
     The attacker can brute force login credentials in the \textbf{web application} by taking advantage of no timeouts and a weaker hash implementation.
 
     This would be an issue of \textit{Cryptographic Failures} and \textit{Identification and Authentication Failures}.
-    \item \textbf{\underline{Depricated Dependencies}}
+    \item \textbf{\underline{Deprecated Dependencies}}
 
-    The attacker can identify weak, outdated or depricated tools and dependencies in the system's CI/CD pipeline via \textbf{GitHub Actions}, which is publicly availble through the \textbf{GitHub repository}.
+    The attacker can identify weak, outdated or deprecated tools and dependencies in the system's CI/CD pipeline via \textbf{GitHub Actions}, which is publicly availble through the \textbf{GitHub repository}.
 
     This would be an issue of \textit{Vulnerable and Outdated Components} and \textit{Software and Data Integrity Failures}.
     \item \textbf{\underline{Open Ports}}
@@ -87,7 +87,7 @@ Likelihood will be graded on the following scale: \{Rare, Unlikely, Possible, Li
     \item \textbf{\underline{Password Brute Forcing}}
 
     We currently do not have any measures in place to combat brute force attacks and no password requirements for the users when signing up. Therefore we deemed the likelihood to be \textbf{Possible}.
-    \item \textbf{\underline{Depricated Dependencies}}
+    \item \textbf{\underline{Deprecated Dependencies}}
 
     Our GitHub repository, and thereby our workflows for GitHub Actions as well, are public for anyone to see. In the workflows we are using templates of actions made available and written by others, alongside showcasing some of various tools we use. We currently rely on the fact that the actions and tools we use are secure, but have not incoporated anything that checks whether that is true. However, many of the tools we use are well-known and therefore we hope that known vulnerabilities are getting discovered rather quickly. Therefore we deemed the likelihood to be \textbf{Possible}.
     \item \textbf{\underline{Open Ports}}
@@ -112,7 +112,7 @@ Impact will be graded on the following scale: \{Insignificant, Negligible, Margi
     \item \textbf{\underline{Password Brute Forcing}}
 
     This would breach both confidentiality and integrity. In very severe cases, it could also affect the availability, if the requests to login became too intense. We would still keep all of our data, though the data would have been compromised. Therefore we deemed the impact to be \textbf{Critical}.
-    \item \textbf{\underline{Depricated Dependencies}}
+    \item \textbf{\underline{Deprecated Dependencies}}
 
     This would have a very big attack surface, as we most likely would not know which tool or where in the application process we could have a vulnerability. The target for a vulnerability could thereby vary in severity, but could in the worst case have severe consequences. Therefore we deemed the impact to be \textbf{Catastrophic}.
     \item \textbf{\underline{Open Ports}}
@@ -140,6 +140,6 @@ For the open ports, we went through our firewall settings, which were handled by
 
 For the log injection, we went through our code and ensured that all user data was sanitized before added to the log, such that it could not be tampered with.
 
-For the depricated dependencies, we added the tool \textit{dependabot} to our CI/CD pipeline, which makes sure that the dependencies used in our Minitwit system are up to date and thereby less vulnerable to older known exploits.
+For the deprecated dependencies, we added the tool \textit{dependabot} to our CI/CD pipeline, which makes sure that the dependencies used in our Minitwit system are up to date and thereby less vulnerable to older known exploits.
 
 For the password brute forcing, we decided to leave it as it, due to the group not having enough information on how the creation of users and login works in the simulator and thereby not knowing if the simulator could handle password restraints or 2-factor authentication, which could have been our solution to improve this issue.

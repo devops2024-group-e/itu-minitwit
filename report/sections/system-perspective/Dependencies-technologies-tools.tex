@@ -3,44 +3,44 @@
 
 % All dependencies of your *ITU-MiniTwit* systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
-In Table \ref{tab:tool} we briefly describe the tools and technologies used. A comprehensive list of tools containing the full reasoning for their use, can be found in appendix \ref{appendix:decision-log}.
+In Table \ref{tab:tool} we briefly describe the tools and technologies used. A comprehensive list of tools and reasoning for their usage can be found in appendix \ref{appendix:decision-log}.
 
 \begin{longtable}{|p{0.3\textwidth}|p{0.2\textwidth} | p{0.4\textwidth}|}
     \hline
     \textbf{Purpose} & \textbf{Technology/Tool} & \textbf{Description}\\
     \hline
-    Work log & \href{https://www.notion.so/help/guides/category/documentation}{Notion} & Notion is a web hosted workspace, that allows users to collaborate in real-time on managing projects, notes, and other types of documents in a markdown format.\\
+    Work log & \href{https://www.notion.so/help/guides/category/documentation}{Notion} & Notion is a web hosted workspace, that allows users to collaborate in real-time on managing projects, notes, and documents in a markdown format.\\
     \hline
-    Remote Repository, work tracking, and coordination & \href{https://github.com/features}{GitHub} & GitHub serves as a remote Git repository. It comes with collaborative features, such as having work items (known as issues), project coordination boards, CI/CD workflows, etc. We use GitHub, as the group has experience with the tool and it provides the collaborative features we need.\\
+    Remote Repository, work tracking, and coordination & \href{https://github.com/features}{GitHub} & GitHub serves as a remote Git repository. It comes with collaborative features, such as having work items (known as issues), project coordination boards, CI/CD workflows, etc. We use GitHub, as the group has experience with the tool and it provides the needed collaborative features.\\
     \hline
     Programming language & \href{https://learn.microsoft.com/en-us/dotnet/csharp/}{C\#} &
-    C\# is an object-oriented programming (OOP) language. We chose C\# due to its widespread use in the industry, making it very well documented. Furthermore, the familiarity of OOP paradigms among developers served as a supplementary factor.\\
+    C\# is an object-oriented programming (OOP) language. We chose C\# due to its widespread use in the industry, making it well documented. Furthermore, the familiarity of OOP paradigms served as a supplementary factor.\\
     \hline
-    Micro Web-Framework & \href{https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio}{Razor Pages} & Razor Pages is a simple web application programming model provided by ASP.NET. It uses C\# and simple markup syntax in order to build web pages. Furthermore, Razor Pages offers simple configuration and an abundance of documentation.\\
+    Micro Web-Framework & \href{https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio}{Razor Pages} & Razor Pages is a simple web application programming model provided by ASP.NET. It uses C\# and simple markup syntax to build web pages. Furthermore, Razor Pages offers simple configuration and an abundance of documentation.\\
     \hline
-    Database Connection & \href{https://learn.microsoft.com/en-us/ef/core/}{Entity Framework} & Entity Framework (EF) serves as an object-relational mapper, which allows developers to work with databases using .NET objects. It also eliminates the need for data-access code, by using LINQ in order to interact with the data.\\
+    Database Connection & \href{https://learn.microsoft.com/en-us/ef/core/}{Entity Framework} & Entity Framework (EF) serves as an object-relational mapper, which allows developers to work with databases using .NET objects. It eliminates the need for data-access code by using LINQ to interact with the data.\\
     \hline
-    Server host & \href{https://docs.digitalocean.com/}{Digital Ocean} & Digital Ocean (DO) is a cloud hosting service, which provides server hosting, database hosting, and a command line interface tool (doctl), that can be used to automatically create and drop droplets (VMs). We have chosen DO primarily due to the great documentation and online resources.\\
+    Server host & \href{https://docs.digitalocean.com/}{Digital Ocean} & Digital Ocean (DO) is a cloud hosting service, which provides server hosting, database hosting, and a command line interface tool (doctl), that can automatically create and drop droplets (VMs). We have chosen DO due to the great documentation and online resources.\\
     \hline
-    Database & \href{https://www.postgresql.org/docs/}{PostgreSQL} & PostgreSQL is an open source relational database management system known for its extensibility, and adherence to SQL standards. Additionally, the majority of developers in the team have previous experience with PostgreSQL.\\
+    Database & \href{https://www.postgresql.org/docs/}{PostgreSQL} & PostgreSQL is an open source relational database management system known for its extensibility and adherence to SQL standards. Additionally, the majority of developers in the team have experience with PostgreSQL.\\
     \hline
-    CI/CD & \href{https://docs.github.com/en/actions}{GitHub Actions} & GitHub Actions is a CI/CD service, that allows the user to automate tasks such as building, testing, and deploying code when certain conditions are met. GitHub Actions is well documented, and it is quite seamless to configure secrets and refer to them in a \texttt{.yaml} file. Due to its integration with GitHub, we chose GitHub Actions, as we already use GitHub to store our code repository. Furthermore, it collaborates well with other tools used in the project, such as Digital Ocean.\\
+    CI/CD & \href{https://docs.github.com/en/actions}{GitHub Actions} & GitHub Actions is a CI/CD service, that allows the user to automate tasks such as building, testing, and deploying code under certain conditions. We chose GitHub Actions due to its integration with GitHub, where we store our code repository. Furthermore, it collaborates well with other tools used in the project, such as Digital Ocean.\\
     \hline
-    Monitoring and Logging Graphics & \href{https://grafana.com/}{Grafana} & Grafana is a well known open source monitoring toolbox, that includes a variety of features such as visualising monitoring metrics and logging via customisable dashboards.\\
+    Monitoring and Logging Graphics & \href{https://grafana.com/}{Grafana} & Grafana is a open source monitoring toolbox, that includes a variety of features such as visualising monitoring metrics and logging via customisable dashboards.\\
     \hline
-    Metrics collector & \href{https://prometheus.io/docs/}{Prometheus} & Prometheus is a monitoring and alerting toolkit, that scrapes and stores data from a specific application, alerting developers of abnormalities in the system. The only requirement we had for a metrics collector was: It had to collaborate with Grafana.\\
+    Metrics collector & \href{https://prometheus.io/docs/}{Prometheus} & Prometheus is a monitoring and alerting toolkit, that scrapes and stores data from a specific application, alerting developers of abnormalities in the system. We chose it based on its ability to collaborate with Grafana.\\
     \hline
-    Metrics collector & \href{https://opentelemetry.io/docs/languages/}{OpenTelemetry} & OpenTelemetry is a metrics collector, that supports a variety of different APIs and SDKs such as .NET. We chose OpenTelemetry since it is widely used, and it is well integrated with .NET applications.\\
+    Metrics collector & \href{https://opentelemetry.io/docs/languages/}{OpenTelemetry} & OpenTelemetry is a metrics collector, that supports a variety of different APIs and SDKs such as .NET. We chose OpenTelemetry as it is widely used and well integrated with .NET applications.\\
     \hline
-    Quality of Code Analysis & \href{https://www.sonarsource.com/products/sonarcloud/}{SonarCloud and Code Climate} & SonarCloud is a cloud based code analysis service, which can be integrated into a GitHub repository, in order to analyse the code in said repository. Code Climate incorporates static analysis and test coverage as well.\\
+    Quality of Code Analysis & \href{https://www.sonarsource.com/products/sonarcloud/}{SonarCloud and Code Climate} & SonarCloud is a cloud based code analysis service, which can be integrated into a GitHub repository to analyse its code. Code Climate incorporates static analysis and test coverage as well.\\
     \hline
-    Linter & \href{https://pre-commit.com/}{Pre-commit} & Pre-commit is a framework for managing pre-commit hooks. This can be used for automatically fixing code formatting and removing debug statements. We chose this tool as multiple actions can be integrated into one hook, as we were tasked with integrating three linters into the system.\\
+    Linter & \href{https://pre-commit.com/}{Pre-commit} & Pre-commit is a framework for managing pre-commit hooks. This can be used for automatically fixing code formatting and removing debug statements. We chose this tool as multiple actions can be integrated into one hook.\\
     \hline
-    Linter & \href{https://github.com/hadolint/hadolint}{Hadolint} & Hadolint is an open source Dockerfile linter, that enforces best practices when building Docker images. We have quite a few Dockerfiles, therefore we found it fitting to have a Dockerfile linter. Hadolint seems to be the more popular one as it is Haskell-based.\\
+    Linter & \href{https://github.com/hadolint/hadolint}{Hadolint} & Hadolint is an open source Dockerfile linter, that enforces best practices when building Docker images. As we have several Dockerfiles, we found it fitting to have a Dockerfile linter. Hadolint seems to be the more popular option as it is Haskell-based.\\
     \hline
-    Formatter & \href{https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format}{Dotnet-format} & Dotnet-format is a formatting tool, included in the .NET 6 SDK and onwards. It applies style preferences to a project which can be configured in an \texttt{.editorconfig} file. We chose dotnet-format since this linter enforces C\# coding conventions.\\
+    Formatter & \href{https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format}{Dotnet-format} & Dotnet-format is a formatting tool, included in the .NET 6 SDK and onwards. It applies style preferences to a project which can be configured in an \texttt{.editorconfig} file. We chose dotnet-format since it enforces C\# coding conventions.\\
     \hline
-    Logging & \href{https://grafana.com/docs/loki/latest/}{Grafana Loki} & Loki is a log aggregation system designed to store and query logs from an application, inspired by Prometheus. In order to implement a logging stack, we were interested in using a tool that was compatible with Grafana. Loki ensures this compatibility, as it is from the Grafana toolbox.\\
+    Logging & \href{https://grafana.com/docs/loki/latest/}{Grafana Loki} & Loki is a log aggregation system designed to store and query logs from an application, inspired by Prometheus. When implementing a logging stack, we were interested in using a tool compatible with Grafana. Loki ensures this compatibility, as it is from the Grafana toolbox.\\
     \hline
     Infrastructure as code & \href{https://www.pulumi.com/docs/}{Pulumi} & Pulumi is an open source infrastructure as code SDK, that enables creation, deployment and management of infrastructure for a cloud service. We picked Pulumi, as it does not introduce a new programming language, it is open source, and it works well with CI/CD tools.\\
     \hline
