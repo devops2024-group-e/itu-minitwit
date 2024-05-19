@@ -18,14 +18,8 @@
 \usepackage[hidelinks=true, hypertexnames=false]{hyperref} % references in text (and clickable links)
 \usepackage{wrapfig} % wrap figures
 \usepackage{longtable} % Long tables
-\usepackage[british]{babel} % quotations
 \usepackage[outputdir=build]{minted} % Code highlight
-\usepackage[%
-left = \glqq,%
-right = \grqq,%
-leftsub = \glq,%
-rightsub = \grq%
-]{dirtytalk} % quotations
+\usepackage{dirtytalk} % quotations
 
 \graphicspath{ {./images/} }
 \addbibresource{sources.bib}
@@ -44,8 +38,9 @@ rightsub = \grq%
 \renewcommand*{\nameyeardelim}{\addcomma\space}
 
 % Make the "Part I" text invisible
-\renewcommand \thepart{}
 \renewcommand \partname{}
+\renewcommand \thepart{}
+
 
 \begin{document}
     \begin{titlepage}
