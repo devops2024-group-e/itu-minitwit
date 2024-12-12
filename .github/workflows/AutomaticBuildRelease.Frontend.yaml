@@ -38,7 +38,7 @@ jobs:
 
       - name: Bump build version - Frontend
         id: bump
-        uses: vers-one/dotnet-project-version-updater@v1.5
+        uses: vers-one/dotnet-project-version-updater@v1.6
         with:
           file: "Minitwit/Minitwit.csproj"
           version: bump-build
